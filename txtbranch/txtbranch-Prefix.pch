@@ -14,3 +14,10 @@
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
 #endif
+
+#if TARGET_IPHONE_SIMULATOR
+#define LOCAL 1
+#else
+#define LOCAL 0
+#endif
+

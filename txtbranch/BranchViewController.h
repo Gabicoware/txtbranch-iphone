@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController
+@interface BranchViewController : UIViewController
+
+@property (nonatomic,retain) NSString* treeName;
 
 @end

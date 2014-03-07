@@ -7,31 +7,66 @@
 //
 
 #import "TreesViewController.h"
+#import "ASIHTTPRequest.h"
+#import "ASIFormDataRequest.h"
+#import "NSURL+txtbranch.h"
+#import "SignInViewController.h"
+#import "BranchViewController.h"
 
 @interface TreesViewController ()
+
+@property (nonatomic,strong) ASIHTTPRequest* request;
+
+@property (nonatomic, retain) NSArray* trees;
 
 @end
 
 @implementation TreesViewController
 
-- (id)initWithStyle:(UITableViewStyle)style
-{
-    self = [super initWithStyle:style];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.title = @"txtbranch";
 
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
- 
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    [self loadMainTrees];
+    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+
+}
+
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+}
+
+-(void)loadMainTrees{
+    [_request cancel];
+    
+    NSURL* URL = [NSURL tbURLWithPath:@"/api/v1/trees?list=main"];
+    
+	[self setRequest:[ASIHTTPRequest requestWithURL:URL]];
+	[_request setTimeOutSeconds:20];
+    
+	[_request setDelegate:self];
+	[_request setDidFailSelector:@selector(listRequestFailed:)];
+	[_request setDidFinishSelector:@selector(listRequestFinished:)];
+	
+	[_request startAsynchronous];
+}
+
+-(void)listRequestFinished:(ASIHTTPRequest*)request{
+    
+    
+    NSError* error = nil;
+    id result = [NSJSONSerialization JSONObjectWithData:[request responseData]
+                                                options:0
+                                                  error:&error];
+    if ([result[@"status"] isEqualToString:@"OK"]) {
+        self.trees = result[@"result"];
+        [self.tableView reloadData];
+    }
+}
+
+-(void)listRequestFailed:(ASIHTTPRequest*)sender{
+    NSLog(@"");
 }
 
 - (void)didReceiveMemoryWarning
@@ -44,77 +79,29 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-#warning Potentially incomplete method implementation.
-    // Return the number of sections.
-    return 0;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-#warning Incomplete method implementation.
-    // Return the number of rows in the section.
-    return 0;
+    return self.trees.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
+    static NSString *CellIdentifier = @"TreeTableViewCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
-    // Configure the cell...
+    NSDictionary* tree = [self.trees objectAtIndex:indexPath.row];
+    
+    cell.textLabel.text = tree[@"name"];
+    cell.detailTextLabel.text = tree[@"moderator_name"];
     
     return cell;
 }
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+    ((BranchViewController*)segue.destinationViewController).treeName = ((UITableViewCell*)sender).textLabel.text;
 }
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-/*
-#pragma mark - Navigation
-
-// In a story board-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-
- */
 
 @end

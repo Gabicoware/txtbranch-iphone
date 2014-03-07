@@ -1,5 +1,5 @@
 //
-//  MPTextView.h
+//  TBTextView.h
 //  txtbranch
 //
 //  Created by Daniel Mueller on 3/3/14.
@@ -8,6 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-@interface MPTextView : UITextView
+@interface TBTextView : UITextView
+
+@property (nonatomic, retain) NSString *placeholder;
+@property (nonatomic, retain) UIColor *placeholderColor;
+
+-(void)textChanged:(NSNotification*)notification;
 
 @end

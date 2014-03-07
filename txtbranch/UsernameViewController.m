@@ -10,29 +10,46 @@
 
 @interface UsernameViewController ()
 
+@property (nonatomic,weak) IBOutlet UITextField* usernameTextField;
+
+
 @end
 
 @implementation UsernameViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-
-- (void)viewDidLoad
-{
+-(void)viewDidLoad{
+    
     [super viewDidLoad];
-	// Do any additional setup after loading the view.
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(didTapCancel:)];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(didTapSave:)];
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+-(void)didTapCancel:(id)sender{
+    [self.navigationController dismissViewControllerAnimated:YES completion:NULL];
 }
+
+-(void)didTapSave:(id)sender{
+    
+    NSString* username = self.usernameTextField.text;
+    
+    NSError* error = nil;
+    
+    NSRegularExpression* regex = [NSRegularExpression regularExpressionWithPattern:@"^[\\d\\w_\\-]+$"
+                                                                           options:NSRegularExpressionCaseInsensitive
+                                                                             error:&error];
+    
+    NSRange range = [regex rangeOfFirstMatchInString:username
+                                             options:NSMatchingReportProgress
+                                               range:NSMakeRange(0, username.length)];
+    
+    if (range.location == 0 && 4 <= username.length && username.length <= 20) {
+        [[[UIAlertView alloc] initWithTitle:@"Nice" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles: nil] show];
+    }else{
+        
+        
+    }
+}
+
+
 
 @end

@@ -10,4 +10,6 @@
 
 @interface SignInViewController : UIViewController
 
++(void)presentSignInViewControllerWithParent:(UIViewController*)parent animated:(BOOL)animated;
+
 @end

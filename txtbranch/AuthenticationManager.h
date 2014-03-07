@@ -10,4 +10,8 @@
 
 @interface AuthenticationManager : NSObject
 
+@property (nonatomic,assign) BOOL isLoggedIn;
+
++(instancetype)instance;
+
 @end
