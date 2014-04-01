@@ -12,6 +12,8 @@
 
 @property (nonatomic,assign) BOOL isLoggedIn;
 
+@property (nonatomic,readonly) NSString* username;
+
 +(instancetype)instance;
 
 @end

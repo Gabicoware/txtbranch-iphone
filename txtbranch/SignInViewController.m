@@ -24,32 +24,9 @@
 
 @implementation SignInViewController
 
--(void)loadView{
-    
-    UIWindow* keyWindow = [[UIApplication sharedApplication] keyWindow];
-    
-    UIView* view = [[UIView alloc] initWithFrame:keyWindow.bounds ];
-    
-    UIWebView* webView = [[UIWebView alloc] initWithFrame:view.bounds];
-    
-    [view addSubview:webView];
-    
-    self.view = view;
-    
-    webView.delegate = self;
-    
-    self.webView = webView;
-    
-}
-
 -(void)viewDidLoad{
     [super viewDidLoad];
-#if LOCAL
-    NSURL* URL = [NSURL tbURLWithPath:@"/google_login"];
-#else
-    NSURL* URL = [NSURL tbURLWithPath:@"/login"];
-#endif
-    NSURLRequest* request = [NSURLRequest requestWithURL:URL];
+    NSURLRequest* request = [NSURLRequest requestWithURL:self.signInURL];
     
     [self.webView loadRequest:request];
 }
@@ -69,6 +46,8 @@
         [self.view addSubview:self.activityView];
         
         [self getUserInfo];
+        
+        webView.hidden = YES;
         
         return NO;
     }
@@ -100,6 +79,7 @@
                                                 options:0
                                                   error:&error];
     if ([result[@"status"] isEqualToString:@"OK"]) {
+        
         [AuthenticationManager instance].isLoggedIn = YES;
         [self.navigationController dismissViewControllerAnimated:YES completion:NULL];
     }else{
@@ -114,16 +94,6 @@
 -(void)showUsernameView{
     UsernameViewController* usernameViewController = [[UsernameViewController alloc] initWithNibName:nil bundle:nil];
     [self.navigationController pushViewController:usernameViewController animated:YES];
-}
-
-+(void)presentSignInViewControllerWithParent:(UIViewController*)parent animated:(BOOL)animated{
-    
-    SignInViewController* signInViewController = [[SignInViewController alloc] initWithNibName:nil bundle:nil];
-    
-    UINavigationController* navigationController = [[UINavigationController alloc] initWithRootViewController:signInViewController];
-    
-    [parent presentViewController:navigationController animated:animated completion:NULL];
-    
 }
 
 @end

@@ -168,9 +168,11 @@ static NSString* LinkText = nil;
     [super layoutSubviews];
     if (![self.linkTextView.text isEqualToString:LinkText]) {
         self.linkTextView.text = LinkText;
+        [self.linkTextView layoutSubviews];
     }
     if (![self.contentTextView.text isEqualToString:ContentText]) {
         self.contentTextView.text = ContentText;
+        [self.contentTextView layoutSubviews];
     }
     
     CGRect linkTextViewFrame = self.linkTextView.frame;
@@ -192,6 +194,18 @@ static NSString* LinkText = nil;
     self.linkTextView.frame = linkTextViewFrame;
     self.contentTextView.frame = contentTextViewFrame;
     
+}
+
+-(void)setupWithBranch:(id)branch{
+    LinkText = branch[@"link"];
+    ContentText = branch[@"content"];
+}
+
+-(void)willMoveToWindow:(UIWindow *)newWindow{
+    [super willMoveToWindow:newWindow];
+    if (newWindow != nil) {
+        [self setNeedsLayout];
+    }
 }
 
 -(void)prepareForReuse{
@@ -233,6 +247,10 @@ static NSString* LinkText = nil;
     }
     return YES;
 }
+
+@end
+
+@implementation BranchMetadataTableViewCell
 
 @end
 

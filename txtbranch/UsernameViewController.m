@@ -7,10 +7,14 @@
 //
 
 #import "UsernameViewController.h"
+#import "NSURL+txtbranch.h"
+#import "ASIFormDataRequest.h"
+#import "AuthenticationManager.h"
 
 @interface UsernameViewController ()
 
 @property (nonatomic,weak) IBOutlet UITextField* usernameTextField;
+@property (nonatomic,weak) ASIFormDataRequest* request;
 
 
 @end
@@ -43,11 +47,44 @@
                                                range:NSMakeRange(0, username.length)];
     
     if (range.location == 0 && 4 <= username.length && username.length <= 20) {
-        [[[UIAlertView alloc] initWithTitle:@"Nice" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles: nil] show];
+        
+        NSURL* URL = [NSURL tbURLWithPath:@"/api/v1/userinfos"];
+        
+        [self setRequest:[ASIFormDataRequest requestWithURL:URL]];
+        
+        [_request addPostValue:username forKey:@"username"];
+        [_request setTimeOutSeconds:20];
+        
+        [_request setDelegate:self];
+        [_request setDidFailSelector:@selector(userinfoRequestFailed:)];
+        [_request setDidFinishSelector:@selector(userinfoRequestFinished:)];
+        _request.cachePolicy = ASIDoNotReadFromCacheCachePolicy;
+        [_request startAsynchronous];
+        
     }else{
         
         
+        
     }
+}
+
+-(void)userinfoRequestFinished:(ASIHTTPRequest*)request{
+    
+    NSError* error = nil;
+    id result = [NSJSONSerialization JSONObjectWithData:[request responseData]
+                                                options:0
+                                                  error:&error];
+    if ([result[@"status"] isEqualToString:@"OK"]) {
+        
+        [AuthenticationManager instance].isLoggedIn = YES;
+        [self.navigationController dismissViewControllerAnimated:YES completion:NULL];
+    }else{
+        //[self showUsernameView];
+    }
+}
+
+-(void)userinfoRequestFailed:(ASIHTTPRequest*)request{
+    //[self showUsernameView];
 }
 
 

@@ -10,8 +10,8 @@
 #import "ASIHTTPRequest.h"
 #import "ASIFormDataRequest.h"
 #import "NSURL+txtbranch.h"
-#import "SignInViewController.h"
 #import "BranchViewController.h"
+#import "AuthenticationManager.h"
 
 @interface TreesViewController ()
 
@@ -28,13 +28,24 @@
     [super viewDidLoad];
     self.title = @"txtbranch";
 
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    
+    [self.refreshControl addTarget:self action:@selector(loadMainTrees)
+                  forControlEvents:UIControlEventValueChanged];
+    
+    [self.refreshControl beginRefreshing];
+    
     [self loadMainTrees];
+    
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
-
+    
 }
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
+    if (![AuthenticationManager instance].isLoggedIn) {
+        [self performSegueWithIdentifier:@"Launch" sender:self];
+    }
 }
 
 -(void)loadMainTrees{
@@ -53,6 +64,7 @@
 }
 
 -(void)listRequestFinished:(ASIHTTPRequest*)request{
+    [self.refreshControl endRefreshing];
     
     
     NSError* error = nil;
@@ -66,6 +78,7 @@
 }
 
 -(void)listRequestFailed:(ASIHTTPRequest*)sender{
+    [self.refreshControl endRefreshing];
     NSLog(@"");
 }
 
@@ -101,7 +114,9 @@
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
-    ((BranchViewController*)segue.destinationViewController).treeName = ((UITableViewCell*)sender).textLabel.text;
+    if ([segue.identifier isEqualToString:@"OpenTree"]) {
+        ((BranchViewController*)segue.destinationViewController).treeName = ((UITableViewCell*)sender).textLabel.text;
+    }
 }
 
 @end

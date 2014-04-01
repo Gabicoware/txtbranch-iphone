@@ -51,6 +51,16 @@ extern NSString* AddBranchFormTableViewCellCancelNotification;
 @property (nonatomic,weak) IBOutlet TBTextView* linkTextView;
 @property (nonatomic,weak) IBOutlet TBTextView* contentTextView;
 
+-(void)setupWithBranch:(id)branch;
+
+@end
+
+@interface BranchMetadataTableViewCell : UITableViewCell
+
+@property (nonatomic,weak) IBOutlet UIButton* deleteButton;
+@property (nonatomic,weak) IBOutlet UIButton* editButton;
+@property (nonatomic,weak) IBOutlet UIButton* bylineButton;
+
 @end
 
 

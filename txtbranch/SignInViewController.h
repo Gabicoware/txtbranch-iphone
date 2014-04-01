@@ -10,6 +10,6 @@
 
 @interface SignInViewController : UIViewController
 
-+(void)presentSignInViewControllerWithParent:(UIViewController*)parent animated:(BOOL)animated;
+@property (nonatomic, strong) NSURL* signInURL;
 
 @end

@@ -28,27 +28,12 @@
     }
 }
 
--(void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
-    if ([AuthenticationManager instance].isLoggedIn ) {
-        [self performSegueWithIdentifier:@"IsAuthenticated" sender:self];
-    }
-}
-
--(void)viewDidDisappear:(BOOL)animated{
-    if (self.navigationController.topViewController != self) {
-        NSMutableArray* array = [self.navigationController.viewControllers mutableCopy];
-        [array removeObject:self];
-        [self.navigationController setViewControllers:array animated:NO];
-    }
-}
-
 -(void)getUserInfo{
     
     NSURL* URL = [NSURL tbURLWithPath:@"/api/v1/userinfos?set_cookie=1"];
     
     [self setRequest:[ASIHTTPRequest requestWithURL:URL]];
-    [_request setTimeOutSeconds:20];
+    [_request setTimeOutSeconds:3];
     
     [_request setDelegate:self];
     [_request setDidFailSelector:@selector(userinfoRequestFailed:)];
@@ -65,14 +50,14 @@
                                                 options:0
                                                   error:&error];
     if ([result[@"status"] isEqualToString:@"OK"]) {
-        [self performSegueWithIdentifier:@"IsAuthenticated" sender:self];
+        [self.navigationController dismissViewControllerAnimated:YES completion:NULL];
     }else{
-        [SignInViewController presentSignInViewControllerWithParent:self animated:YES];
+        [self performSegueWithIdentifier:@"Login" sender:self];
     }
 }
 
 -(void)userinfoRequestFailed:(ASIHTTPRequest*)request{
-    [SignInViewController presentSignInViewControllerWithParent:self animated:YES];
+    [self performSegueWithIdentifier:@"Login" sender:self];
 }
 
 @end

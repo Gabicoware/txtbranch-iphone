@@ -55,8 +55,10 @@
 		777AD1C418C5FB4E00DC5E9F /* UsernameViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 777AD1C318C5FB4E00DC5E9F /* UsernameViewController.xib */; };
 		777AD1C718C6BF6C00DC5E9F /* NSURL+txtbranch.m in Sources */ = {isa = PBXBuildFile; fileRef = 777AD1C618C6BF6C00DC5E9F /* NSURL+txtbranch.m */; };
 		777AD1CB18C6CAC400DC5E9F /* UsernameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 777AD1CA18C6CAC400DC5E9F /* UsernameViewController.m */; };
-		777AD1CD18C6CB3D00DC5E9F /* SignInViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 777AD1CC18C6CB3D00DC5E9F /* SignInViewController.xib */; };
+		777F673318E515F8004093A8 /* UIView+Ext.m in Sources */ = {isa = PBXBuildFile; fileRef = 777F673218E515F8004093A8 /* UIView+Ext.m */; };
 		7783350718C81DA0008375A6 /* TreesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7783350618C81DA0008375A6 /* TreesViewController.m */; };
+		77ACC40218C9EC6900CE03CA /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 77ACC40118C9EC6900CE03CA /* KeychainItemWrapper.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		77ACC40818CA4B5D00CE03CA /* LoginTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 77ACC40718CA4B5D00CE03CA /* LoginTableViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -159,9 +161,14 @@
 		777AD1C618C6BF6C00DC5E9F /* NSURL+txtbranch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+txtbranch.m"; sourceTree = "<group>"; };
 		777AD1C918C6CAC400DC5E9F /* UsernameViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UsernameViewController.h; sourceTree = "<group>"; };
 		777AD1CA18C6CAC400DC5E9F /* UsernameViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UsernameViewController.m; sourceTree = "<group>"; };
-		777AD1CC18C6CB3D00DC5E9F /* SignInViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SignInViewController.xib; sourceTree = "<group>"; };
+		777F673118E515F8004093A8 /* UIView+Ext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Ext.h"; sourceTree = "<group>"; };
+		777F673218E515F8004093A8 /* UIView+Ext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Ext.m"; sourceTree = "<group>"; };
 		7783350518C81DA0008375A6 /* TreesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TreesViewController.h; sourceTree = "<group>"; };
 		7783350618C81DA0008375A6 /* TreesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TreesViewController.m; sourceTree = "<group>"; };
+		77ACC40018C9EC6900CE03CA /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
+		77ACC40118C9EC6900CE03CA /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
+		77ACC40618CA4B5D00CE03CA /* LoginTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginTableViewController.h; sourceTree = "<group>"; };
+		77ACC40718CA4B5D00CE03CA /* LoginTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginTableViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -193,6 +200,8 @@
 		7765599C18C8A0FD00B9195C /* Branch View */ = {
 			isa = PBXGroup;
 			children = (
+				7783350518C81DA0008375A6 /* TreesViewController.h */,
+				7783350618C81DA0008375A6 /* TreesViewController.m */,
 				777AD10B18C13EFE00DC5E9F /* BranchViewController.h */,
 				777AD10C18C13EFE00DC5E9F /* BranchViewController.m */,
 				777AD1AF18C180C700DC5E9F /* BranchTableController.h */,
@@ -243,16 +252,12 @@
 			children = (
 				777AD10518C13EFE00DC5E9F /* AppDelegate.h */,
 				777AD10618C13EFE00DC5E9F /* AppDelegate.m */,
-				7765599D18C9682600B9195C /* AuthenticationManager.h */,
-				7765599E18C9682600B9195C /* AuthenticationManager.m */,
 				777AD1C518C6BF6C00DC5E9F /* NSURL+txtbranch.h */,
 				777AD1C618C6BF6C00DC5E9F /* NSURL+txtbranch.m */,
+				777F673118E515F8004093A8 /* UIView+Ext.h */,
+				777F673218E515F8004093A8 /* UIView+Ext.m */,
 				777AD10818C13EFE00DC5E9F /* Main.storyboard */,
-				7783350518C81DA0008375A6 /* TreesViewController.h */,
-				7783350618C81DA0008375A6 /* TreesViewController.m */,
 				7765599C18C8A0FD00B9195C /* Branch View */,
-				7765599918C8A06F00B9195C /* LaunchViewController.h */,
-				7765599A18C8A06F00B9195C /* LaunchViewController.m */,
 				777AD1C818C6CAA500DC5E9F /* SignIn */,
 				777AD10E18C13EFE00DC5E9F /* Images.xcassets */,
 				777AD0FD18C13EFE00DC5E9F /* Supporting Files */,
@@ -401,9 +406,16 @@
 		777AD1C818C6CAA500DC5E9F /* SignIn */ = {
 			isa = PBXGroup;
 			children = (
+				7765599918C8A06F00B9195C /* LaunchViewController.h */,
+				7765599A18C8A06F00B9195C /* LaunchViewController.m */,
+				77ACC40618CA4B5D00CE03CA /* LoginTableViewController.h */,
+				77ACC40718CA4B5D00CE03CA /* LoginTableViewController.m */,
+				7765599D18C9682600B9195C /* AuthenticationManager.h */,
+				7765599E18C9682600B9195C /* AuthenticationManager.m */,
+				77ACC40018C9EC6900CE03CA /* KeychainItemWrapper.h */,
+				77ACC40118C9EC6900CE03CA /* KeychainItemWrapper.m */,
 				777AD1C018C5F81800DC5E9F /* SignInViewController.h */,
 				777AD1C118C5F81800DC5E9F /* SignInViewController.m */,
-				777AD1CC18C6CB3D00DC5E9F /* SignInViewController.xib */,
 				777AD1C918C6CAC400DC5E9F /* UsernameViewController.h */,
 				777AD1CA18C6CAC400DC5E9F /* UsernameViewController.m */,
 				777AD1C318C5FB4E00DC5E9F /* UsernameViewController.xib */,
@@ -487,7 +499,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				777AD1CD18C6CB3D00DC5E9F /* SignInViewController.xib in Resources */,
 				777AD10F18C13EFE00DC5E9F /* Images.xcassets in Resources */,
 				777AD10118C13EFE00DC5E9F /* InfoPlist.strings in Resources */,
 				777AD1C418C5FB4E00DC5E9F /* UsernameViewController.xib in Resources */,
@@ -515,9 +526,11 @@
 				777AD19918C16C3100DC5E9F /* ASIS3ServiceRequest.m in Sources */,
 				777AD18918C16C3100DC5E9F /* ASIHTTPRequest.m in Sources */,
 				777AD1BC18C57D0200DC5E9F /* TBTextView.m in Sources */,
+				77ACC40818CA4B5D00CE03CA /* LoginTableViewController.m in Sources */,
 				7765599B18C8A06F00B9195C /* LaunchViewController.m in Sources */,
 				777AD19718C16C3100DC5E9F /* ASIS3ObjectRequest.m in Sources */,
 				777AD18418C16C3100DC5E9F /* ASIAuthenticationDialog.m in Sources */,
+				77ACC40218C9EC6900CE03CA /* KeychainItemWrapper.m in Sources */,
 				7783350718C81DA0008375A6 /* TreesViewController.m in Sources */,
 				777AD19818C16C3100DC5E9F /* ASIS3Request.m in Sources */,
 				7765599F18C9682600B9195C /* AuthenticationManager.m in Sources */,
@@ -544,6 +557,7 @@
 				777AD19118C16C3100DC5E9F /* ASICloudFilesObject.m in Sources */,
 				777AD18718C16C3100DC5E9F /* ASIDownloadCache.m in Sources */,
 				777AD1C718C6BF6C00DC5E9F /* NSURL+txtbranch.m in Sources */,
+				777F673318E515F8004093A8 /* UIView+Ext.m in Sources */,
 				777AD1AA18C16C3100DC5E9F /* Reachability.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

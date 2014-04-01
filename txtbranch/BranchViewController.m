@@ -122,6 +122,50 @@
     [self loadChildBranches:branchKey];
 }
 
+-(void)tableController:(BranchTableController*)controller editBranch:(NSDictionary*)branch{
+    
+    ASIFormDataRequest* request = [[ASIFormDataRequest alloc] initWithURL:[NSURL tbURLWithPath:@"/api/v1/branchs"]];
+    
+	[self setRequest:request];
+    
+    [request addPostValue:branch[@"link"] forKey:@"link"];
+    [request addPostValue:branch[@"content"] forKey:@"content"];
+    [request addPostValue:branch[@"key"] forKey:@"branch_key"];
+    
+    
+	[_request setTimeOutSeconds:20];
+    
+	[_request setDelegate:self];
+	[_request setDidFailSelector:@selector(addBranchRequestFailed:)];
+	[_request setDidFinishSelector:@selector(addBranchRequestFinished:)];
+	
+    _request.requestMethod = @"PUT";
+    
+	[_request startAsynchronous];
+    
+}
+
+
+-(void)tableController:(BranchTableController*)controller deleteBranch:(NSDictionary*)branch{
+    
+    NSString* path = [NSString stringWithFormat:@"/api/v1/branchs?branch_key=%@",branch[@"key"]];
+    
+    ASIHTTPRequest* request = [[ASIHTTPRequest alloc] initWithURL:[NSURL tbURLWithPath:path]];
+    
+	[self setRequest:request];
+        
+	[_request setTimeOutSeconds:20];
+    
+	[_request setDelegate:self];
+	[_request setDidFailSelector:@selector(deleteBranchRequestFailed:)];
+	[_request setDidFinishSelector:@selector(deleteBranchRequestFinished:)];
+	
+    _request.requestMethod = @"DELETE";
+    
+	[_request startAsynchronous];
+    
+}
+
 -(void)tableController:(BranchTableController*)controller addBranch:(NSDictionary*)branch{
     
     ASIFormDataRequest* request = [[ASIFormDataRequest alloc] initWithURL:[NSURL tbURLWithPath:@"/api/v1/branchs"]];
@@ -152,10 +196,20 @@
     id result = [NSJSONSerialization JSONObjectWithData:[request responseData]
                                                 options:0
                                                   error:&error];
-    if (![result[@"status"] isEqualToString:@"ERROR"]) {
+    if (result != nil && ![result[@"status"] isEqualToString:@"ERROR"]) {
         [self.tableController addBranches:@[result[@"result"]]];
     }
 }
+
+-(void)deleteBranchRequestFailed:(ASIHTTPRequest*)request{
+}
+
+-(void)deleteBranchRequestFinished:(ASIHTTPRequest*)request{
+    
+    [self tableController:self.tableController didOpenBranchKey:self.tableController.currentBranchKey];
+    
+}
+
 
 -(AddBranchStatus)tableController:(BranchTableController*)controller statusForBranchKey:(NSString*)branchKey{
     return AddBranchStatusAllowed;
