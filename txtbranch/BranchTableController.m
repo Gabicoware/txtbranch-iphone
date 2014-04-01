@@ -51,7 +51,7 @@ NS_ENUM(NSInteger, BranchTableSection){
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleBranchFormCancel:) name:AddBranchFormTableViewCellCancelNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleBranchFormSave:) name:AddBranchFormTableViewCellSaveNotification object:nil];
         
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleKeyboardNotification:) name:UIKeyboardWillShowNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleKeyboardNotification:) name:UIKeyboardDidShowNotification object:nil];
     }
     return self;
 }
@@ -406,11 +406,14 @@ NS_ENUM(NSInteger, BranchTableSection){
     
     CGPoint point = [self.tableView convertPoint:selectionCenterPoint fromView:textView];
     
-    CGPoint offsetPoint = CGPointZero;
-    offsetPoint.y = point.y - 120.0;
     
-    
-    [self.tableView setContentOffset:offsetPoint animated:YES];
+    if (!CGRectContainsPoint( CGRectInset( self.tableView.bounds, 0, 30) , point )) {
+        
+        CGPoint offsetPoint = CGPointZero;
+        offsetPoint.y = point.y - self.tableView.bounds.size.height*0.66666;
+        
+        [self.tableView setContentOffset:offsetPoint animated:YES];
+    }
     
 }
 
