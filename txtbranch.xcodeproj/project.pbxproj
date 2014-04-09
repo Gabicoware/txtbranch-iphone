@@ -321,8 +321,7 @@
 				777AD14318C16C3100DC5E9F /* CloudFiles */,
 				777AD15218C16C3100DC5E9F /* S3 */,
 			);
-			name = Classes;
-			path = "asi-http-request/Classes";
+			path = Classes;
 			sourceTree = "<group>";
 		};
 		777AD14018C16C3100DC5E9F /* ASIWebPageRequest */ = {
@@ -380,8 +379,7 @@
 			children = (
 				777AD18118C16C3100DC5E9F /* Reachability */,
 			);
-			name = External;
-			path = "asi-http-request/External";
+			path = External;
 			sourceTree = "<group>";
 		};
 		777AD18118C16C3100DC5E9F /* Reachability */ = {
@@ -400,7 +398,7 @@
 				777AD17E18C16C3100DC5E9F /* External */,
 			);
 			name = "asi-http-request";
-			path = txtbranch;
+			path = "lib/asi-http-request";
 			sourceTree = "<group>";
 		};
 		777AD1C818C6CAA500DC5E9F /* SignIn */ = {
