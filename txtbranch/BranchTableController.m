@@ -10,11 +10,14 @@
 #import "BranchTableViewCell.h"
 #import "TBTextView.h"
 #import "AuthenticationManager.h"
+#import "NSDictionary+QueryString.h"
+#import "NotificationsTableViewController.h"
 
 //AboutHiddenTableViewCell
 
 NS_ENUM(NSInteger, BranchTableSection){
     BranchTableSectionAbout,
+    BranchTableSectionLoadParent,
     BranchTableSectionBranches,
     BranchTableSectionLinks,
     BranchTableSectionAddBranch,
@@ -22,9 +25,13 @@ NS_ENUM(NSInteger, BranchTableSection){
     BranchTableSectionTotal
 };
 
-@interface BranchTableController()<UITableViewDataSource,UITableViewDelegate>{
+#define IsNotNull(object) (![[NSNull null] isEqual:object] && object != nil)
+
+@interface BranchTableController()<UITableViewDataSource,UITableViewDelegate,TTTAttributedLabelDelegate>{
     NSDictionary* _branch;
 }
+
+@property (nonatomic, assign) BOOL needsParentBranch;
 
 @end
 
@@ -79,6 +86,19 @@ NS_ENUM(NSInteger, BranchTableSection){
             isNotLink = YES;
         }
     }
+    NSString* parentBranch = _branches[_branchKeys.firstObject][@"parent_branch"];
+    if (!IsNotNull(parentBranch)) {
+        self.needsParentBranch = NO;
+    }else{
+        self.needsParentBranch = ![_branchKeys containsObject:parentBranch];
+        if (self.needsParentBranch && _branches[parentBranch] == nil) {
+            [self.delegate tableController:self needsBranchKey:parentBranch];
+        }else if ([keys containsObject:parentBranch]) {
+            [reloadedArray addObject:[NSIndexPath indexPathForRow:0 inSection:BranchTableSectionLoadParent]];
+        }
+
+    }
+    
     [reloadedArray addObject:[NSIndexPath indexPathForRow:_branchKeys.count inSection:BranchTableSectionBranches]];
     
     if(!isNotLink){
@@ -99,9 +119,23 @@ NS_ENUM(NSInteger, BranchTableSection){
 
 }
 
+-(void)setNeedsParentBranch:(BOOL)needsParentBranch{
+    if (needsParentBranch != _needsParentBranch) {
+        _needsParentBranch = needsParentBranch;
+        NSIndexPath* indexPath = [NSIndexPath indexPathForRow:0 inSection:BranchTableSectionLoadParent];
+        if (needsParentBranch) {
+            [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        }else{
+            [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        }
+    }
+}
+
 -(void)setTree:(NSDictionary *)tree{
     _tree = tree;
-    _currentBranchKey = tree[@"root_branch_key"];
+    if (self.currentBranchKey == nil) {
+        _currentBranchKey = tree[@"root_branch_key"];
+    }
     _branchKeys = [@[_currentBranchKey] mutableCopy];
     [self.tableView reloadData];
     [self.delegate tableController:self didOpenBranchKey:_currentBranchKey];
@@ -116,6 +150,9 @@ NS_ENUM(NSInteger, BranchTableSection){
     switch (section) {
         case BranchTableSectionAbout:
             result = 1;
+            break;
+        case BranchTableSectionLoadParent:
+            result = self.needsParentBranch ? 1 : 0;
             break;
         case BranchTableSectionBranches:
             result = [_branchKeys count] + 1;
@@ -151,6 +188,17 @@ NS_ENUM(NSInteger, BranchTableSection){
             headerCell.isAboutHidden = _isAboutHidden;
             break;
         }
+        case BranchTableSectionLoadParent:{
+            
+            NSString* parentBranch = _branches[_branchKeys.firstObject][@"parent_branch"];
+            NSDictionary* branchData = _branches[parentBranch];
+            if (branchData == nil) {
+                cell.textLabel.text = [NSString stringWithFormat:@"↑ Load Parent"];
+            }else{
+                cell.textLabel.text = [NSString stringWithFormat:@"↑ %@",branchData[@"link"]];
+            }
+            break;
+        }
         case BranchTableSectionBranches:{
             
             if (indexPath.row < _branchKeys.count) {
@@ -166,24 +214,45 @@ NS_ENUM(NSInteger, BranchTableSection){
                 }
             }else{
                 BranchMetadataTableViewCell* metadataCell = (id)cell;
+                metadataCell.bylineLabel.delegate = self;
+                metadataCell.editButton.delegate = self;
+                metadataCell.deleteButton.delegate = self;
                 id branch = _branches[ _branchKeys.lastObject];
-                NSString* bylineString = [NSString stringWithFormat:@"by %@",branch[@"authorname"]];
-                [metadataCell.bylineButton setTitle:bylineString forState:UIControlStateNormal];
+                
+                if (branch == nil) {
+                    metadataCell.bylineLabel.text = @"";
+                }else{
+                    
+                    
+                    NSDictionary* normalAttributes = @{NSFontAttributeName:[UIFont fontWithName:@"HelveticaNeue-LightItalic" size:15],
+                                                       NSForegroundColorAttributeName:[UIColor darkGrayColor]};
+                    
+                    NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:@"" attributes:normalAttributes];
+                    [string appendAttributedString:[[NSAttributedString alloc] initWithString:@"by " attributes:normalAttributes]];
+                    
+                    
+                    NSDictionary* params = @{@"itemType": @"username",
+                                             @"username": branch[@"authorname"]};
+                    NSString* queryString = [params queryStringValue];
+                    NSDictionary* linkAttributes = [self linkAttributesWithURLString:[NSString stringWithFormat:@"txtbranch://?%@",queryString]];
+                    
+                    [string appendAttributedString:[[NSAttributedString alloc] initWithString:branch[@"authorname"] attributes:linkAttributes]];
+                    metadataCell.bylineLabel.text = [string copy];
+                }
+                
                 
                 NSString* username = [AuthenticationManager instance].username;
                 
                 BOOL canEdit = [username isEqualToString:branch[@"authorname"]] || [username isEqualToString:self.tree[@"moderatorname"]];
                 
                 metadataCell.editButton.hidden = !canEdit;
+                NSDictionary* editLinkAttributes = [self linkAttributesWithURLString:@"txtbranch://?itemType=edit"];
+                metadataCell.editButton.text = [[NSAttributedString alloc] initWithString:@"edit" attributes:editLinkAttributes];
                 
                 BOOL canDelete = canEdit && _childBranchKeys != nil && _childBranchKeys.count == 0;
                 metadataCell.deleteButton.hidden = !canDelete;
-                
-                [metadataCell.editButton removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents];
-                [metadataCell.editButton addTarget:self action:@selector(didTapEditButton:) forControlEvents:UIControlEventTouchUpInside];
-                [metadataCell.deleteButton removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents];
-                [metadataCell.deleteButton addTarget:self action:@selector(didTapDeleteButton:) forControlEvents:UIControlEventTouchUpInside];
-                
+                NSDictionary* deleteLinkAttributes = [self linkAttributesWithURLString:@"txtbranch://itemType=delete"];
+                metadataCell.deleteButton.text = [[NSAttributedString alloc] initWithString:@"delete" attributes:deleteLinkAttributes];
             }
             break;
         }
@@ -196,12 +265,12 @@ NS_ENUM(NSInteger, BranchTableSection){
     }
 }
 
--(void)didTapEditButton:(id)sender{
-    [self setIsEditing:YES];
-}
-
--(void)didTapDeleteButton:(id)sender{
-    [[[UIAlertView alloc] initWithTitle:@"Are you sure?" message:@"Are you sure you want to delete this branch?" delegate:self cancelButtonTitle:@"Keep it" otherButtonTitles:@"Delete it", nil] show];
+-(NSDictionary*)linkAttributesWithURLString:(NSString*)URLString{
+    NSURL* URL = [NSURL URLWithString:URLString];
+    NSDictionary* editLinkAttributes = @{NSFontAttributeName:[UIFont fontWithName:@"HelveticaNeue-Italic" size:15],
+                                         NSLinkAttributeName:URL,
+                                         NSForegroundColorAttributeName:[UIColor darkGrayColor]};
+    return editLinkAttributes;
 }
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex{
@@ -231,6 +300,9 @@ NS_ENUM(NSInteger, BranchTableSection){
         case BranchTableSectionAbout:
             return @"AboutTableViewCell";
             break;
+        case BranchTableSectionLoadParent:
+            return @"LoadParentTableViewCell";
+            break;
         case BranchTableSectionBranches:
             if (indexPath.row < _branchKeys.count) {
                 
@@ -259,8 +331,35 @@ NS_ENUM(NSInteger, BranchTableSection){
     return nil;
 }
 
+-(NSIndexPath*)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    if ( indexPath.section == BranchTableSectionBranches && _branchKeys.count <= indexPath.row ) {
+        return nil;
+    }
+    return indexPath;
+}
+
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    if (indexPath.section == BranchTableSectionAbout) {
+    if (indexPath.section == BranchTableSectionLoadParent) {
+        
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        
+        NSString* parentBranch = _branches[_branchKeys.firstObject][@"parent_branch"];
+        
+        if (IsNotNull(parentBranch)) {
+            [self.delegate tableController:self didOpenBranchKey:parentBranch];
+            [_branchKeys insertObject:parentBranch atIndex:0];
+            [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:BranchTableSectionBranches]] withRowAnimation:UITableViewRowAnimationFade];
+            
+            NSString* nextParentBranch = _branches[parentBranch][@"parent_branch"];
+            
+            self.needsParentBranch = IsNotNull(nextParentBranch);
+            if (self.needsParentBranch) {
+                [self.delegate tableController:self needsBranchKey:parentBranch];
+            }
+            
+        }
+        
+    }else if (indexPath.section == BranchTableSectionAbout) {
         _isAboutHidden = !_isAboutHidden;
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
         //update the current cell
@@ -416,5 +515,34 @@ NS_ENUM(NSInteger, BranchTableSection){
     }
     
 }
+
+#pragma mark TTTAttributedLabelDelegate methods
+
+- (void)attributedLabel:(TTTAttributedLabel *)label
+   didSelectLinkWithURL:(NSURL *)url{
+    
+    NSDictionary* queryParams = [NSDictionary dictionaryWithQueryString:[url query]];
+    
+    if([queryParams[@"itemType"] isEqualToString:@"delete"]){
+        [[[UIAlertView alloc] initWithTitle:@"Are you sure?" message:@"Are you sure you want to delete this branch?" delegate:self cancelButtonTitle:@"Keep it" otherButtonTitles:@"Delete it", nil] show];
+    }else if([queryParams[@"itemType"] isEqualToString:@"edit"]){
+        [self setIsEditing:YES];
+    }else if([queryParams[@"itemType"] isEqualToString:@"username"]){
+        
+        NSString* authorname = _branches[_currentBranchKey][@"authorname"];
+        
+        NSDictionary* query = @{@"from_username":authorname};
+        
+        UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        
+        NotificationsTableViewController* controller = [storyboard instantiateViewControllerWithIdentifier:@"NotificationsTableViewController"];
+        controller.title = authorname;
+        controller.query = query;
+        [((UIViewController*)self.delegate).navigationController pushViewController:controller animated:YES];
+        
+    }
+    
+}
+
 
 @end

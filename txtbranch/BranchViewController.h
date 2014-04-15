@@ -10,6 +10,6 @@
 
 @interface BranchViewController : UIViewController
 
-@property (nonatomic,retain) NSString* treeName;
+@property (nonatomic,retain) NSDictionary* query;
 
 @end

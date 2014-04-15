@@ -20,7 +20,9 @@
 
 @end
 
-@implementation BranchViewController
+@implementation BranchViewController{
+    NSString* _branchKey;
+}
 
 -(void)awakeFromNib{
     [super awakeFromNib];
@@ -33,6 +35,11 @@
 
     self.tableController = [[BranchTableController alloc] initWithTableView:self.tableView];
     self.tableController.delegate = self;
+    
+    if (self.query[@"branch"]) {
+        self.tableController.currentBranchKey = self.query[@"branch"];
+    }
+
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -40,10 +47,19 @@
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
 }
 
--(void)setTreeName:(NSString *)treeName{
-    _treeName = treeName;
+-(void)setQuery:(NSDictionary *)query{
+    _query = query;
+    
+    NSAssert(query[@"tree_name"] != nil, @"tree_name key should be not nil in query");
+    
+    NSString* treeName = query[@"tree_name"];
     [self loadTree:treeName];
     self.title = treeName;
+    
+    if (query[@"branch"]) {
+        self.tableController.currentBranchKey = query[@"branch"];
+        [self loadBranches:@[query[@"branch"]]];
+    }
 }
 
 -(void)loadTree:(NSString*)name{
@@ -74,7 +90,9 @@
     if ([result[@"status"] isEqualToString:@"OK"]) {
         self.tableController.tree = result[@"result"];
         
-        [self loadBranches:@[result[@"result"][@"root_branch_key"]]];
+        if (self.query[@"branch"] == nil) {
+            [self loadBranches:@[result[@"result"][@"root_branch_key"]]];
+        }
     }
     
 }
@@ -116,6 +134,10 @@
                                                 options:0
                                                   error:&error];
     [self.tableController addBranches:result[@"result"]];
+}
+
+-(void)tableController:(BranchTableController*)controller needsBranchKey:(NSString*)branchKey{
+    [self loadBranches:@[branchKey]];
 }
 
 -(void)tableController:(BranchTableController*)controller didOpenBranchKey:(NSString*)branchKey{

@@ -19,6 +19,7 @@ typedef enum{
 @protocol BranchTableControllerDelegate <NSObject>
 
 -(void)tableController:(BranchTableController*)controller didOpenBranchKey:(NSString*)branchKey;
+-(void)tableController:(BranchTableController*)controller needsBranchKey:(NSString*)branchKey;
 
 -(void)tableController:(BranchTableController*)controller addBranch:(NSDictionary*)branch;
 -(void)tableController:(BranchTableController*)controller editBranch:(NSDictionary*)branch;
@@ -36,7 +37,7 @@ typedef enum{
 
 @property (nonatomic,weak) id<BranchTableControllerDelegate> delegate;
 
-@property (nonatomic, readonly) NSString* currentBranchKey;
+@property (nonatomic, strong) NSString* currentBranchKey;
 
 -(instancetype)initWithTableView:(UITableView*)tableView;
 

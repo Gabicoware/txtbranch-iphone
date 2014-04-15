@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "TBTextView.h"
+#import "TTTAttributedLabel.h"
 
 @interface BranchTableViewCell : UITableViewCell
 
@@ -57,9 +58,9 @@ extern NSString* AddBranchFormTableViewCellCancelNotification;
 
 @interface BranchMetadataTableViewCell : UITableViewCell
 
-@property (nonatomic,weak) IBOutlet UIButton* deleteButton;
-@property (nonatomic,weak) IBOutlet UIButton* editButton;
-@property (nonatomic,weak) IBOutlet UIButton* bylineButton;
+@property (nonatomic,weak) IBOutlet TTTAttributedLabel* deleteButton;
+@property (nonatomic,weak) IBOutlet TTTAttributedLabel* editButton;
+@property (nonatomic,weak) IBOutlet TTTAttributedLabel* bylineLabel;
 
 @end
 

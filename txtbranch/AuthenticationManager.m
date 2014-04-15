@@ -8,7 +8,6 @@
 
 #import "AuthenticationManager.h"
 #import "NSURL+txtbranch.h"
-#import "KeychainItemWrapper.h"
 
 #if DEBUG
 
@@ -38,13 +37,11 @@
         
         NSArray* cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:[NSURL tbURL]];
         
-        BOOL hasUserName = NO;
         BOOL hasOAuth = NO;
         NSString* username = nil;
         
         for (NSHTTPCookie* cookie in cookies) {
             if ([[cookie name] isEqualToString:@"username"]) {
-                hasUserName = YES;
                 username = [cookie value];
             }
 #if LOCAL
@@ -59,27 +56,8 @@
             }
         }
         
-        if (!hasOAuth && username != nil) {
-            _username = username;
-            KeychainItemWrapper* item = [[KeychainItemWrapper alloc] initWithService:@"authCookie"
-                                                                             account:username
-                                                                         accessGroup:AccessGroup];
-            NSData* data = [item objectForKey:(__bridge id)kSecValueData];
-            
-            if (data != nil) {
-                NSDictionary* authCookie = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
-                if (authCookie != nil) {
-                    NSHTTPCookie* cookie = [NSHTTPCookie cookieWithProperties:authCookie];
-                    
-                    [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:cookie];
-                    hasOAuth = YES;
-                }
-            }
-            
-        }
-        
-        
-        _isLoggedIn = hasUserName && hasOAuth;
+        _isLoggedIn = hasOAuth && username != nil;
+        _username = username;
         
         
     }
@@ -87,11 +65,9 @@
 }
 
 -(void)setIsLoggedIn:(BOOL)isLoggedIn{
-    _isLoggedIn = YES;
+    _isLoggedIn = isLoggedIn;
     
     NSArray* cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:[NSURL tbURL]];
-    
-    BOOL hasUserName = NO;
     
     NSString* username = nil;
     
@@ -100,7 +76,6 @@
     for (NSHTTPCookie* cookie in cookies) {
         
         if ([[cookie name] isEqualToString:@"username"]) {
-            hasUserName = YES;
             username = [cookie value];
         }
 #if LOCAL
@@ -115,14 +90,7 @@
         }
     }
     
-    if (authCookie != nil) {
-        _username = username;
-        KeychainItemWrapper* item = [[KeychainItemWrapper alloc] initWithService:@"authCookie"
-                                                                         account:username
-                                                                     accessGroup:AccessGroup];
-        NSData* data = [NSJSONSerialization dataWithJSONObject:authCookie options:0 error:NULL];
-        [item setObject:data forKey:(__bridge id)kSecValueData];
-    }
+    _username = username;
     
 }
 

@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		77288B0B18F4A0B500B97131 /* NotificationsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 77288B0A18F4A0B500B97131 /* NotificationsTableViewController.m */; };
+		77288B1318F638E100B97131 /* NSDictionary+QueryString.m in Sources */ = {isa = PBXBuildFile; fileRef = 77288B1218F638E100B97131 /* NSDictionary+QueryString.m */; };
+		77288B1618F63A5200B97131 /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 77288B1518F63A5200B97131 /* NSString+URLEncoding.m */; };
+		77288B2B18F899DE00B97131 /* TTTAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 77288B2A18F899DE00B97131 /* TTTAttributedLabel.m */; };
 		7765599B18C8A06F00B9195C /* LaunchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7765599A18C8A06F00B9195C /* LaunchViewController.m */; };
 		7765599F18C9682600B9195C /* AuthenticationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7765599E18C9682600B9195C /* AuthenticationManager.m */; };
 		777AD0F718C13EFE00DC5E9F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 777AD0F618C13EFE00DC5E9F /* Foundation.framework */; };
@@ -72,6 +76,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		77288B0918F4A0B500B97131 /* NotificationsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationsTableViewController.h; sourceTree = "<group>"; };
+		77288B0A18F4A0B500B97131 /* NotificationsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsTableViewController.m; sourceTree = "<group>"; };
+		77288B1118F638E100B97131 /* NSDictionary+QueryString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+QueryString.h"; sourceTree = "<group>"; };
+		77288B1218F638E100B97131 /* NSDictionary+QueryString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+QueryString.m"; sourceTree = "<group>"; };
+		77288B1418F63A5200B97131 /* NSString+URLEncoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+URLEncoding.h"; sourceTree = "<group>"; };
+		77288B1518F63A5200B97131 /* NSString+URLEncoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+URLEncoding.m"; sourceTree = "<group>"; };
+		77288B2918F899DE00B97131 /* TTTAttributedLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTAttributedLabel.h; sourceTree = "<group>"; };
+		77288B2A18F899DE00B97131 /* TTTAttributedLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTAttributedLabel.m; sourceTree = "<group>"; };
 		7765599918C8A06F00B9195C /* LaunchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LaunchViewController.h; sourceTree = "<group>"; };
 		7765599A18C8A06F00B9195C /* LaunchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LaunchViewController.m; sourceTree = "<group>"; };
 		7765599D18C9682600B9195C /* AuthenticationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthenticationManager.h; sourceTree = "<group>"; };
@@ -197,6 +209,37 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		77288B0818F4A09600B97131 /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				77288B0918F4A0B500B97131 /* NotificationsTableViewController.h */,
+				77288B0A18F4A0B500B97131 /* NotificationsTableViewController.m */,
+			);
+			name = Notifications;
+			sourceTree = "<group>";
+		};
+		77288B1018F638E100B97131 /* singly */ = {
+			isa = PBXGroup;
+			children = (
+				77288B1118F638E100B97131 /* NSDictionary+QueryString.h */,
+				77288B1218F638E100B97131 /* NSDictionary+QueryString.m */,
+				77288B1418F63A5200B97131 /* NSString+URLEncoding.h */,
+				77288B1518F63A5200B97131 /* NSString+URLEncoding.m */,
+			);
+			name = singly;
+			path = lib/singly;
+			sourceTree = "<group>";
+		};
+		77288B2818F899DE00B97131 /* TTTAttributedLabel */ = {
+			isa = PBXGroup;
+			children = (
+				77288B2918F899DE00B97131 /* TTTAttributedLabel.h */,
+				77288B2A18F899DE00B97131 /* TTTAttributedLabel.m */,
+			);
+			name = TTTAttributedLabel;
+			path = lib/TTTAttributedLabel;
+			sourceTree = "<group>";
+		};
 		7765599C18C8A0FD00B9195C /* Branch View */ = {
 			isa = PBXGroup;
 			children = (
@@ -236,7 +279,9 @@
 		777AD0F518C13EFE00DC5E9F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				77288B2818F899DE00B97131 /* TTTAttributedLabel */,
 				777AD1B218C1829700DC5E9F /* asi-http-request */,
+				77288B1018F638E100B97131 /* singly */,
 				777AD1AD18C1707200DC5E9F /* libz.dylib */,
 				777AD1AB18C16EEC00DC5E9F /* libxml2.dylib */,
 				777AD0F618C13EFE00DC5E9F /* Foundation.framework */,
@@ -259,6 +304,7 @@
 				777AD10818C13EFE00DC5E9F /* Main.storyboard */,
 				7765599C18C8A0FD00B9195C /* Branch View */,
 				777AD1C818C6CAA500DC5E9F /* SignIn */,
+				77288B0818F4A09600B97131 /* Notifications */,
 				777AD10E18C13EFE00DC5E9F /* Images.xcassets */,
 				777AD0FD18C13EFE00DC5E9F /* Supporting Files */,
 			);
@@ -523,6 +569,7 @@
 				777AD10D18C13EFE00DC5E9F /* BranchViewController.m in Sources */,
 				777AD19918C16C3100DC5E9F /* ASIS3ServiceRequest.m in Sources */,
 				777AD18918C16C3100DC5E9F /* ASIHTTPRequest.m in Sources */,
+				77288B1618F63A5200B97131 /* NSString+URLEncoding.m in Sources */,
 				777AD1BC18C57D0200DC5E9F /* TBTextView.m in Sources */,
 				77ACC40818CA4B5D00CE03CA /* LoginTableViewController.m in Sources */,
 				7765599B18C8A06F00B9195C /* LaunchViewController.m in Sources */,
@@ -531,6 +578,7 @@
 				77ACC40218C9EC6900CE03CA /* KeychainItemWrapper.m in Sources */,
 				7783350718C81DA0008375A6 /* TreesViewController.m in Sources */,
 				777AD19818C16C3100DC5E9F /* ASIS3Request.m in Sources */,
+				77288B1318F638E100B97131 /* NSDictionary+QueryString.m in Sources */,
 				7765599F18C9682600B9195C /* AuthenticationManager.m in Sources */,
 				777AD18D18C16C3100DC5E9F /* ASICloudFilesCDNRequest.m in Sources */,
 				777AD18818C16C3100DC5E9F /* ASIFormDataRequest.m in Sources */,
@@ -548,10 +596,12 @@
 				777AD19218C16C3100DC5E9F /* ASICloudFilesObjectRequest.m in Sources */,
 				777AD10318C13EFE00DC5E9F /* main.m in Sources */,
 				777AD18B18C16C3100DC5E9F /* ASINetworkQueue.m in Sources */,
+				77288B0B18F4A0B500B97131 /* NotificationsTableViewController.m in Sources */,
 				777AD19518C16C3100DC5E9F /* ASIS3BucketObject.m in Sources */,
 				777AD18618C16C3100DC5E9F /* ASIDataDecompressor.m in Sources */,
 				777AD1BF18C5819A00DC5E9F /* BranchTableViewCell.m in Sources */,
 				777AD19418C16C3100DC5E9F /* ASIS3Bucket.m in Sources */,
+				77288B2B18F899DE00B97131 /* TTTAttributedLabel.m in Sources */,
 				777AD19118C16C3100DC5E9F /* ASICloudFilesObject.m in Sources */,
 				777AD18718C16C3100DC5E9F /* ASIDownloadCache.m in Sources */,
 				777AD1C718C6BF6C00DC5E9F /* NSURL+txtbranch.m in Sources */,
