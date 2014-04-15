@@ -11,19 +11,18 @@
 @implementation BranchTableViewCell
 
 -(CGSize)sizeThatFits:(CGSize)size{
-    CGSize selfSize = self.frame.size;
+    CGSize result = self.frame.size;
     
     CGSize linkSize = [self.linkLabel sizeThatFits:self.linkLabel.frame.size];
-    CGFloat linkHeightDiff = linkSize.height - self.linkLabel.frame.size.height;
     
-    selfSize.height += linkHeightDiff;
+    if (self.isLink) {
+        result.height = linkSize.height;
+    }else{
+        CGSize contentSize = [self.contentLabel sizeThatFits:self.contentLabel.frame.size];
+        result.height = linkSize.height + contentSize.height;
+    }
     
-    CGSize contentSize = [self.contentLabel sizeThatFits:self.contentLabel.frame.size];
-    CGFloat contentHeightDiff = contentSize.height - self.contentLabel.frame.size.height;
-    
-    selfSize.height += contentHeightDiff;
-    
-    return selfSize;
+    return result;
 }
 
 -(void)layoutSubviews{
@@ -44,8 +43,15 @@
     contentRect.size.height += contentHeightDiff;
     self.contentLabel.frame = contentRect;
     
+    self.contentLabel.hidden = self.isLink;
+    
 }
 
+-(void)setIsLink:(BOOL)isLink{
+    _isLink = isLink;
+    self.contentView.clipsToBounds = YES;
+    self.contentLabel.hidden = self.isLink;
+}
 
 @end
 

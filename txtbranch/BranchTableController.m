@@ -13,6 +13,9 @@
 #import "NSDictionary+QueryString.h"
 #import "NotificationsTableViewController.h"
 
+#define IsOrRow(indexPath) (indexPath.row%2 == 1)
+#define IsLinkRow(indexPath) (indexPath.row%2 == 0)
+#define LinkRow(indexPath) (indexPath.row/2)
 //AboutHiddenTableViewCell
 
 NS_ENUM(NSInteger, BranchTableSection){
@@ -159,7 +162,7 @@ NS_ENUM(NSInteger, BranchTableSection){
             break;
         case BranchTableSectionLinks:
             if (!_isAddBranchFormShowing) {
-                result = [_childBranchKeys count];
+                result = [_childBranchKeys count] * 2;
             }
             break;
         case BranchTableSectionAddBranch:
@@ -211,6 +214,7 @@ NS_ENUM(NSInteger, BranchTableSection){
                     BranchTableViewCell* branchCell = (id)cell;
                     branchCell.linkLabel.text = branch[@"link"];
                     branchCell.contentLabel.text = branch[@"content"];
+                    branchCell.isLink = NO;
                 }
             }else{
                 BranchMetadataTableViewCell* metadataCell = (id)cell;
@@ -257,9 +261,15 @@ NS_ENUM(NSInteger, BranchTableSection){
             break;
         }
         case BranchTableSectionLinks:{
-            LinkTableViewCell* linkCell = (id)cell;
-            id branch = _branches[ _childBranchKeys[indexPath.row]];
-            linkCell.linkLabel.text = branch[@"link"];
+            
+            if (IsLinkRow(indexPath) && LinkRow(indexPath) < _childBranchKeys.count) {
+                id branch = _branches[ _childBranchKeys[LinkRow(indexPath)]];
+                BranchTableViewCell* branchCell = (id)cell;
+                branchCell.linkLabel.text = branch[@"link"];
+                branchCell.contentLabel.text = branch[@"content"];
+                branchCell.isLink = YES;
+            }
+            
             break;
         }
     }
@@ -318,7 +328,11 @@ NS_ENUM(NSInteger, BranchTableSection){
             }
             break;
         case BranchTableSectionLinks:
-            return @"LinkTableViewCell";
+            if (IsOrRow(indexPath)) {
+                return @"OrTableViewCell";
+            }else{
+                return @"BranchTableViewCell";
+            }
             break;
         case BranchTableSectionAddBranch:
             return @"AddBranchTableViewCell";
@@ -333,6 +347,12 @@ NS_ENUM(NSInteger, BranchTableSection){
 
 -(NSIndexPath*)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     if ( indexPath.section == BranchTableSectionBranches && _branchKeys.count <= indexPath.row ) {
+        return nil;
+    }else if(_isEditing && indexPath.section == BranchTableSectionBranches && _branchKeys.count - 1 == indexPath.row){
+        return nil;
+    }else if(_isAddBranchFormShowing && indexPath.section == BranchTableSectionAddBranchForm){
+        return nil;
+    }else if(indexPath.section == BranchTableSectionLinks && IsOrRow(indexPath)){
         return nil;
     }
     return indexPath;
@@ -369,19 +389,34 @@ NS_ENUM(NSInteger, BranchTableSection){
         [tableView beginUpdates];
         [tableView endUpdates];
     }else if (indexPath.section == BranchTableSectionLinks) {
-        _currentBranchKey = _childBranchKeys[indexPath.row];
+        if (IsOrRow( indexPath )) {
+            return;
+        }
+        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+        _currentBranchKey = _childBranchKeys[LinkRow(indexPath)];
+        NSIndexPath* newBranchIndexPath = [NSIndexPath indexPathForRow:[_branchKeys count] inSection:BranchTableSectionBranches];
         [_branchKeys addObject:_currentBranchKey];
-        [tableView beginUpdates];
-        NSIndexPath* indexPath = [NSIndexPath indexPathForRow:([_branchKeys count]-1) inSection:BranchTableSectionBranches];
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-        [tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-        NSIndexPath* updatedIndexPath = [NSIndexPath indexPathForRow:[_branchKeys count] inSection:BranchTableSectionBranches];
-        [tableView insertRowsAtIndexPaths:@[updatedIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-        [tableView endUpdates];
+        NSMutableArray* links = [NSMutableArray array];
+        for (int row = 0; row < _childBranchKeys.count*2; row++) {
+            if (row != indexPath.row) {
+                [links addObject:[NSIndexPath indexPathForRow:row inSection:BranchTableSectionLinks]];
+            }
+        }
         _childBranchKeys = nil;
+        
+        BranchTableViewCell* cell = (BranchTableViewCell*)[self.tableView cellForRowAtIndexPath:indexPath];
+        cell.isLink = NO;
+        [tableView beginUpdates];
+        [self.tableView moveRowAtIndexPath:indexPath toIndexPath:newBranchIndexPath];
+        [self.tableView deleteRowsAtIndexPaths:links withRowAnimation:UITableViewRowAnimationFade];
+        [tableView endUpdates];
         [self.delegate tableController:self didOpenBranchKey:_currentBranchKey];
-        [tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
+        //[tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
     }else if (indexPath.section == BranchTableSectionBranches) {
+        if ([_currentBranchKey isEqualToString: _branchKeys[indexPath.row]]) {
+            [self.delegate tableController:self didOpenBranchKey:_currentBranchKey];
+            return;
+        }
         _currentBranchKey = _branchKeys[indexPath.row];
         NSRange range = NSMakeRange(indexPath.row+1, _branchKeys.count - indexPath.row-1);
         NSMutableArray* indexes = [@[] mutableCopy];

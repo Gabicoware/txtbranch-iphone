@@ -12,6 +12,8 @@
 
 @interface BranchTableViewCell : UITableViewCell
 
+@property (nonatomic,assign) BOOL isLink;
+
 @property (nonatomic,strong) IBOutlet UILabel* linkLabel;
 @property (nonatomic,strong) IBOutlet UILabel* contentLabel;
 
