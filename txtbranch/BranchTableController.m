@@ -210,6 +210,8 @@ NS_ENUM(NSInteger, BranchTableSection){
                 if (_isEditing && [branchKey isEqualToString:_currentBranchKey]) {
                     AddBranchFormTableViewCell* formCell = (id)cell;
                     [formCell setupWithBranch:branch];
+                    formCell.linkMax = [self.tree[@"link_max"] integerValue];
+                    formCell.contentMax = [self.tree[@"content_max"] integerValue];
                 }else{
                     BranchTableViewCell* branchCell = (id)cell;
                     branchCell.linkLabel.text = branch[@"link"];
@@ -249,7 +251,7 @@ NS_ENUM(NSInteger, BranchTableSection){
                 
                 BOOL canEdit = [username isEqualToString:branch[@"authorname"]] || [username isEqualToString:self.tree[@"moderatorname"]];
                 
-                metadataCell.editButton.hidden = !canEdit;
+                metadataCell.editButton.hidden = !canEdit || _isEditing;
                 NSDictionary* editLinkAttributes = [self linkAttributesWithURLString:@"txtbranch://?itemType=edit"];
                 metadataCell.editButton.text = [[NSAttributedString alloc] initWithString:@"edit" attributes:editLinkAttributes];
                 
@@ -359,9 +361,8 @@ NS_ENUM(NSInteger, BranchTableSection){
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
     if (indexPath.section == BranchTableSectionLoadParent) {
-        
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
         
         NSString* parentBranch = _branches[_branchKeys.firstObject][@"parent_branch"];
         
@@ -381,7 +382,6 @@ NS_ENUM(NSInteger, BranchTableSection){
         
     }else if (indexPath.section == BranchTableSectionAbout) {
         _isAboutHidden = !_isAboutHidden;
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
         //update the current cell
         AboutTableViewCell* cell = (id)[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:BranchTableSectionAbout]];
         cell.isAboutHidden = _isAboutHidden;
@@ -392,7 +392,6 @@ NS_ENUM(NSInteger, BranchTableSection){
         if (IsOrRow( indexPath )) {
             return;
         }
-        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
         _currentBranchKey = _childBranchKeys[LinkRow(indexPath)];
         NSIndexPath* newBranchIndexPath = [NSIndexPath indexPathForRow:[_branchKeys count] inSection:BranchTableSectionBranches];
         [_branchKeys addObject:_currentBranchKey];
@@ -428,7 +427,6 @@ NS_ENUM(NSInteger, BranchTableSection){
         _childBranchKeys = nil;
         [self.delegate tableController:self didOpenBranchKey:_currentBranchKey];
         [tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
     }else if (indexPath.section == BranchTableSectionAddBranch) {
         
         AddBranchStatus status = [self.delegate tableController:self statusForBranchKey:_currentBranchKey];
@@ -505,7 +503,11 @@ NS_ENUM(NSInteger, BranchTableSection){
 -(void)setIsEditing:(BOOL)isEditing{
     _isEditing = isEditing;
     [self.tableView beginUpdates];
-    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:(_branchKeys.count - 1) inSection:BranchTableSectionBranches]] withRowAnimation:UITableViewRowAnimationFade];
+    
+    NSArray* indexPaths = @[[NSIndexPath indexPathForRow:(_branchKeys.count - 1) inSection:BranchTableSectionBranches],
+                            [NSIndexPath indexPathForRow:(_branchKeys.count) inSection:BranchTableSectionBranches]];
+    
+    [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
     [self.tableView endUpdates];
 }
 

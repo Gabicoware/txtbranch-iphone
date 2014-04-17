@@ -53,8 +53,13 @@ extern NSString* AddBranchFormTableViewCellCancelNotification;
 
 @property (nonatomic,weak) IBOutlet TBTextView* linkTextView;
 @property (nonatomic,weak) IBOutlet TBTextView* contentTextView;
+@property (nonatomic,weak) IBOutlet UILabel* countLabel;
+@property (nonatomic,weak) IBOutlet UIButton* saveButton;
 
 -(void)setupWithBranch:(id)branch;
+
+@property (nonatomic,assign) NSUInteger linkMax;
+@property (nonatomic,assign) NSUInteger contentMax;
 
 @end
 

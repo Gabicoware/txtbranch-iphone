@@ -588,6 +588,10 @@ static inline CGSize CTFramesetterSuggestFrameSizeForAttributedStringWithConstra
     }
 
     CGRect textRect = [self textRectForBounds:self.bounds limitedToNumberOfLines:self.numberOfLines];
+    if (self.numberOfLines == 1) {
+        textRect.origin.y = 0;
+        textRect.size.height = self.bounds.size.height;
+    }
     if (!CGRectContainsPoint(textRect, p)) {
         return NSNotFound;
     }
@@ -629,11 +633,11 @@ static inline CGSize CTFramesetterSuggestFrameSizeForAttributedStringWithConstra
         CGFloat yMax = (CGFloat)ceil(lineOrigin.y + ascent);
 
         // Check if we've already passed the line
-        if (p.y > yMax) {
+        if (self.numberOfLines != 1 && p.y > yMax) {
             break;
         }
         // Check if the point is within this line vertically
-        if (p.y >= yMin) {
+        if (self.numberOfLines == 1 || p.y >= yMin) {
             // Check if the point is within this line horizontally
             if (p.x >= lineOrigin.x && p.x <= lineOrigin.x + width) {
                 // Convert CT coordinates to line-relative coordinates

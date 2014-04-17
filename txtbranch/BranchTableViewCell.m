@@ -129,8 +129,7 @@ NSString* AddBranchFormTableViewCellUpdateSizeNotification = @"AddBranchFormTabl
 NSString* AddBranchFormTableViewCellSaveNotification = @"AddBranchFormTableViewCellSaveNotification";
 NSString* AddBranchFormTableViewCellCancelNotification = @"AddBranchFormTableViewCellCancelNotification";
 
-static NSString* ContentText = nil;
-static NSString* LinkText = nil;
+static NSMutableDictionary* CurrentBranch = nil;
 
 @implementation AddBranchFormTableViewCell
 
@@ -143,12 +142,12 @@ static NSString* LinkText = nil;
 }
 
 -(CGSize)sizeThatFits:(CGSize)size{
-    if (![self.linkTextView.text isEqualToString:LinkText]) {
-        self.linkTextView.text = LinkText;
+    if (![self.linkTextView.text isEqualToString:CurrentBranch[@"link"]]) {
+        self.linkTextView.text = CurrentBranch[@"link"];
         [self.linkTextView layoutSubviews];
     }
-    if (![self.contentTextView.text isEqualToString:ContentText]) {
-        self.contentTextView.text = ContentText;
+    if (![self.contentTextView.text isEqualToString:CurrentBranch[@"content"]]) {
+        self.contentTextView.text = CurrentBranch[@"content"];
         [self.contentTextView layoutSubviews];
     }
     
@@ -172,12 +171,12 @@ static NSString* LinkText = nil;
 
 -(void)layoutSubviews{
     [super layoutSubviews];
-    if (![self.linkTextView.text isEqualToString:LinkText]) {
-        self.linkTextView.text = LinkText;
+    if (![self.linkTextView.text isEqualToString:CurrentBranch[@"link"]]) {
+        self.linkTextView.text = CurrentBranch[@"link"];
         [self.linkTextView layoutSubviews];
     }
-    if (![self.contentTextView.text isEqualToString:ContentText]) {
-        self.contentTextView.text = ContentText;
+    if (![self.contentTextView.text isEqualToString:CurrentBranch[@"content"]]) {
+        self.contentTextView.text = CurrentBranch[@"content"];
         [self.contentTextView layoutSubviews];
     }
     
@@ -200,11 +199,13 @@ static NSString* LinkText = nil;
     self.linkTextView.frame = linkTextViewFrame;
     self.contentTextView.frame = contentTextViewFrame;
     
+    [self updateCountLabel];
 }
 
 -(void)setupWithBranch:(id)branch{
-    LinkText = branch[@"link"];
-    ContentText = branch[@"content"];
+    if (![branch[@"key"] isEqualToString:CurrentBranch[@"key"]]) {
+        CurrentBranch = [branch mutableCopy];
+    }
 }
 
 -(void)willMoveToWindow:(UIWindow *)newWindow{
@@ -216,8 +217,7 @@ static NSString* LinkText = nil;
 
 -(void)prepareForReuse{
     [super prepareForReuse];
-    LinkText = @"";
-    ContentText = @"";
+    CurrentBranch = [@{@"link":@"",@"content":@""} mutableCopy];
     self.linkTextView.text = @"";
     self.contentTextView.text = @"";
 }
@@ -247,11 +247,29 @@ static NSString* LinkText = nil;
 
 -(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
     if ([textView isEqual:self.linkTextView]) {
-        LinkText = [textView.text stringByReplacingCharactersInRange:range withString:text];
+        CurrentBranch[@"link"] = [textView.text stringByReplacingCharactersInRange:range withString:text];
     }else if ([textView isEqual:self.contentTextView]) {
-        ContentText = [textView.text stringByReplacingCharactersInRange:range withString:text];
+        CurrentBranch[@"content"] = [textView.text stringByReplacingCharactersInRange:range withString:text];
     }
+    [self updateCountLabel];
     return YES;
+}
+
+#define HasValidCount(count) (count >= 0)
+#define ColorForCount(count) (HasValidCount(count) ? [UIColor blackColor] : [UIColor redColor])
+
+-(void)updateCountLabel{
+    
+    NSInteger contentRemaining = self.contentMax - [CurrentBranch[@"content"] length];
+    NSInteger linkRemaining = self.linkMax - [CurrentBranch[@"link"] length];
+    
+    self.linkTextView.textColor = ColorForCount(linkRemaining);
+    self.contentTextView.textColor = ColorForCount(contentRemaining);
+    
+    self.countLabel.text = [NSString stringWithFormat:@"link: %d  content: %d ",linkRemaining,contentRemaining];
+    
+    self.saveButton.enabled = HasValidCount(contentRemaining) && HasValidCount(linkRemaining);
+    
 }
 
 @end
