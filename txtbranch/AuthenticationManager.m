@@ -19,7 +19,9 @@
 
 #endif
 
-@implementation AuthenticationManager
+@implementation AuthenticationManager{
+    NSString* _username;
+}
 
 +(instancetype)instance{
     static AuthenticationManager* _instance = nil;
@@ -38,11 +40,10 @@
         NSArray* cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:[NSURL tbURL]];
         
         BOOL hasOAuth = NO;
-        NSString* username = nil;
-        
+        NSHTTPCookie* usernameCookie = nil;
         for (NSHTTPCookie* cookie in cookies) {
             if ([[cookie name] isEqualToString:@"username"]) {
-                username = [cookie value];
+                usernameCookie = cookie;
             }
 #if LOCAL
             else if ([[cookie name] isEqualToString:@"dev_appserver_login"])
@@ -56,12 +57,24 @@
             }
         }
         
-        _isLoggedIn = hasOAuth && username != nil;
-        _username = username;
+        _isLoggedIn = hasOAuth && usernameCookie != nil && [usernameCookie value] != nil;
+        if (_isLoggedIn) {
+            _username = [usernameCookie value];
+        }else if(usernameCookie != nil){
+            [[NSHTTPCookieStorage sharedHTTPCookieStorage] deleteCookie:usernameCookie];
+        }
         
         
     }
     return self;
+}
+
+-(NSString*)username{
+    if ([self isLoggedIn]) {
+        return _username;
+    }else{
+        return nil;
+    }
 }
 
 -(void)setIsLoggedIn:(BOOL)isLoggedIn{
