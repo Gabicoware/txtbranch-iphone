@@ -12,11 +12,12 @@
 #import "BranchTableController.h"
 #import "NSURL+txtbranch.h"
 
-@interface BranchViewController ()<BranchTableControllerDelegate>
+@interface BranchViewController ()
 
 @property (nonatomic,strong) ASIHTTPRequest* request;
 @property (nonatomic,strong) BranchTableController* tableController;
 @property (nonatomic,strong) IBOutlet UITableView* tableView;
+@property (nonatomic,strong) Tree* tree;
 
 @end
 
@@ -34,8 +35,8 @@
     [super viewDidLoad];
 
     self.tableController = [[BranchTableController alloc] initWithTableView:self.tableView];
-    self.tableController.delegate = self;
     
+    self.tableController.tree = self.tree;
     if (self.query[@"branch"]) {
         self.tableController.currentBranchKey = self.query[@"branch"];
     }
@@ -53,188 +54,16 @@
     NSAssert(query[@"tree_name"] != nil, @"tree_name key should be not nil in query");
     
     NSString* treeName = query[@"tree_name"];
-    [self loadTree:treeName];
+    
+    self.tree = [[Tree alloc] initWithName:treeName];
+    
     self.title = treeName;
     
     if (query[@"branch"]) {
         self.tableController.currentBranchKey = query[@"branch"];
-        [self loadBranches:@[query[@"branch"]]];
+        [self.tree loadBranches:@[query[@"branch"]]];
     }
-}
-
--(void)loadTree:(NSString*)name{
-    [_request cancel];
-    
-    NSURL* URL = [NSURL tbURLWithPath:[NSString stringWithFormat:@"/api/v1/trees?name=%@",name]];
-    
-	[self setRequest:[ASIHTTPRequest requestWithURL:URL]];
-	[_request setTimeOutSeconds:20];
-    
-	[_request setDelegate:self];
-	[_request setDidFailSelector:@selector(treeRequestFailed:)];
-	[_request setDidFinishSelector:@selector(treeRequestFinished:)];
-	
-	[_request startAsynchronous];
-}
-
--(void)treeRequestFailed:(ASIHTTPRequest*)request{
-    NSLog(@"%@",request.responseString);
-}
-
--(void)treeRequestFinished:(ASIHTTPRequest*)request{
-    
-    NSError* error = nil;
-    id result = [NSJSONSerialization JSONObjectWithData:[request responseData]
-                                              options:0
-                                                error:&error];
-    if ([result[@"status"] isEqualToString:@"OK"]) {
-        self.tableController.tree = result[@"result"];
-        
-        if (self.query[@"branch"] == nil) {
-            [self loadBranches:@[result[@"result"][@"root_branch_key"]]];
-        }
-    }
-    
-}
-
--(void)loadBranches:(NSArray*)branch_keys{
-    NSMutableArray* params = [@[] mutableCopy];
-    for (NSString* branch_key in branch_keys) {
-        [params addObject:[NSString stringWithFormat:@"branch_key=%@",branch_key]];
-    }
-    NSURL* URL = [NSURL tbURLWithPath:[NSString stringWithFormat:@"/api/v1/branchs?%@",[params componentsJoinedByString:@"&"]]];
-    [self loadBranchesURL:URL];
-}
-
--(void)loadChildBranches:(NSString*)parentBranchKey{
-    NSURL* URL = [NSURL tbURLWithPath:[NSString stringWithFormat:@"/api/v1/branchs?parent_branch_key=%@",parentBranchKey]];
-    [self loadBranchesURL:URL];
-}
-
--(void)loadBranchesURL:(NSURL*)URL{
-    
-	[self setRequest:[ASIHTTPRequest requestWithURL:URL]];
-	[_request setTimeOutSeconds:20];
-    
-	[_request setDelegate:self];
-	[_request setDidFailSelector:@selector(branchRequestFailed:)];
-	[_request setDidFinishSelector:@selector(branchRequestFinished:)];
-	
-	[_request startAsynchronous];
-    
-}
-
--(void)branchRequestFailed:(ASIHTTPRequest*)request{
-    NSLog(@"%@",request.responseString);
-}
-
--(void)branchRequestFinished:(ASIHTTPRequest*)request{
-    NSError* error = nil;
-    id result = [NSJSONSerialization JSONObjectWithData:[request responseData]
-                                                options:0
-                                                  error:&error];
-    [self.tableController addBranches:result[@"result"]];
-}
-
--(void)tableController:(BranchTableController*)controller needsBranchKey:(NSString*)branchKey{
-    [self loadBranches:@[branchKey]];
-}
-
--(void)tableController:(BranchTableController*)controller didOpenBranchKey:(NSString*)branchKey{
-    [self loadChildBranches:branchKey];
-}
-
--(void)tableController:(BranchTableController*)controller editBranch:(NSDictionary*)branch{
-    
-    ASIFormDataRequest* request = [[ASIFormDataRequest alloc] initWithURL:[NSURL tbURLWithPath:@"/api/v1/branchs"]];
-    
-	[self setRequest:request];
-    
-    [request addPostValue:branch[@"link"] forKey:@"link"];
-    [request addPostValue:branch[@"content"] forKey:@"content"];
-    [request addPostValue:branch[@"key"] forKey:@"branch_key"];
-    
-    
-	[_request setTimeOutSeconds:20];
-    
-	[_request setDelegate:self];
-	[_request setDidFailSelector:@selector(addBranchRequestFailed:)];
-	[_request setDidFinishSelector:@selector(addBranchRequestFinished:)];
-	
-    _request.requestMethod = @"PUT";
-    
-	[_request startAsynchronous];
-    
-}
-
-
--(void)tableController:(BranchTableController*)controller deleteBranch:(NSDictionary*)branch{
-    
-    NSString* path = [NSString stringWithFormat:@"/api/v1/branchs?branch_key=%@",branch[@"key"]];
-    
-    ASIHTTPRequest* request = [[ASIHTTPRequest alloc] initWithURL:[NSURL tbURLWithPath:path]];
-    
-	[self setRequest:request];
-        
-	[_request setTimeOutSeconds:20];
-    
-	[_request setDelegate:self];
-	[_request setDidFailSelector:@selector(deleteBranchRequestFailed:)];
-	[_request setDidFinishSelector:@selector(deleteBranchRequestFinished:)];
-	
-    _request.requestMethod = @"DELETE";
-    
-	[_request startAsynchronous];
-    
-}
-
--(void)tableController:(BranchTableController*)controller addBranch:(NSDictionary*)branch{
-    
-    ASIFormDataRequest* request = [[ASIFormDataRequest alloc] initWithURL:[NSURL tbURLWithPath:@"/api/v1/branchs"]];
-    
-	[self setRequest:request];
-    
-    for (NSString* key in branch) {
-        id value = branch[key];
-        [request addPostValue:value forKey:key];
-    }
-    
-	[_request setTimeOutSeconds:20];
-    
-	[_request setDelegate:self];
-	[_request setDidFailSelector:@selector(addBranchRequestFailed:)];
-	[_request setDidFinishSelector:@selector(addBranchRequestFinished:)];
-	
-	[_request startAsynchronous];
-    
-}
-
--(void)addBranchRequestFailed:(ASIHTTPRequest*)request{
-    NSLog(@"%@",request.responseString);
-}
-
--(void)addBranchRequestFinished:(ASIHTTPRequest*)request{
-    NSError* error = nil;
-    id result = [NSJSONSerialization JSONObjectWithData:[request responseData]
-                                                options:0
-                                                  error:&error];
-    if (result != nil && ![result[@"status"] isEqualToString:@"ERROR"]) {
-        [self.tableController addBranches:@[result[@"result"]]];
-    }
-}
-
--(void)deleteBranchRequestFailed:(ASIHTTPRequest*)request{
-}
-
--(void)deleteBranchRequestFinished:(ASIHTTPRequest*)request{
-    
-    [self tableController:self.tableController didOpenBranchKey:self.tableController.currentBranchKey];
-    
-}
-
-
--(AddBranchStatus)tableController:(BranchTableController*)controller statusForBranchKey:(NSString*)branchKey{
-    return AddBranchStatusAllowed;
+    self.tableController.tree = self.tree;
 }
 
 -(void)handleKeyboardUpdate:(NSNotification*)notification{
@@ -285,5 +114,6 @@
     
     
 }
+
 
 @end

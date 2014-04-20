@@ -7,41 +7,20 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Tree.h"
 
-typedef enum{
-    AddBranchStatusAllowed,
-    AddBranchStatusNeedsLogin,
-    AddBranchStatusHasBranches,
-}AddBranchStatus;
-
-@class BranchTableController;
-
-@protocol BranchTableControllerDelegate <NSObject>
-
--(void)tableController:(BranchTableController*)controller didOpenBranchKey:(NSString*)branchKey;
--(void)tableController:(BranchTableController*)controller needsBranchKey:(NSString*)branchKey;
-
--(void)tableController:(BranchTableController*)controller addBranch:(NSDictionary*)branch;
--(void)tableController:(BranchTableController*)controller editBranch:(NSDictionary*)branch;
--(void)tableController:(BranchTableController*)controller deleteBranch:(NSDictionary*)branch;
-
--(AddBranchStatus)tableController:(BranchTableController*)controller statusForBranchKey:(NSString*)branchKey;
-
-@end
 
 @interface BranchTableController : NSObject
 
 @property (nonatomic,weak) UITableView* tableView;
 
-@property (nonatomic,strong) NSDictionary* tree;
+@property (nonatomic,strong) Tree* tree;
 
-@property (nonatomic,weak) id<BranchTableControllerDelegate> delegate;
+@property (nonatomic,weak) id delegate;
 
 @property (nonatomic, strong) NSString* currentBranchKey;
 
 -(instancetype)initWithTableView:(UITableView*)tableView;
-
--(void)addBranches:(NSArray *)objects;
 
 -(CGRect)addBranchFormRect;
 

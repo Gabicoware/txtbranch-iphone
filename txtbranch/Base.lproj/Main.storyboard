@@ -61,7 +61,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BYN-xm-MJY" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-208" y="-1018"/>
+            <point key="canvasLocation" x="196" y="-970"/>
         </scene>
         <!--Branch View Controller-->
         <scene sceneID="ufC-wZ-h7g">
@@ -333,11 +333,12 @@
                     <navigationItem key="navigationItem" id="kpx-iy-T96"/>
                     <connections>
                         <outlet property="tableView" destination="PPu-Bc-0O7" id="jAx-py-fd3"/>
+                        <segue destination="bqR-0d-7u1" kind="modal" identifier="Login" id="ai3-tU-c0q"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="340" y="48"/>
+            <point key="canvasLocation" x="316" y="64"/>
         </scene>
         <!--Login Table View Controller - Select a Service to Login-->
         <scene sceneID="xn6-bx-heB">
@@ -374,7 +375,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8ah-Gf-44Z" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="968" y="1461"/>
+            <point key="canvasLocation" x="1316" y="1333"/>
         </scene>
         <!--Sign In View Controller-->
         <scene sceneID="Lti-go-S5X">
@@ -404,7 +405,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RgQ-5o-Bol" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1596" y="1456"/>
+            <point key="canvasLocation" x="1944" y="1328"/>
         </scene>
         <!--Username View Controller-->
         <scene sceneID="HNq-6H-dOC">
@@ -449,7 +450,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="v4h-bS-I7E" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2005" y="1456"/>
+            <point key="canvasLocation" x="2353" y="1328"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="BVp-G7-lGe">
@@ -464,7 +465,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="duF-Y2-vfj" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-72" y="1429"/>
+            <point key="canvasLocation" x="276" y="1301"/>
         </scene>
         <!--Trees View Controller - txtbranch-->
         <scene sceneID="hPF-cU-4Wb">
@@ -530,7 +531,7 @@
                     </tableView>
                     <navigationItem key="navigationItem" id="Y4R-bp-dAf"/>
                     <connections>
-                        <segue destination="bqR-0d-7u1" kind="modal" identifier="Launch" animates="NO" id="KSe-NJ-zRb"/>
+                        <segue destination="bqR-0d-7u1" kind="modal" identifier="Login" animates="NO" id="KSe-NJ-zRb"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7dh-1E-ASe" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -553,7 +554,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qpq-d8-1cH" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="452" y="1456"/>
+            <point key="canvasLocation" x="800" y="1328"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
@@ -561,4 +562,7 @@
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
+    <inferredMetricsTieBreakers>
+        <segue reference="KSe-NJ-zRb"/>
+    </inferredMetricsTieBreakers>
 </document>

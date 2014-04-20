@@ -40,10 +40,11 @@
     
     [self loadMainTrees];
     
-    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Login" style:UIBarButtonItemStylePlain target:self action:@selector(didTapLoginButton:)];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
     [self buildSections];
     [self.tableView reloadData];
 }
@@ -64,8 +65,11 @@
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
+}
+
+-(void)didTapLoginButton:(id)sender{
     if (![AuthenticationManager instance].isLoggedIn) {
-        [self performSegueWithIdentifier:@"Launch" sender:self];
+        [self performSegueWithIdentifier:@"Login" sender:self];
     }
 }
 
