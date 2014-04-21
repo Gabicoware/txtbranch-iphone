@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "TBTextView.h"
 #import "TTTAttributedLabel.h"
+#import "Tree.h"
 
 @interface BranchTableViewCell : UITableViewCell
 
@@ -56,10 +57,8 @@ extern NSString* AddBranchFormTableViewCellCancelNotification;
 @property (nonatomic,weak) IBOutlet UILabel* countLabel;
 @property (nonatomic,weak) IBOutlet UIButton* saveButton;
 
--(void)setupWithBranch:(id)branch;
-
-@property (nonatomic,assign) NSUInteger linkMax;
-@property (nonatomic,assign) NSUInteger contentMax;
+-(void)setupWithBranch:(NSDictionary*)branch;
+-(void)setupWithTree:(Tree*)tree;
 
 @end
 

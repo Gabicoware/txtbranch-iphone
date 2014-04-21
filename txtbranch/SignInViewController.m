@@ -92,8 +92,7 @@
 }
 
 -(void)showUsernameView{
-    UsernameViewController* usernameViewController = [[UsernameViewController alloc] initWithNibName:nil bundle:nil];
-    [self.navigationController pushViewController:usernameViewController animated:YES];
+    [self performSegueWithIdentifier:@"CreateUsername" sender:self];
 }
 
 @end

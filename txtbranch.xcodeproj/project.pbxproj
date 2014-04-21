@@ -55,7 +55,6 @@
 		777AD1BC18C57D0200DC5E9F /* TBTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 777AD1BB18C57D0200DC5E9F /* TBTextView.m */; };
 		777AD1BF18C5819A00DC5E9F /* BranchTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 777AD1BE18C5819A00DC5E9F /* BranchTableViewCell.m */; };
 		777AD1C218C5F81800DC5E9F /* SignInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 777AD1C118C5F81800DC5E9F /* SignInViewController.m */; };
-		777AD1C418C5FB4E00DC5E9F /* UsernameViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 777AD1C318C5FB4E00DC5E9F /* UsernameViewController.xib */; };
 		777AD1C718C6BF6C00DC5E9F /* NSURL+txtbranch.m in Sources */ = {isa = PBXBuildFile; fileRef = 777AD1C618C6BF6C00DC5E9F /* NSURL+txtbranch.m */; };
 		777AD1CB18C6CAC400DC5E9F /* UsernameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 777AD1CA18C6CAC400DC5E9F /* UsernameViewController.m */; };
 		777F673318E515F8004093A8 /* UIView+Ext.m in Sources */ = {isa = PBXBuildFile; fileRef = 777F673218E515F8004093A8 /* UIView+Ext.m */; };
@@ -167,7 +166,6 @@
 		777AD1BE18C5819A00DC5E9F /* BranchTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BranchTableViewCell.m; sourceTree = "<group>"; };
 		777AD1C018C5F81800DC5E9F /* SignInViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignInViewController.h; sourceTree = "<group>"; };
 		777AD1C118C5F81800DC5E9F /* SignInViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignInViewController.m; sourceTree = "<group>"; };
-		777AD1C318C5FB4E00DC5E9F /* UsernameViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UsernameViewController.xib; sourceTree = "<group>"; };
 		777AD1C518C6BF6C00DC5E9F /* NSURL+txtbranch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+txtbranch.h"; sourceTree = "<group>"; };
 		777AD1C618C6BF6C00DC5E9F /* NSURL+txtbranch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+txtbranch.m"; sourceTree = "<group>"; };
 		777AD1C918C6CAC400DC5E9F /* UsernameViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UsernameViewController.h; sourceTree = "<group>"; };
@@ -462,7 +460,6 @@
 				777AD1C118C5F81800DC5E9F /* SignInViewController.m */,
 				777AD1C918C6CAC400DC5E9F /* UsernameViewController.h */,
 				777AD1CA18C6CAC400DC5E9F /* UsernameViewController.m */,
-				777AD1C318C5FB4E00DC5E9F /* UsernameViewController.xib */,
 			);
 			name = SignIn;
 			sourceTree = "<group>";
@@ -524,7 +521,7 @@
 		777AD0EB18C13EFD00DC5E9F /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = Gabicoware;
 				TargetAttributes = {
 					777AD11318C13EFE00DC5E9F = {
@@ -558,7 +555,6 @@
 			files = (
 				777AD10F18C13EFE00DC5E9F /* Images.xcassets in Resources */,
 				777AD10118C13EFE00DC5E9F /* InfoPlist.strings in Resources */,
-				777AD1C418C5FB4E00DC5E9F /* UsernameViewController.xib in Resources */,
 				777AD10A18C13EFE00DC5E9F /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -674,7 +670,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -713,7 +708,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -781,7 +775,6 @@
 		777AD12918C13EFE00DC5E9F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/txtbranch.app/txtbranch";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -804,7 +797,6 @@
 		777AD12A18C13EFE00DC5E9F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/txtbranch.app/txtbranch";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",

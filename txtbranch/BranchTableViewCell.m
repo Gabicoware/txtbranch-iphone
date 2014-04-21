@@ -131,6 +131,13 @@ NSString* AddBranchFormTableViewCellCancelNotification = @"AddBranchFormTableVie
 
 static NSMutableDictionary* CurrentBranch = nil;
 
+@interface AddBranchFormTableViewCell()
+
+@property (nonatomic,assign) NSUInteger linkMax;
+@property (nonatomic,assign) NSUInteger contentMax;
+
+@end
+
 @implementation AddBranchFormTableViewCell
 
 -(IBAction)didTapCancelButton:(id)sender{
@@ -203,9 +210,19 @@ static NSMutableDictionary* CurrentBranch = nil;
 }
 
 -(void)setupWithBranch:(id)branch{
-    if (![branch[@"key"] isEqualToString:CurrentBranch[@"key"]]) {
+    if (branch != nil && ![branch[@"key"] isEqualToString:CurrentBranch[@"key"]]) {
         CurrentBranch = [branch mutableCopy];
     }
+}
+
+-(void)setupWithTree:(Tree *)tree{
+    self.linkTextView.placeholder = tree.data[@"link_prompt"];
+    self.linkTextView.userInteractionEnabled = !tree.linkModeratorOnly;
+    self.linkMax = tree.linkMax;
+    
+    self.contentTextView.placeholder = tree.data[@"content_prompt"];
+    self.contentTextView.userInteractionEnabled = !tree.contentModeratorOnly;
+    self.contentMax = tree.contentMax;
 }
 
 -(void)willMoveToWindow:(UIWindow *)newWindow{
@@ -224,6 +241,7 @@ static NSMutableDictionary* CurrentBranch = nil;
 
 -(void)awakeFromNib{
     [super awakeFromNib];
+    CurrentBranch = [@{@"link":@"",@"content":@""} mutableCopy];
     self.linkTextView.placeholder = @"Add a teaser...";
     self.contentTextView.placeholder = @"...and continue with some more text";
 }

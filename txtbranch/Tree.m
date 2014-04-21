@@ -42,8 +42,16 @@ NSString* const TreeDidUpdateBranchesNotificationBranchesUserInfoKey = @"TreeDid
 
 }
 
+-(BOOL)contentModeratorOnly{
+    return [self.data[@"content_moderator_only"] boolValue];
+}
+
 -(NSUInteger)linkMax{
     return [self.data[@"link_max"] integerValue];
+}
+
+-(BOOL)linkModeratorOnly{
+    return [self.data[@"link_moderator_only"] boolValue];
 }
 
 -(NSUInteger)branchMax{
@@ -78,9 +86,10 @@ NSString* const TreeDidUpdateBranchesNotificationBranchesUserInfoKey = @"TreeDid
 }
 
 -(NSArray*)childBranches:(NSString*)parentKey{
+    NSString* username = [AuthenticationManager instance].username;
     NSArray* values = [_branches allValues];
     NSIndexSet* indexes = [values indexesOfObjectsPassingTest:^BOOL(NSDictionary* obj, NSUInteger idx, BOOL *stop) {
-        return [obj[@"authorname"] isEqualToString:[AuthenticationManager instance].username];
+        return [parentKey isEqualToString:obj[@"parent_branch"]] && [obj[@"authorname"] isEqualToString:username];
     }];
     return [values objectsAtIndexes:indexes];
 }

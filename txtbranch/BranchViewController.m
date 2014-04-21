@@ -307,8 +307,7 @@ NS_ENUM(NSInteger, BranchTableSection){
                 if (_isEditing && [branchKey isEqualToString:_currentBranchKey]) {
                     AddBranchFormTableViewCell* formCell = (id)cell;
                     [formCell setupWithBranch:branch];
-                    formCell.linkMax = self.tree.linkMax;
-                    formCell.contentMax = self.tree.contentMax;
+                    [formCell setupWithTree:self.tree];
                 }else{
                     BranchTableViewCell* branchCell = (id)cell;
                     branchCell.linkLabel.text = branch[@"link"];
@@ -367,6 +366,11 @@ NS_ENUM(NSInteger, BranchTableSection){
                 branchCell.isLink = YES;
             }
             
+            break;
+        }
+        case BranchTableSectionAddBranchForm:{
+            AddBranchFormTableViewCell* formCell = (id)cell;
+            [formCell setupWithTree:self.tree];
             break;
         }
     }

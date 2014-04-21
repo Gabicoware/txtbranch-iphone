@@ -32,6 +32,8 @@ typedef enum{
 @property (nonatomic, readonly) NSUInteger contentMax;
 @property (nonatomic, readonly) NSUInteger linkMax;
 @property (nonatomic, readonly) NSUInteger branchMax;
+@property (nonatomic, readonly) BOOL linkModeratorOnly;
+@property (nonatomic, readonly) BOOL contentModeratorOnly;
 
 -(BOOL)canEditBranch:(NSString *)branchKey;
 
