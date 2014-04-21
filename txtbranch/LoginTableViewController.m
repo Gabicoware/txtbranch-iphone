@@ -33,6 +33,10 @@ typedef enum _LoginServices {
 
 }
 
+-(IBAction)didTapCancelButton:(id)sender{
+    [self.parentViewController dismissViewControllerAnimated:YES completion:NULL];
+}
+
 #pragma mark - Table view data source
 
 

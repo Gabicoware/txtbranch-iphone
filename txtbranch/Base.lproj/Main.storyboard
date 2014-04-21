@@ -326,6 +326,10 @@
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="vXZ-lx-hvc" id="LbM-Pl-sbG"/>
+                                    <outlet property="delegate" destination="vXZ-lx-hvc" id="7O3-iz-Mah"/>
+                                </connections>
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -334,6 +338,7 @@
                     <connections>
                         <outlet property="tableView" destination="PPu-Bc-0O7" id="jAx-py-fd3"/>
                         <segue destination="bqR-0d-7u1" kind="modal" identifier="Login" id="ai3-tU-c0q"/>
+                        <segue destination="1u2-bx-reu" kind="push" identifier="OpenNotifications" id="2TW-ky-nJJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
@@ -371,7 +376,13 @@
                             </tableViewCell>
                         </prototypes>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Select a Service to Login" id="h6v-Aw-fxR"/>
+                    <navigationItem key="navigationItem" title="Select a Service to Login" id="h6v-Aw-fxR">
+                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="u1j-YA-Ij8">
+                            <connections>
+                                <action selector="didTapCancelButton:" destination="hkI-y7-OZZ" id="nC4-RR-Rky"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8ah-Gf-44Z" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -563,6 +574,7 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="KSe-NJ-zRb"/>
+        <segue reference="ai3-tU-c0q"/>
+        <segue reference="2TW-ky-nJJ"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -65,8 +65,26 @@ NSString* const TreeDidUpdateBranchesNotificationBranchesUserInfoKey = @"TreeDid
 }
 
 -(AddBranchStatus)addBranchStatus:(NSString *)branchKey{
-    return AddBranchStatusAllowed;
+    if (![[AuthenticationManager instance] isLoggedIn]) {
+        return AddBranchStatusNeedsLogin;
+    }else{
+        NSArray* branches = [self childBranches:branchKey];
+        if (branches.count < self.branchMax) {
+            return AddBranchStatusAllowed;
+        }else{
+            return AddBranchStatusHasBranches;
+        }
+    }
 }
+
+-(NSArray*)childBranches:(NSString*)parentKey{
+    NSArray* values = [_branches allValues];
+    NSIndexSet* indexes = [values indexesOfObjectsPassingTest:^BOOL(NSDictionary* obj, NSUInteger idx, BOOL *stop) {
+        return [obj[@"authorname"] isEqualToString:[AuthenticationManager instance].username];
+    }];
+    return [values objectsAtIndexes:indexes];
+}
+
 
 -(void)loadTree:(NSString*)name{
     

@@ -37,6 +37,7 @@ typedef enum{
 
 -(AddBranchStatus)addBranchStatus:(NSString *)branchKey;
 
+-(NSArray*)childBranches:(NSString*)parentKey;
 
 -(void)loadBranches:(NSArray*)branch_keys;
 -(void)loadChildBranches:(NSString*)parentBranchKey;
