@@ -16,6 +16,18 @@ NSString* const TreeDidUpdateTreeNotification = @"TreeDidUpdateTreeNotification"
 NSString* const TreeDidUpdateBranchesNotification = @"TreeDidUpdateBranchesNotification";
 NSString* const TreeDidUpdateBranchesNotificationBranchesUserInfoKey = @"TreeDidUpdateBranchesNotificationBranchesUserInfoKey";
 
+//it is a critical error to not have a moderatorname or tree_name
+#define TreeDefaults @{\
+@"conventions":@"",\
+@"content_max":@(256),@"content_moderator_only":@(NO),@"content_prompt":@"",\
+@"link_max":@(256),@"link_moderator_only":@(NO),@"link_prompt":@"",\
+}
+
+@interface NSDictionary(Merge)
+
+-(NSDictionary*)dictionaryByMergingValues:(NSDictionary*)values;
+
+@end
 
 @implementation Tree{
     NSMutableDictionary* _branches;
@@ -124,7 +136,7 @@ NSString* const TreeDidUpdateBranchesNotificationBranchesUserInfoKey = @"TreeDid
                                                 options:0
                                                   error:&error];
     if ([result[@"status"] isEqualToString:@"OK"]) {
-        self.data = result[@"result"];
+        self.data = [TreeDefaults dictionaryByMergingValues: result[@"result"]];
         
         [self loadBranches:@[result[@"result"][@"root_branch_key"]]];
     }
@@ -296,3 +308,18 @@ NSString* const TreeDidUpdateBranchesNotificationBranchesUserInfoKey = @"TreeDid
 
 
 @end
+
+@implementation NSDictionary(Merge)
+
+-(NSDictionary*)dictionaryByMergingValues:(NSDictionary*)values{
+    NSMutableDictionary* result = [self mutableCopy];
+    for (id key in values) {
+        if (values[key] != nil && ![values[key] isEqual:[NSNull null]]) {
+            result[key] = values[key];
+        }
+    }
+    return [result copy];
+}
+
+@end
+
