@@ -10,6 +10,8 @@
 
 @interface NSURL (txtbranch)
 
++(NSString*)tbURLName;
+
 +(NSURL*)tbURLWithPath:(NSString*)path;
 
 +(NSURL*)tbURL;

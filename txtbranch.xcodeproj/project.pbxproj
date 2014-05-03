@@ -7,12 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7700C5A6190A79E8005931BB /* ServerList.m in Sources */ = {isa = PBXBuildFile; fileRef = 7700C5A5190A79E8005931BB /* ServerList.m */; };
 		77288B0B18F4A0B500B97131 /* NotificationsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 77288B0A18F4A0B500B97131 /* NotificationsTableViewController.m */; };
 		77288B1318F638E100B97131 /* NSDictionary+QueryString.m in Sources */ = {isa = PBXBuildFile; fileRef = 77288B1218F638E100B97131 /* NSDictionary+QueryString.m */; };
 		77288B1618F63A5200B97131 /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 77288B1518F63A5200B97131 /* NSString+URLEncoding.m */; };
 		77288B2B18F899DE00B97131 /* TTTAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 77288B2A18F899DE00B97131 /* TTTAttributedLabel.m */; };
 		7765599B18C8A06F00B9195C /* LaunchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7765599A18C8A06F00B9195C /* LaunchViewController.m */; };
 		7765599F18C9682600B9195C /* AuthenticationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7765599E18C9682600B9195C /* AuthenticationManager.m */; };
+		776B024C190F003200A6DA52 /* TreeFormViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 776B024B190F003200A6DA52 /* TreeFormViewController.m */; };
 		777AD0F718C13EFE00DC5E9F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 777AD0F618C13EFE00DC5E9F /* Foundation.framework */; };
 		777AD0F918C13EFE00DC5E9F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 777AD0F818C13EFE00DC5E9F /* CoreGraphics.framework */; };
 		777AD0FB18C13EFE00DC5E9F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 777AD0FA18C13EFE00DC5E9F /* UIKit.framework */; };
@@ -58,11 +60,13 @@
 		777AD1C718C6BF6C00DC5E9F /* NSURL+txtbranch.m in Sources */ = {isa = PBXBuildFile; fileRef = 777AD1C618C6BF6C00DC5E9F /* NSURL+txtbranch.m */; };
 		777AD1CB18C6CAC400DC5E9F /* UsernameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 777AD1CA18C6CAC400DC5E9F /* UsernameViewController.m */; };
 		777F673318E515F8004093A8 /* UIView+Ext.m in Sources */ = {isa = PBXBuildFile; fileRef = 777F673218E515F8004093A8 /* UIView+Ext.m */; };
+		778236A3190B514C003018DC /* AddServerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 778236A2190B514C003018DC /* AddServerViewController.m */; };
 		7783350718C81DA0008375A6 /* TreesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7783350618C81DA0008375A6 /* TreesViewController.m */; };
 		77ACC40218C9EC6900CE03CA /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 77ACC40118C9EC6900CE03CA /* KeychainItemWrapper.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		77ACC40818CA4B5D00CE03CA /* LoginTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 77ACC40718CA4B5D00CE03CA /* LoginTableViewController.m */; };
 		77B5DA7C19002BE100DDDB00 /* Tree.m in Sources */ = {isa = PBXBuildFile; fileRef = 77B5DA7B19002BE100DDDB00 /* Tree.m */; };
 		77B5DA801904BE9400DDDB00 /* UIAlertView+Block.m in Sources */ = {isa = PBXBuildFile; fileRef = 77B5DA7F1904BE9400DDDB00 /* UIAlertView+Block.m */; };
+		77FD9CAC1909B68900596D65 /* ServersTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 77FD9CAB1909B68900596D65 /* ServersTableViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -76,6 +80,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7700C5A4190A79E8005931BB /* ServerList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServerList.h; sourceTree = "<group>"; };
+		7700C5A5190A79E8005931BB /* ServerList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerList.m; sourceTree = "<group>"; };
 		77288B0918F4A0B500B97131 /* NotificationsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationsTableViewController.h; sourceTree = "<group>"; };
 		77288B0A18F4A0B500B97131 /* NotificationsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsTableViewController.m; sourceTree = "<group>"; };
 		77288B1118F638E100B97131 /* NSDictionary+QueryString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+QueryString.h"; sourceTree = "<group>"; };
@@ -88,6 +94,8 @@
 		7765599A18C8A06F00B9195C /* LaunchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LaunchViewController.m; sourceTree = "<group>"; };
 		7765599D18C9682600B9195C /* AuthenticationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthenticationManager.h; sourceTree = "<group>"; };
 		7765599E18C9682600B9195C /* AuthenticationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuthenticationManager.m; sourceTree = "<group>"; };
+		776B024A190F003200A6DA52 /* TreeFormViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TreeFormViewController.h; sourceTree = "<group>"; };
+		776B024B190F003200A6DA52 /* TreeFormViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TreeFormViewController.m; sourceTree = "<group>"; };
 		777AD0F318C13EFE00DC5E9F /* txtbranch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = txtbranch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		777AD0F618C13EFE00DC5E9F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		777AD0F818C13EFE00DC5E9F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -172,6 +180,8 @@
 		777AD1CA18C6CAC400DC5E9F /* UsernameViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UsernameViewController.m; sourceTree = "<group>"; };
 		777F673118E515F8004093A8 /* UIView+Ext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Ext.h"; sourceTree = "<group>"; };
 		777F673218E515F8004093A8 /* UIView+Ext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Ext.m"; sourceTree = "<group>"; };
+		778236A1190B514C003018DC /* AddServerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddServerViewController.h; sourceTree = "<group>"; };
+		778236A2190B514C003018DC /* AddServerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddServerViewController.m; sourceTree = "<group>"; };
 		7783350518C81DA0008375A6 /* TreesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TreesViewController.h; sourceTree = "<group>"; };
 		7783350618C81DA0008375A6 /* TreesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TreesViewController.m; sourceTree = "<group>"; };
 		77ACC40018C9EC6900CE03CA /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
@@ -182,6 +192,9 @@
 		77B5DA7B19002BE100DDDB00 /* Tree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tree.m; sourceTree = "<group>"; };
 		77B5DA7E1904BE9400DDDB00 /* UIAlertView+Block.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+Block.h"; sourceTree = "<group>"; };
 		77B5DA7F1904BE9400DDDB00 /* UIAlertView+Block.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertView+Block.m"; sourceTree = "<group>"; };
+		77ED53A41912F21400AD9F4C /* txtbranch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = txtbranch.h; sourceTree = "<group>"; };
+		77FD9CAA1909B68900596D65 /* ServersTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServersTableViewController.h; sourceTree = "<group>"; };
+		77FD9CAB1909B68900596D65 /* ServersTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServersTableViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -244,18 +257,25 @@
 		7765599C18C8A0FD00B9195C /* Branch View */ = {
 			isa = PBXGroup;
 			children = (
-				7783350518C81DA0008375A6 /* TreesViewController.h */,
-				7783350618C81DA0008375A6 /* TreesViewController.m */,
 				777AD10B18C13EFE00DC5E9F /* BranchViewController.h */,
 				777AD10C18C13EFE00DC5E9F /* BranchViewController.m */,
 				777AD1BD18C5819A00DC5E9F /* BranchTableViewCell.h */,
 				777AD1BE18C5819A00DC5E9F /* BranchTableViewCell.m */,
 				777AD1BA18C57D0200DC5E9F /* TBTextView.h */,
 				777AD1BB18C57D0200DC5E9F /* TBTextView.m */,
-				77B5DA7A19002BE100DDDB00 /* Tree.h */,
-				77B5DA7B19002BE100DDDB00 /* Tree.m */,
 			);
 			name = "Branch View";
+			sourceTree = "<group>";
+		};
+		776B0249190F001100A6DA52 /* Trees */ = {
+			isa = PBXGroup;
+			children = (
+				7783350518C81DA0008375A6 /* TreesViewController.h */,
+				7783350618C81DA0008375A6 /* TreesViewController.m */,
+				776B024A190F003200A6DA52 /* TreeFormViewController.h */,
+				776B024B190F003200A6DA52 /* TreeFormViewController.m */,
+			);
+			name = Trees;
 			sourceTree = "<group>";
 		};
 		777AD0EA18C13EFD00DC5E9F = {
@@ -296,10 +316,13 @@
 		777AD0FC18C13EFE00DC5E9F /* txtbranch */ = {
 			isa = PBXGroup;
 			children = (
+				776B0249190F001100A6DA52 /* Trees */,
+				778236A0190B463A003018DC /* Settings */,
+				77ED53A41912F21400AD9F4C /* txtbranch.h */,
 				777AD10518C13EFE00DC5E9F /* AppDelegate.h */,
 				777AD10618C13EFE00DC5E9F /* AppDelegate.m */,
 				777AD10818C13EFE00DC5E9F /* Main.storyboard */,
-				77B5DA7D1904BE5C00DDDB00 /* Categories */,
+				77B5DA7D1904BE5C00DDDB00 /* Utilities */,
 				7765599C18C8A0FD00B9195C /* Branch View */,
 				777AD1C818C6CAA500DC5E9F /* SignIn */,
 				77288B0818F4A09600B97131 /* Notifications */,
@@ -452,10 +475,6 @@
 				7765599A18C8A06F00B9195C /* LaunchViewController.m */,
 				77ACC40618CA4B5D00CE03CA /* LoginTableViewController.h */,
 				77ACC40718CA4B5D00CE03CA /* LoginTableViewController.m */,
-				7765599D18C9682600B9195C /* AuthenticationManager.h */,
-				7765599E18C9682600B9195C /* AuthenticationManager.m */,
-				77ACC40018C9EC6900CE03CA /* KeychainItemWrapper.h */,
-				77ACC40118C9EC6900CE03CA /* KeychainItemWrapper.m */,
 				777AD1C018C5F81800DC5E9F /* SignInViewController.h */,
 				777AD1C118C5F81800DC5E9F /* SignInViewController.m */,
 				777AD1C918C6CAC400DC5E9F /* UsernameViewController.h */,
@@ -464,17 +483,36 @@
 			name = SignIn;
 			sourceTree = "<group>";
 		};
-		77B5DA7D1904BE5C00DDDB00 /* Categories */ = {
+		778236A0190B463A003018DC /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				77FD9CAA1909B68900596D65 /* ServersTableViewController.h */,
+				77FD9CAB1909B68900596D65 /* ServersTableViewController.m */,
+				778236A1190B514C003018DC /* AddServerViewController.h */,
+				778236A2190B514C003018DC /* AddServerViewController.m */,
+			);
+			name = Settings;
+			sourceTree = "<group>";
+		};
+		77B5DA7D1904BE5C00DDDB00 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				77B5DA7A19002BE100DDDB00 /* Tree.h */,
+				77B5DA7B19002BE100DDDB00 /* Tree.m */,
+				7765599D18C9682600B9195C /* AuthenticationManager.h */,
+				7765599E18C9682600B9195C /* AuthenticationManager.m */,
+				77ACC40018C9EC6900CE03CA /* KeychainItemWrapper.h */,
+				77ACC40118C9EC6900CE03CA /* KeychainItemWrapper.m */,
 				777AD1C518C6BF6C00DC5E9F /* NSURL+txtbranch.h */,
 				777AD1C618C6BF6C00DC5E9F /* NSURL+txtbranch.m */,
 				777F673118E515F8004093A8 /* UIView+Ext.h */,
 				777F673218E515F8004093A8 /* UIView+Ext.m */,
 				77B5DA7E1904BE9400DDDB00 /* UIAlertView+Block.h */,
 				77B5DA7F1904BE9400DDDB00 /* UIAlertView+Block.m */,
+				7700C5A4190A79E8005931BB /* ServerList.h */,
+				7700C5A5190A79E8005931BB /* ServerList.m */,
 			);
-			name = Categories;
+			name = Utilities;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -579,6 +617,7 @@
 				777AD19918C16C3100DC5E9F /* ASIS3ServiceRequest.m in Sources */,
 				777AD18918C16C3100DC5E9F /* ASIHTTPRequest.m in Sources */,
 				77288B1618F63A5200B97131 /* NSString+URLEncoding.m in Sources */,
+				778236A3190B514C003018DC /* AddServerViewController.m in Sources */,
 				777AD1BC18C57D0200DC5E9F /* TBTextView.m in Sources */,
 				77ACC40818CA4B5D00CE03CA /* LoginTableViewController.m in Sources */,
 				7765599B18C8A06F00B9195C /* LaunchViewController.m in Sources */,
@@ -594,7 +633,9 @@
 				777AD1C218C5F81800DC5E9F /* SignInViewController.m in Sources */,
 				777AD10718C13EFE00DC5E9F /* AppDelegate.m in Sources */,
 				777AD19618C16C3100DC5E9F /* ASIS3BucketRequest.m in Sources */,
+				77FD9CAC1909B68900596D65 /* ServersTableViewController.m in Sources */,
 				777AD19018C16C3100DC5E9F /* ASICloudFilesContainerXMLParserDelegate.m in Sources */,
+				776B024C190F003200A6DA52 /* TreeFormViewController.m in Sources */,
 				777AD18F18C16C3100DC5E9F /* ASICloudFilesContainerRequest.m in Sources */,
 				777AD18A18C16C3100DC5E9F /* ASIInputStream.m in Sources */,
 				77B5DA7C19002BE100DDDB00 /* Tree.m in Sources */,
@@ -609,6 +650,7 @@
 				77288B0B18F4A0B500B97131 /* NotificationsTableViewController.m in Sources */,
 				777AD19518C16C3100DC5E9F /* ASIS3BucketObject.m in Sources */,
 				777AD18618C16C3100DC5E9F /* ASIDataDecompressor.m in Sources */,
+				7700C5A6190A79E8005931BB /* ServerList.m in Sources */,
 				777AD1BF18C5819A00DC5E9F /* BranchTableViewCell.m in Sources */,
 				777AD19418C16C3100DC5E9F /* ASIS3Bucket.m in Sources */,
 				77288B2B18F899DE00B97131 /* TTTAttributedLabel.m in Sources */,

@@ -7,9 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "txtbranch.h"
 
-@interface BranchViewController : UIViewController
+@interface BranchViewController : UIViewController<Queryable>
 
-@property (nonatomic,retain) NSDictionary* query;
+@property (nonatomic,copy) NSDictionary* query;
 
 @end

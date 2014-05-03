@@ -7,17 +7,23 @@
 //
 
 #import "NSURL+txtbranch.h"
-
-#if LOCAL
-#define URL_FORMAT @"http://localhost:8080%@"
-#else
-#define URL_FORMAT @"http://txtbranch.gabicoware.com%@"
-#endif
+#import "ServerList.h"
 
 @implementation NSURL (txtbranch)
 
++(NSString*)tbURLName{
+    return [[ServerList instance] activeServer][@"name"];
+}
+
 +(NSURL*)tbURLWithPath:(NSString*)path{
-    return [NSURL URLWithString:[NSString stringWithFormat:URL_FORMAT,path]];
+    
+    NSString* address = [[ServerList instance] activeServer][@"address"];
+    
+    NSMutableCharacterSet* characters = [[NSCharacterSet whitespaceAndNewlineCharacterSet] mutableCopy];
+    
+    [characters addCharactersInString:@"/"];
+    
+    return [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",[address stringByTrimmingCharactersInSet:characters],path]];
 }
 
 +(NSURL*)tbURL{

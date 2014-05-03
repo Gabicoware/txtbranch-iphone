@@ -80,13 +80,25 @@
 -(void)setIsLoggedIn:(BOOL)isLoggedIn{
     _isLoggedIn = isLoggedIn;
     
-    NSArray* cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:[NSURL tbURL]];
+    NSArray* cookies = [[[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:[NSURL tbURL]] copy];
     
     NSString* username = nil;
     
     NSDictionary* authCookie = nil;
     
     for (NSHTTPCookie* cookie in cookies) {
+        
+        if ([cookie portList].count == 0) {
+            
+            NSMutableDictionary* properties = [[cookie properties] mutableCopy];
+            
+            [properties removeObjectForKey:@"portList"];
+            
+            NSHTTPCookie* correctedCookie = [NSHTTPCookie cookieWithProperties:properties];
+            
+            [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:correctedCookie];
+            
+        }
         
         if ([[cookie name] isEqualToString:@"username"]) {
             username = [cookie value];

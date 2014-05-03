@@ -14,6 +14,7 @@
 #import "AuthenticationManager.h"
 #import "NotificationsTableViewController.h"
 #import "AuthenticationManager.h"
+#import "NSURL+txtbranch.h"
 
 @interface TreesViewController ()
 
@@ -22,6 +23,9 @@
 @property (nonatomic, strong) NSArray* trees;
 @property (nonatomic, strong) NSArray* sections;
 
+@property (nonatomic, strong) IBOutlet UIBarButtonItem* signInItem;
+@property (nonatomic, strong) IBOutlet UIBarButtonItem* addTreeItem;
+
 @end
 
 @implementation TreesViewController
@@ -29,7 +33,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.title = @"txtbranch";
+    self.title = [NSURL tbURLName];
 
     self.refreshControl = [[UIRefreshControl alloc] init];
     
@@ -41,13 +45,28 @@
     [self loadMainTrees];
     
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Login" style:UIBarButtonItemStylePlain target:self action:@selector(didTapLoginButton:)];
+    //one of the few locations we have to use NSNotification, but thats all right
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleOpenTreeNotification:) name:@"OpenTree" object:nil];
+    
+}
+
+-(void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self buildSections];
     [self.tableView reloadData];
+    if ([AuthenticationManager instance].isLoggedIn) {
+        self.navigationItem.rightBarButtonItem = self.addTreeItem;
+    }else{
+        self.navigationItem.rightBarButtonItem = self.signInItem;
+    }
+}
+
+-(void)handleOpenTreeNotification:(NSNotification*)notification{
+    [self performSegueWithIdentifier:@"OpenTree" sender:notification.object];
 }
 
 -(BOOL)hasActivityOrInbox{
@@ -66,12 +85,6 @@
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-}
-
--(void)didTapLoginButton:(id)sender{
-    if (![AuthenticationManager instance].isLoggedIn) {
-        [self performSegueWithIdentifier:@"Login" sender:self];
-    }
 }
 
 -(void)loadMainTrees{
@@ -139,6 +152,9 @@
         if (section[@"text"]) {
             cell.textLabel.text = section[@"text"];
         }
+        if (section[@"detailText"]) {
+            cell.detailTextLabel.text = section[@"detailText"];
+        }
     }else if (indexPath.section == 1) {
         static NSString *TreeCellIdentifier = @"TreeTableViewCell";
         cell = [tableView dequeueReusableCellWithIdentifier:TreeCellIdentifier forIndexPath:indexPath];
@@ -163,7 +179,12 @@
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
     if ([segue.identifier isEqualToString:@"OpenTree"]) {
         BranchViewController* controller = (BranchViewController*)segue.destinationViewController;
-        NSDictionary* query = @{@"tree_name":((UITableViewCell*)sender).textLabel.text};
+        NSDictionary* query = nil;
+        if ([sender isKindOfClass:[NSString class]]) {
+            query = @{@"tree_name":sender};
+        }else{
+            query = @{@"tree_name":((UITableViewCell*)sender).textLabel.text};
+        }
         controller.query = query;
     }
     if ([segue.identifier isEqualToString:@"OpenNotifications"]) {
@@ -176,14 +197,6 @@
         
     }
     
-}
-
--(NSIndexPath*)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (![self hasActivityOrInbox] && indexPath.section == 0) {
-        return nil;
-    }
-    return indexPath;
 }
 
 @end

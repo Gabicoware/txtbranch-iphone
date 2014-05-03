@@ -75,7 +75,7 @@ NSString* const TreeDidUpdateBranchesNotificationBranchesUserInfoKey = @"TreeDid
 }
 
 
--(BOOL)canEditBranch:(NSDictionary*)branchKey{
+-(BOOL)canEditBranch:(NSString*)branchKey{
 
     NSString* username = [AuthenticationManager instance].username;
     
@@ -83,6 +83,24 @@ NSString* const TreeDidUpdateBranchesNotificationBranchesUserInfoKey = @"TreeDid
 
     return [username isEqualToString:branch[@"authorname"]] || [username isEqualToString:self.data[@"moderatorname"]];
 }
+
+-(BOOL)canDeleteBranch:(NSString*)branchKey{
+    
+    BOOL canEdit = [self canEditBranch:branchKey];
+    
+    NSDictionary* branch = _branches[branchKey];
+    
+    __block BOOL hasChildren = NO;
+    
+    [_branches enumerateKeysAndObjectsUsingBlock:^(id key, NSDictionary* obj, BOOL *stop) {
+        
+        hasChildren |= [obj[@"parent_branch_key"] isEqualToString:branchKey];
+        
+    }];
+    
+    return canEdit && !hasChildren && branch[@"parent_branch_key"] != nil;
+}
+
 
 -(AddBranchStatus)addBranchStatus:(NSString *)branchKey{
     if (![[AuthenticationManager instance] isLoggedIn]) {

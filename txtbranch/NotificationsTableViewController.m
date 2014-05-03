@@ -47,7 +47,10 @@
 
 -(void)setQuery:(NSDictionary *)query{
     if (![query isEqualToDictionary:_query]) {
-        _query = query;
+        if (_query[@"from_username"]) {
+            self.title = _query[@"from_username"];
+        }
+        _query = [query copy];
         [self refresh];
     }
 }

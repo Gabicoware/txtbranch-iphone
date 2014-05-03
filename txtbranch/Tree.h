@@ -36,6 +36,7 @@ typedef enum{
 @property (nonatomic, readonly) BOOL contentModeratorOnly;
 
 -(BOOL)canEditBranch:(NSString *)branchKey;
+-(BOOL)canDeleteBranch:(NSString*)branchKey;
 
 -(AddBranchStatus)addBranchStatus:(NSString *)branchKey;
 

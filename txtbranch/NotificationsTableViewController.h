@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "txtbranch.h"
 
-@interface NotificationsTableViewController : UITableViewController
+@interface NotificationsTableViewController : UITableViewController<Queryable>
 
-//@"inbox" or @"activity"
 @property (nonatomic, copy) NSDictionary* query;
 
 //if nil, no header is displayed

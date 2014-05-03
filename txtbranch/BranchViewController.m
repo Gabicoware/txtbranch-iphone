@@ -15,7 +15,6 @@
 #import "TBTextView.h"
 #import "AuthenticationManager.h"
 #import "NSDictionary+QueryString.h"
-#import "NotificationsTableViewController.h"
 #import "UIAlertView+Block.h"
 
 #define IsOrRow(indexPath) (indexPath.row%2 == 1)
@@ -93,7 +92,7 @@ NS_ENUM(NSInteger, BranchTableSection){
 }
 
 -(void)setQuery:(NSDictionary *)query{
-    _query = query;
+    _query = [query copy];
     
     NSAssert(query[@"tree_name"] != nil, @"tree_name key should be not nil in query");
     
@@ -343,14 +342,14 @@ NS_ENUM(NSInteger, BranchTableSection){
                 }
                 
                 
-                BOOL canEdit = [self.tree canEditBranch:branch];
+                BOOL canEdit = [self.tree canEditBranch:_branchKeys.lastObject];
+                BOOL canDelete = [self.tree canDeleteBranch:_branchKeys.lastObject];
                 
                 metadataCell.editButton.hidden = !canEdit || _isEditing;
                 NSDictionary* editLinkAttributes = [self linkAttributesWithURLString:@"txtbranch://?itemType=edit"];
                 metadataCell.editButton.text = [[NSAttributedString alloc] initWithString:@"edit" attributes:editLinkAttributes];
                 
-                BOOL canDelete = !_isEditing && canEdit && _childBranchKeys != nil && _childBranchKeys.count == 0;
-                metadataCell.deleteButton.hidden = !canDelete;
+                metadataCell.deleteButton.hidden = !canDelete || _isEditing;
                 NSDictionary* deleteLinkAttributes = [self linkAttributesWithURLString:@"txtbranch://?itemType=delete"];
                 metadataCell.deleteButton.text = [[NSAttributedString alloc] initWithString:@"delete" attributes:deleteLinkAttributes];
             }
@@ -688,9 +687,13 @@ NS_ENUM(NSInteger, BranchTableSection){
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
     if ([segue.identifier isEqualToString:@"OpenNotifications"] && [sender isKindOfClass:[NSString class]]) {
-        NotificationsTableViewController* controller = segue.destinationViewController;
-        controller.title = sender;
+        id<Queryable> controller = segue.destinationViewController;
         controller.query = @{@"from_username":sender};
+    }
+    if ([segue.identifier isEqualToString:@"TreeForm"]) {
+        UINavigationController* navController = segue.destinationViewController;
+        id<Queryable> controller = [[navController viewControllers] firstObject];
+        controller.query = self.query;
     }
     
 }
