@@ -16,6 +16,7 @@
 #import "AuthenticationManager.h"
 #import "NSURL+txtbranch.h"
 #import "Config.h"
+#import "Messages.h"
 
 @interface TreesViewController ()
 
@@ -47,11 +48,11 @@
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleOpenTreeNotification:) name:@"OpenTree" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleConfigDidLoad:) name:ConfigDidLoad object:[Config currentConfig]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDataAssetDidLoad:) name:DataAssetDidLoad object:[Config currentConfig]];
     
-    //we reload this every time
+    //we reload these every time
     [[Config currentConfig] reloadData];
-    
+    [[Messages currentMessages] reloadData];
     
 }
 
@@ -70,10 +71,11 @@
     }
 }
 
--(void)handleConfigDidLoad:(NSNotification*)notification{
+-(void)handleDataAssetDidLoad:(NSNotification*)notification{
     if ([Config currentConfig].data) {
         [self loadMainTrees];
     }else{
+        [[[UIAlertView alloc] initWithTitle:@"Can't connect to server" message:@"There was an error reaching the server. Please try again." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles: nil] show];
         [self.refreshControl endRefreshing];
     }
 }
@@ -141,7 +143,7 @@
 //this should get generalized with the logic in Tree
 -(void)showErrors:(NSArray*)errors{
     if (errors.count > 0) {
-        NSString* message = [[Config currentConfig] errorMessageForResult:errors];
+        NSString* message = [[Messages currentMessages] errorMessageForResult:errors];
         [[[UIAlertView alloc] initWithTitle:nil message:message delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles: nil] show];
     }else{
         [self showGeneralError];

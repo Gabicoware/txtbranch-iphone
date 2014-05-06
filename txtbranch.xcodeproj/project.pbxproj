@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		7700C5A6190A79E8005931BB /* ServerList.m in Sources */ = {isa = PBXBuildFile; fileRef = 7700C5A5190A79E8005931BB /* ServerList.m */; };
 		770BB1201917A4550030CC86 /* Config.m in Sources */ = {isa = PBXBuildFile; fileRef = 770BB11F1917A4550030CC86 /* Config.m */; };
+		771CD72219198AAE00BA826A /* Messages.m in Sources */ = {isa = PBXBuildFile; fileRef = 771CD72119198AAE00BA826A /* Messages.m */; };
+		771CD72519198AFA00BA826A /* DataAsset.m in Sources */ = {isa = PBXBuildFile; fileRef = 771CD72419198AFA00BA826A /* DataAsset.m */; };
 		77288B0B18F4A0B500B97131 /* NotificationsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 77288B0A18F4A0B500B97131 /* NotificationsTableViewController.m */; };
 		77288B1318F638E100B97131 /* NSDictionary+QueryString.m in Sources */ = {isa = PBXBuildFile; fileRef = 77288B1218F638E100B97131 /* NSDictionary+QueryString.m */; };
 		77288B1618F63A5200B97131 /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 77288B1518F63A5200B97131 /* NSString+URLEncoding.m */; };
@@ -85,6 +87,10 @@
 		7700C5A5190A79E8005931BB /* ServerList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerList.m; sourceTree = "<group>"; };
 		770BB11E1917A4550030CC86 /* Config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Config.h; sourceTree = "<group>"; };
 		770BB11F1917A4550030CC86 /* Config.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Config.m; sourceTree = "<group>"; };
+		771CD72019198AAE00BA826A /* Messages.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Messages.h; sourceTree = "<group>"; };
+		771CD72119198AAE00BA826A /* Messages.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Messages.m; sourceTree = "<group>"; };
+		771CD72319198AFA00BA826A /* DataAsset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataAsset.h; sourceTree = "<group>"; };
+		771CD72419198AFA00BA826A /* DataAsset.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataAsset.m; sourceTree = "<group>"; };
 		77288B0918F4A0B500B97131 /* NotificationsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationsTableViewController.h; sourceTree = "<group>"; };
 		77288B0A18F4A0B500B97131 /* NotificationsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsTableViewController.m; sourceTree = "<group>"; };
 		77288B1118F638E100B97131 /* NSDictionary+QueryString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+QueryString.h"; sourceTree = "<group>"; };
@@ -502,8 +508,12 @@
 			children = (
 				77B5DA7A19002BE100DDDB00 /* Tree.h */,
 				77B5DA7B19002BE100DDDB00 /* Tree.m */,
+				771CD72319198AFA00BA826A /* DataAsset.h */,
+				771CD72419198AFA00BA826A /* DataAsset.m */,
 				770BB11E1917A4550030CC86 /* Config.h */,
 				770BB11F1917A4550030CC86 /* Config.m */,
+				771CD72019198AAE00BA826A /* Messages.h */,
+				771CD72119198AAE00BA826A /* Messages.m */,
 				7765599D18C9682600B9195C /* AuthenticationManager.h */,
 				7765599E18C9682600B9195C /* AuthenticationManager.m */,
 				77ACC40018C9EC6900CE03CA /* KeychainItemWrapper.h */,
@@ -635,6 +645,7 @@
 				7765599F18C9682600B9195C /* AuthenticationManager.m in Sources */,
 				777AD18D18C16C3100DC5E9F /* ASICloudFilesCDNRequest.m in Sources */,
 				777AD18818C16C3100DC5E9F /* ASIFormDataRequest.m in Sources */,
+				771CD72219198AAE00BA826A /* Messages.m in Sources */,
 				777AD1C218C5F81800DC5E9F /* SignInViewController.m in Sources */,
 				777AD10718C13EFE00DC5E9F /* AppDelegate.m in Sources */,
 				777AD19618C16C3100DC5E9F /* ASIS3BucketRequest.m in Sources */,
@@ -656,6 +667,7 @@
 				777AD19518C16C3100DC5E9F /* ASIS3BucketObject.m in Sources */,
 				777AD18618C16C3100DC5E9F /* ASIDataDecompressor.m in Sources */,
 				7700C5A6190A79E8005931BB /* ServerList.m in Sources */,
+				771CD72519198AFA00BA826A /* DataAsset.m in Sources */,
 				777AD1BF18C5819A00DC5E9F /* BranchTableViewCell.m in Sources */,
 				770BB1201917A4550030CC86 /* Config.m in Sources */,
 				777AD19418C16C3100DC5E9F /* ASIS3Bucket.m in Sources */,

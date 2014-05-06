@@ -11,7 +11,7 @@
 #import "ASIHTTPRequest.h"
 #import "ASIFormDataRequest.h"
 #import "NSURL+txtbranch.h"
-#import "Config.h"
+#import "Messages.h"
 
 NSString* const TreeDidUpdateTreeNotification = @"TreeDidUpdateTreeNotification";
 NSString* const TreeDidAddBranchesNotification = @"TreeDidAddBranchesNotification";
@@ -315,7 +315,7 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
 
 -(void)showErrors:(NSArray*)errors{
     if (errors.count > 0) {
-        NSString* message = [[Config currentConfig] errorMessageForResult:errors];
+        NSString* message = [[Messages currentMessages] errorMessageForResult:errors];
         [[[UIAlertView alloc] initWithTitle:nil message:message delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles: nil] show];
     }else{
         [self showGeneralError];
