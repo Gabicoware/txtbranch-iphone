@@ -9,16 +9,7 @@
 #import "LoginTableViewController.h"
 #import "SignInViewController.h"
 #import "NSURL+txtbranch.h"
-
-typedef enum _LoginServices {
-#if LOCAL
-    LoginServicesLocalhost,
-#endif
-    LoginServicesTwitter,
-    LoginServicesFacebook,
-    LoginServicesReddit,
-    LoginServicesCount,
-} LoginServices;
+#import "Config.h"
 
 
 @interface LoginTableViewController ()
@@ -45,52 +36,31 @@ typedef enum _LoginServices {
     return 1;
 }
 
+-(NSArray*)authenticationProviders{
+    return [Config currentConfig].data[@"authentication_providers"];
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return LoginServicesCount;
+    return [self authenticationProviders].count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    switch (indexPath.row) {
-#if LOCAL
-        case LoginServicesLocalhost:
-            cell.textLabel.text = @"Localhost";
-            break;
-#endif
-        case LoginServicesTwitter:
-            cell.textLabel.text = @"Twitter";
-            break;
-        case LoginServicesFacebook:
-            cell.textLabel.text = @"Facebook";
-            break;
-        case LoginServicesReddit:
-            cell.textLabel.text = @"Reddit";
-            break;
-            
-        default:
-            break;
-    }
+    NSDictionary* provider = [self authenticationProviders][indexPath.row];
+    cell.textLabel.text = provider[@"name"];
     
     return cell;
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
     
-    NSDictionary* signInPaths = @{
-#if LOCAL
-                           @(LoginServicesLocalhost): @"/google_login",
-#endif
-                           @(LoginServicesTwitter): @"/auth/twitter",
-                           @(LoginServicesFacebook): @"/auth/facebook",
-                           @(LoginServicesReddit): @"/auth/reddit"
-                           };
-    
     NSIndexPath* indexPath = [self.tableView indexPathForCell:sender];
     
-    NSString* signInPath = signInPaths[@(indexPath.row)];
+    NSDictionary* provider = [self authenticationProviders][indexPath.row];
+    NSString* signInPath = provider[@"endpoint"];
     
     ((SignInViewController*)segue.destinationViewController).signInURL = [NSURL tbURLWithPath:signInPath];
 }
