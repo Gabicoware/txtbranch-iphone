@@ -11,10 +11,12 @@
 #import "ASIHTTPRequest.h"
 #import "ASIFormDataRequest.h"
 #import "NSURL+txtbranch.h"
+#import "Config.h"
 
 NSString* const TreeDidUpdateTreeNotification = @"TreeDidUpdateTreeNotification";
+NSString* const TreeDidAddBranchesNotification = @"TreeDidAddBranchesNotification";
 NSString* const TreeDidUpdateBranchesNotification = @"TreeDidUpdateBranchesNotification";
-NSString* const TreeDidUpdateBranchesNotificationBranchesUserInfoKey = @"TreeDidUpdateBranchesNotificationBranchesUserInfoKey";
+NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranchesUserInfoKey";
 
 //it is a critical error to not have a moderatorname or tree_name
 #define TreeDefaults @{\
@@ -74,6 +76,10 @@ NSString* const TreeDidUpdateBranchesNotificationBranchesUserInfoKey = @"TreeDid
     return self.data[@"conventions"];
 }
 
+-(BOOL)isModerator{
+    NSString* username = [AuthenticationManager instance].username;
+    return [username isEqualToString:self.data[@"moderatorname"]];
+}
 
 -(BOOL)canEditBranch:(NSString*)branchKey{
 
@@ -81,7 +87,7 @@ NSString* const TreeDidUpdateBranchesNotificationBranchesUserInfoKey = @"TreeDid
     
     NSDictionary* branch = _branches[branchKey];
 
-    return [username isEqualToString:branch[@"authorname"]] || [username isEqualToString:self.data[@"moderatorname"]];
+    return [username isEqualToString:branch[@"authorname"]] || [self isModerator];
 }
 
 -(BOOL)canDeleteBranch:(NSString*)branchKey{
@@ -131,38 +137,25 @@ NSString* const TreeDidUpdateBranchesNotificationBranchesUserInfoKey = @"TreeDid
     
     ASIHTTPRequest* request = [ASIHTTPRequest requestWithURL:URL];
     
-    [_activeRequests addObject:request];
-    
-	[request setTimeOutSeconds:20];
-    
-	[request setDelegate:self];
-	[request setDidFailSelector:@selector(treeRequestFailed:)];
-	[request setDidFinishSelector:@selector(treeRequestFinished:)];
-	
-	[request startAsynchronous];
+    [self performRequest:request selectorBase:@"tree"];
 }
 
 -(void)treeRequestFailed:(ASIHTTPRequest*)request{
-    NSLog(@"%@",request.responseString);
-    [_activeRequests removeObject:request];
+    [self processFailedRequest:request];
 }
 
 -(void)treeRequestFinished:(ASIHTTPRequest*)request{
-    
-    NSError* error = nil;
-    id result = [NSJSONSerialization JSONObjectWithData:[request responseData]
-                                                options:0
-                                                  error:&error];
-    if ([result[@"status"] isEqualToString:@"OK"]) {
-        self.data = [TreeDefaults dictionaryByMergingValues: result[@"result"]];
         
-        [self loadBranches:@[result[@"result"][@"root_branch_key"]]];
-    }
-    [_activeRequests removeObject:request];
-    
+    [self processRequest:request completion:^(id result) {
+        self.data = [TreeDefaults dictionaryByMergingValues: result];
+        
+        [self loadBranches:@[result[@"root_branch_key"]]];
+    }];
+
     [[NSNotificationCenter defaultCenter] postNotificationName:TreeDidUpdateTreeNotification
                                                         object:self
                                                       userInfo:nil];
+    
 }
 
 -(void)loadBranches:(NSArray*)branch_keys{
@@ -183,73 +176,41 @@ NSString* const TreeDidUpdateBranchesNotificationBranchesUserInfoKey = @"TreeDid
     
     ASIHTTPRequest* request = [ASIHTTPRequest requestWithURL:URL];
     
-    [_activeRequests addObject:request];
-    
-	[request setTimeOutSeconds:20];
-    
-	[request setDelegate:self];
-	[request setDidFailSelector:@selector(branchRequestFailed:)];
-	[request setDidFinishSelector:@selector(branchRequestFinished:)];
-	
-	[request startAsynchronous];
-    
+    [self performRequest:request selectorBase:@"branch"];
 }
 
 -(void)branchRequestFailed:(ASIHTTPRequest*)request{
-    NSLog(@"%@",request.responseString);
-    [_activeRequests removeObject:request];
+    [self processFailedRequest:request];
 }
 
 -(void)branchRequestFinished:(ASIHTTPRequest*)request{
-    NSError* error = nil;
-    id result = [NSJSONSerialization JSONObjectWithData:[request responseData]
-                                                options:0
-                                                  error:&error];
-    [self updateBranches:result[@"result"]];
-    [_activeRequests removeObject:request];
+    [self processRequest:request completion:^(id result) {
+        [self updateBranches:result];
+    }];
 }
 
 -(void)editBranch:(NSDictionary*)branch{
     
     ASIFormDataRequest* request = [[ASIFormDataRequest alloc] initWithURL:[NSURL tbURLWithPath:@"/api/v1/branchs"]];
     
-    [_activeRequests addObject:request];
-    
     [request addPostValue:branch[@"link"] forKey:@"link"];
     [request addPostValue:branch[@"content"] forKey:@"content"];
     [request addPostValue:branch[@"key"] forKey:@"branch_key"];
     
-    
-	[request setTimeOutSeconds:20];
-    
-	[request setDelegate:self];
-	[request setDidFailSelector:@selector(editBranchRequestFailed:)];
-	[request setDidFinishSelector:@selector(editBranchRequestFinished:)];
-	
     request.requestMethod = @"PUT";
     
-	[request startAsynchronous];
-    
+    [self performRequest:request selectorBase:@"editBranch"];
 }
 
 -(void)editBranchRequestFailed:(ASIHTTPRequest*)request{
-    NSLog(@"%@",request.responseString);
-    [_activeRequests removeObject:request];
+    [self processFailedRequest:request];
 }
 
 -(void)editBranchRequestFinished:(ASIHTTPRequest*)request{
-    NSError* error = nil;
-    id result = [NSJSONSerialization JSONObjectWithData:[request responseData]
-                                                options:0
-                                                  error:&error];
-    if (result != nil && ![result[@"status"] isEqualToString:@"ERROR"]) {
-        [self updateBranches:@[result[@"result"]]];
-    }
-    
-    [_activeRequests removeObject:request];
+    [self processRequest:request completion:^(id result) {
+        [self updateBranches:@[result]];
+    }];
 }
-
-
 
 -(void)deleteBranch:(NSDictionary*)branch{
     
@@ -257,63 +218,42 @@ NSString* const TreeDidUpdateBranchesNotificationBranchesUserInfoKey = @"TreeDid
     
     ASIHTTPRequest* request = [[ASIHTTPRequest alloc] initWithURL:[NSURL tbURLWithPath:path]];
     
-    [_activeRequests addObject:request];
-    
-	[request setTimeOutSeconds:20];
-    
-	[request setDelegate:self];
-	[request setDidFailSelector:@selector(deleteBranchRequestFailed:)];
-	[request setDidFinishSelector:@selector(deleteBranchRequestFinished:)];
-	
     request.requestMethod = @"DELETE";
     
-	[request startAsynchronous];
+    [self performRequest:request selectorBase:@"deleteBranch"];
     
 }
 
 -(void)deleteBranchRequestFailed:(ASIHTTPRequest*)request{
-    [_activeRequests removeObject:request];
+    [self processFailedRequest:request];
 }
 
 -(void)deleteBranchRequestFinished:(ASIHTTPRequest*)request{
-    [_activeRequests removeObject:request];
+    [self processRequest:request completion:^(id result) {}];
 }
 
 -(void)addBranch:(NSDictionary*)branch{
     
     ASIFormDataRequest* request = [[ASIFormDataRequest alloc] initWithURL:[NSURL tbURLWithPath:@"/api/v1/branchs"]];
     
-    [_activeRequests addObject:request];
-    
     for (NSString* key in branch) {
         id value = branch[key];
         [request addPostValue:value forKey:key];
     }
     
-	[request setTimeOutSeconds:20];
-    
-	[request setDelegate:self];
-	[request setDidFailSelector:@selector(addBranchRequestFailed:)];
-	[request setDidFinishSelector:@selector(addBranchRequestFinished:)];
-	
-	[request startAsynchronous];
+    [self performRequest:request selectorBase:@"addBranch"];
     
 }
 
 -(void)addBranchRequestFailed:(ASIHTTPRequest*)request{
-    NSLog(@"%@",request.responseString);
-    [_activeRequests removeObject:request];
+    [self processFailedRequest:request];
 }
 
 -(void)addBranchRequestFinished:(ASIHTTPRequest*)request{
-    NSError* error = nil;
-    id result = [NSJSONSerialization JSONObjectWithData:[request responseData]
-                                                options:0
-                                                  error:&error];
-    if (result != nil && ![result[@"status"] isEqualToString:@"ERROR"]) {
-        [self updateBranches:@[result[@"result"]]];
-    }
-    [_activeRequests removeObject:request];
+    [self processRequest:request completion:^(id result) {
+        [self postNotificationName:TreeDidAddBranchesNotification branches:@[result]];
+        [self updateBranches:@[result]];
+    }];
 }
 
 -(void)updateBranches:(NSArray *)objects{
@@ -321,9 +261,70 @@ NSString* const TreeDidUpdateBranchesNotificationBranchesUserInfoKey = @"TreeDid
     for (NSDictionary* branch in objects) {
         _branches[branch[@"key"]] = branch;
     }
-    [[NSNotificationCenter defaultCenter] postNotificationName:TreeDidUpdateBranchesNotification object:self userInfo:@{TreeDidUpdateBranchesNotificationBranchesUserInfoKey:objects}];
+    [self postNotificationName:TreeDidUpdateBranchesNotification branches:objects];
 }
 
+-(void)postNotificationName:(NSString*)name branches:(NSArray*)branches{
+    [[NSNotificationCenter defaultCenter] postNotificationName:name object:self userInfo:@{TreeNotificationBranchesUserInfoKey:branches}];
+}
+
+-(void)performRequest:(ASIHTTPRequest*)request selectorBase:(NSString*)selectorBase{
+    
+    [_activeRequests addObject:request];
+    
+	[request setTimeOutSeconds:20];
+    
+	[request setDelegate:self];
+    
+    SEL failedSelector = NSSelectorFromString([selectorBase stringByAppendingString:@"RequestFailed:"]);
+    
+    if ([self respondsToSelector:failedSelector]) {
+        [request setDidFailSelector:failedSelector];
+    }
+    
+    SEL finishedSelector = NSSelectorFromString([selectorBase stringByAppendingString:@"RequestFinished:"]);
+    
+    if ([self respondsToSelector:finishedSelector]) {
+        [request setDidFinishSelector:finishedSelector];
+    }
+    
+	[request startAsynchronous];
+}
+
+
+-(void)processFailedRequest:(ASIHTTPRequest*)request
+{
+    NSLog(@"%@",request.responseString);
+    [_activeRequests removeObject:request];
+    [self showGeneralError];
+}
+-(void)processRequest:(ASIHTTPRequest*)request completion:(void(^)(id result))completion{
+    NSError* error = nil;
+    id result = [NSJSONSerialization JSONObjectWithData:[request responseData]
+                                                options:0
+                                                  error:&error];
+    if (result != nil && [result[@"status"] isEqualToString:@"OK"]) {
+        
+        completion(result[@"result"]);
+        
+    }else{
+        [self showErrors:result[@"result"]];
+    }
+    [_activeRequests removeObject:request];
+}
+
+-(void)showErrors:(NSArray*)errors{
+    if (errors.count > 0) {
+        NSString* message = [[Config currentConfig] errorMessageForResult:errors];
+        [[[UIAlertView alloc] initWithTitle:nil message:message delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles: nil] show];
+    }else{
+        [self showGeneralError];
+    }
+}
+
+-(void)showGeneralError{
+    [[[UIAlertView alloc] initWithTitle:nil message:@"There was a problem contacting the server. Sorry!" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles: nil] show];
+}
 
 @end
 

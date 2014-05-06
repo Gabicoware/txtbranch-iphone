@@ -383,14 +383,16 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" id="kpx-iy-T96">
-                        <barButtonItem key="rightBarButtonItem" title="edit" id="RX5-Ja-RxT">
+                    <toolbarItems>
+                        <barButtonItem title="edit" id="RX5-Ja-RxT">
                             <connections>
                                 <segue destination="daY-rI-6Wc" kind="modal" identifier="TreeForm" id="Lty-r6-Fwx"/>
                             </connections>
                         </barButtonItem>
-                    </navigationItem>
+                    </toolbarItems>
+                    <navigationItem key="navigationItem" id="kpx-iy-T96"/>
                     <connections>
+                        <outlet property="editItem" destination="RX5-Ja-RxT" id="g37-vY-kHc"/>
                         <outlet property="tableView" destination="PPu-Bc-0O7" id="jAx-py-fd3"/>
                         <segue destination="bqR-0d-7u1" kind="modal" identifier="Login" id="ai3-tU-c0q"/>
                         <segue destination="1u2-bx-reu" kind="push" identifier="OpenNotifications" id="2TW-ky-nJJ"/>

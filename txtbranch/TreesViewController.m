@@ -15,6 +15,7 @@
 #import "NotificationsTableViewController.h"
 #import "AuthenticationManager.h"
 #import "NSURL+txtbranch.h"
+#import "Config.h"
 
 @interface TreesViewController ()
 
@@ -42,11 +43,15 @@
     
     [self.refreshControl beginRefreshing];
     
-    [self loadMainTrees];
     
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
-    //one of the few locations we have to use NSNotification, but thats all right
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleOpenTreeNotification:) name:@"OpenTree" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleConfigDidLoad:) name:ConfigDidLoad object:[Config currentConfig]];
+    
+    //we reload this every time
+    [[Config currentConfig] reloadData];
+    
     
 }
 
@@ -62,6 +67,14 @@
         self.navigationItem.rightBarButtonItem = self.addTreeItem;
     }else{
         self.navigationItem.rightBarButtonItem = self.signInItem;
+    }
+}
+
+-(void)handleConfigDidLoad:(NSNotification*)notification{
+    if ([Config currentConfig].data) {
+        [self loadMainTrees];
+    }else{
+        [self.refreshControl endRefreshing];
     }
 }
 
@@ -104,22 +117,41 @@
 
 -(void)listRequestFinished:(ASIHTTPRequest*)request{
     [self.refreshControl endRefreshing];
-    
-    
     NSError* error = nil;
     id result = [NSJSONSerialization JSONObjectWithData:[request responseData]
                                                 options:0
                                                   error:&error];
-    if ([result[@"status"] isEqualToString:@"OK"]) {
+    if (result != nil && [result[@"status"] isEqualToString:@"OK"]) {
+        
         self.trees = result[@"result"];
         [self.tableView reloadData];
+    }else{
+        [self showErrors:result[@"result"]];
     }
+    _request = nil;
+
+    
 }
 
 -(void)listRequestFailed:(ASIHTTPRequest*)sender{
     [self.refreshControl endRefreshing];
-    NSLog(@"");
+    [self showGeneralError];
+    _request = nil;
 }
+//this should get generalized with the logic in Tree
+-(void)showErrors:(NSArray*)errors{
+    if (errors.count > 0) {
+        NSString* message = [[Config currentConfig] errorMessageForResult:errors];
+        [[[UIAlertView alloc] initWithTitle:nil message:message delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles: nil] show];
+    }else{
+        [self showGeneralError];
+    }
+}
+
+-(void)showGeneralError{
+    [[[UIAlertView alloc] initWithTitle:nil message:@"There was a problem contacting the server. Sorry!" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles: nil] show];
+}
+
 
 - (void)didReceiveMemoryWarning
 {

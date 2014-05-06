@@ -9,8 +9,9 @@
 #import <Foundation/Foundation.h>
 
 extern NSString* const TreeDidUpdateTreeNotification;
+extern NSString* const TreeDidAddBranchesNotification;
 extern NSString* const TreeDidUpdateBranchesNotification;
-extern NSString* const TreeDidUpdateBranchesNotificationBranchesUserInfoKey;
+extern NSString* const TreeNotificationBranchesUserInfoKey;
 
 typedef enum{
     AddBranchStatusAllowed,
@@ -37,6 +38,7 @@ typedef enum{
 
 -(BOOL)canEditBranch:(NSString *)branchKey;
 -(BOOL)canDeleteBranch:(NSString*)branchKey;
+-(BOOL)isModerator;
 
 -(AddBranchStatus)addBranchStatus:(NSString *)branchKey;
 

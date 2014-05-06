@@ -39,6 +39,7 @@ NS_ENUM(NSInteger, BranchTableSection){
 @property (nonatomic, assign) BOOL needsParentBranch;
 @property (nonatomic,strong) ASIHTTPRequest* request;
 @property (nonatomic,strong) IBOutlet UITableView* tableView;
+@property (nonatomic,strong) IBOutlet UIBarButtonItem* editItem;
 @property (nonatomic,strong) Tree* tree;
 
 @property (nonatomic, strong) NSString* currentBranchKey;
@@ -78,6 +79,7 @@ NS_ENUM(NSInteger, BranchTableSection){
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleTreeDidUpdateBranchesNotification:) name:TreeDidUpdateBranchesNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleTreeDidUpdateTreeNotification:) name:TreeDidUpdateTreeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleTreeDidAddBranchesNotification:) name:TreeDidAddBranchesNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleKeyboardUpdate:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleKeyboardUpdate:) name:UIKeyboardWillChangeFrameNotification object:nil];
 }
@@ -89,6 +91,15 @@ NS_ENUM(NSInteger, BranchTableSection){
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+    [self updateEditButton];
+}
+
+-(void)updateEditButton{
+    if ([AuthenticationManager instance].isLoggedIn && [self.tree isModerator] ) {
+        self.navigationItem.rightBarButtonItem = self.editItem;
+    }else{
+        self.navigationItem.rightBarButtonItem = nil;
+    }
 }
 
 -(void)setQuery:(NSDictionary *)query{
@@ -160,7 +171,7 @@ NS_ENUM(NSInteger, BranchTableSection){
 -(void)handleTreeDidUpdateBranchesNotification:(NSNotification*)notification
 {
     if ([notification.object isEqual:self.tree]) {
-        NSArray* branches = notification.userInfo[TreeDidUpdateBranchesNotificationBranchesUserInfoKey];
+        NSArray* branches = notification.userInfo[TreeNotificationBranchesUserInfoKey];
         [self addBranches:branches];
     }
 }
@@ -236,6 +247,7 @@ NS_ENUM(NSInteger, BranchTableSection){
         _branchKeys = [@[_currentBranchKey] mutableCopy];
         [self.tableView reloadData];
         [self.tree loadChildBranches:_currentBranchKey];
+        [self updateEditButton];
     }
     
 }
@@ -600,6 +612,20 @@ NS_ENUM(NSInteger, BranchTableSection){
         [self.tree addBranch:branch];
     }
     
+    
+}
+
+-(void)handleTreeDidAddBranchesNotification:(NSNotification*)notification{
+    [self setAddBranchFormShowing:NO];
+    
+    NSArray * branches = notification.userInfo[TreeNotificationBranchesUserInfoKey];
+    
+    _currentBranchKey = branches.firstObject[@"key"];
+    [_branchKeys addObject:_currentBranchKey];
+    _childBranchKeys = nil;
+    [self.tableView reloadData];
+    
+    [self.tree loadChildBranches:_currentBranchKey];
     
 }
 
