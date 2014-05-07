@@ -596,21 +596,52 @@ NS_ENUM(NSInteger, BranchTableSection){
 -(void)handleBranchFormSave:(NSNotification*)notification{
     AddBranchFormTableViewCell* cell = notification.object;
     
+    NSMutableDictionary* branch = nil;
+    
     if (_isEditing) {
-        //do this shiznit
-        NSMutableDictionary* branch = [self.tree.branches[ _currentBranchKey ] mutableCopy];
-        branch[@"content"] = cell.contentTextView.text;
-        branch[@"link"] = cell.linkTextView.text;
         
-        [self.tree editBranch:branch];
-        [self setIsEditing:NO];
+        branch = [self.tree.branches[ _currentBranchKey ] mutableCopy];
+        ((NSMutableDictionary*)branch)[@"content"] = cell.contentTextView.text;
+        ((NSMutableDictionary*)branch)[@"link"] = cell.linkTextView.text;
         
     }else{
-        NSDictionary* branch = @{@"link": cell.linkTextView.text,
+        branch = [@{@"link": cell.linkTextView.text,
                                  @"content":cell.contentTextView.text,
-                                 @"parent_branch_key":_currentBranchKey};
-        [self.tree addBranch:branch];
+                                 @"parent_branch_key":_currentBranchKey} mutableCopy];
     }
+    
+    SaveBranchStatus status = [self.tree saveBranchStatus:branch];
+    
+    if (status == 0) {
+        
+        if (_isEditing) {
+            //do this shiznit
+            [self.tree editBranch:branch];
+            [self setIsEditing:NO];
+        }else{
+            [self.tree addBranch:branch];
+        }
+        
+    }else{
+        NSMutableString* message = [@"There are was an issue trying to save. " mutableCopy];
+        
+        if (status & SaveBranchStatusEmptyContent) {
+            [message appendString:@"The content cannot be empty. "];
+        }
+        if (status & SaveBranchStatusEmptyLink) {
+            [message appendString:@"The link cannot be empty. "];
+        }
+        if (status & SaveBranchStatusModeratorOnlyContent) {
+            [message appendString:@"The content is moderator only. "];
+        }
+        if (status & SaveBranchStatusModeratorOnlyLink) {
+            [message appendString:@"The link can only be saved by the moderator. "];
+        }
+        
+        [[[UIAlertView alloc] initWithTitle:nil message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+    }
+    
+    
     
     
 }

@@ -217,12 +217,12 @@ static NSMutableDictionary* CurrentBranch = nil;
 
 -(void)setupWithTree:(Tree *)tree{
     self.linkTextView.placeholder = tree.data[@"link_prompt"];
-    self.linkTextView.userInteractionEnabled = !tree.linkModeratorOnly;
-    self.linkMax = tree.linkMax;
+    self.linkTextView.userInteractionEnabled = !tree.linkModeratorOnly || tree.isModerator;
+    self.linkMax = self.linkTextView.userInteractionEnabled ? tree.linkMax : 0;
     
     self.contentTextView.placeholder = tree.data[@"content_prompt"];
-    self.contentTextView.userInteractionEnabled = !tree.contentModeratorOnly;
-    self.contentMax = tree.contentMax;
+    self.contentTextView.userInteractionEnabled = !tree.contentModeratorOnly || tree.isModerator;
+    self.contentMax = self.contentTextView.userInteractionEnabled ? tree.contentMax : 0;
 }
 
 -(void)willMoveToWindow:(UIWindow *)newWindow{

@@ -69,7 +69,7 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
 }
 
 -(NSUInteger)branchMax{
-    return 2;
+    return [self.data[@"branch_max"] integerValue];
 }
 
 -(NSString*)conventions{
@@ -120,6 +120,36 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
         }
     }
 }
+
+#define HasString(string, maxLength) (string != nil && 0 < [(NSString*)string length] && [(NSString*)string length] < maxLength)
+
+-(SaveBranchStatus)saveBranchStatus:(NSMutableDictionary *)branch;{
+    SaveBranchStatus result = SaveBranchStatusAllowed;
+    
+    NSString* link = branch[@"link"];
+    NSString* content = branch[@"content"];
+    
+    NSDictionary* existingBranch = [self branches][branch[@"key"]];
+    
+    if ([self contentModeratorOnly] && ![self isModerator]) {
+        if(0 < content.length && ![existingBranch[@"content"] isEqualToString:content]){
+            result |= SaveBranchStatusModeratorOnlyContent;
+        }
+    }else if (!HasString(content, self.contentMax)) {
+        result |= SaveBranchStatusEmptyContent;
+    }
+    
+    if ([self linkModeratorOnly] && ![self isModerator]) {
+        if(0 < link.length && ![existingBranch[@"link"] isEqualToString:link]){
+            result |= SaveBranchStatusModeratorOnlyLink;
+        }
+    }else if (!HasString(link, self.linkMax)) {
+        result |= SaveBranchStatusEmptyLink;
+    }
+    
+    return result;
+}
+
 
 -(NSArray*)childBranches:(NSString*)parentKey{
     NSString* username = [AuthenticationManager instance].username;

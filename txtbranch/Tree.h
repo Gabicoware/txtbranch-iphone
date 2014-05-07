@@ -19,6 +19,14 @@ typedef enum{
     AddBranchStatusHasBranches,
 }AddBranchStatus;
 
+typedef enum{
+    SaveBranchStatusAllowed = 0,
+    SaveBranchStatusEmptyContent = 1 << 0,
+    SaveBranchStatusEmptyLink = 1 << 1,
+    SaveBranchStatusModeratorOnlyContent = 1 << 2,
+    SaveBranchStatusModeratorOnlyLink = 1 << 3
+}SaveBranchStatus;
+
 @interface Tree : NSObject
 
 //designated initializer
@@ -41,6 +49,8 @@ typedef enum{
 -(BOOL)isModerator;
 
 -(AddBranchStatus)addBranchStatus:(NSString *)branchKey;
+//will return status and potentially mutate the branch
+-(SaveBranchStatus)saveBranchStatus:(NSMutableDictionary *)branch;
 
 -(NSArray*)childBranches:(NSString*)parentKey;
 
