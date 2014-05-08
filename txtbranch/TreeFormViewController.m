@@ -48,7 +48,9 @@
         
         if (components.count == 3 && [components[1] isEqualToString:@"tree"] && ![components[2] isEqualToString:@"new"]) {
             
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"OpenTree" object:components[2] userInfo:nil];
+            if (![self.query[@"tree_name"] isEqualToString:components[2]]) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"OpenTree" object:components[2] userInfo:nil];
+            }
             [self dismissViewControllerAnimated:YES completion:NULL];
             
         }
