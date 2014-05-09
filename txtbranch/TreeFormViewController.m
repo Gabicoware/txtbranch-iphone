@@ -50,6 +50,8 @@
             
             if (![self.query[@"tree_name"] isEqualToString:components[2]]) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"OpenTree" object:components[2] userInfo:nil];
+            }else{
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateTree" object:components[2] userInfo:nil];
             }
             [self dismissViewControllerAnimated:YES completion:NULL];
             

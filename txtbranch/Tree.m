@@ -47,8 +47,16 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
         _activeRequests = [NSMutableSet set];
         _treeName = treeName;
         [self loadTree:treeName];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleUpdateTreeNotification:) name:@"UpdateTree" object:nil];
     }
     return self;
+}
+
+-(void)handleUpdateTreeNotification:(NSNotification*)notification{
+    if ([notification.object isEqualToString:self.treeName]) {
+        [self loadTree:_treeName];
+    }
 }
 
 -(NSUInteger)contentMax{
@@ -113,7 +121,7 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
         return AddBranchStatusNeedsLogin;
     }else{
         NSArray* branches = [self childBranches:branchKey];
-        if (branches.count < self.branchMax) {
+        if (branches.count < self.branchMax || self.branchMax == 0) {
             return AddBranchStatusAllowed;
         }else{
             return AddBranchStatusHasBranches;
@@ -178,8 +186,10 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
         
     [self processRequest:request completion:^(id result) {
         self.data = [TreeDefaults dictionaryByMergingValues: result];
-        
-        [self loadBranches:@[result[@"root_branch_key"]]];
+        //load the root branch immediately if we don't have it
+        if (_branches[result[@"root_branch_key"]] == nil) {
+            [self loadBranches:@[result[@"root_branch_key"]]];
+        }
     }];
 
     [[NSNotificationCenter defaultCenter] postNotificationName:TreeDidUpdateTreeNotification
