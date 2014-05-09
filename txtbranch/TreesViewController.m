@@ -39,7 +39,7 @@
 
     self.refreshControl = [[UIRefreshControl alloc] init];
     
-    [self.refreshControl addTarget:self action:@selector(loadMainTrees)
+    [self.refreshControl addTarget:self action:@selector(refresh)
                   forControlEvents:UIControlEventValueChanged];
     
     [self.refreshControl beginRefreshing];
@@ -100,6 +100,15 @@
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
+}
+
+-(void)refresh{
+    if ([Config currentConfig].data) {
+        [self loadMainTrees];
+    }else{
+        [[Config currentConfig] reloadData];
+        [[Messages currentMessages] reloadData];
+    }
 }
 
 -(void)loadMainTrees{
