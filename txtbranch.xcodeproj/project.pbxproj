@@ -63,6 +63,9 @@
 		777AD1C718C6BF6C00DC5E9F /* NSURL+txtbranch.m in Sources */ = {isa = PBXBuildFile; fileRef = 777AD1C618C6BF6C00DC5E9F /* NSURL+txtbranch.m */; };
 		777AD1CB18C6CAC400DC5E9F /* UsernameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 777AD1CA18C6CAC400DC5E9F /* UsernameViewController.m */; };
 		777F673318E515F8004093A8 /* UIView+Ext.m in Sources */ = {isa = PBXBuildFile; fileRef = 777F673218E515F8004093A8 /* UIView+Ext.m */; };
+		77814E5E191D82290063877A /* NotificationFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 77814E5D191D82290063877A /* NotificationFormatter.m */; };
+		77814E60191D83F60063877A /* NotificationFormatterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 77814E5F191D83F60063877A /* NotificationFormatterTests.m */; };
+		77814E62191D840D0063877A /* notifications.json in Resources */ = {isa = PBXBuildFile; fileRef = 77814E61191D840D0063877A /* notifications.json */; };
 		778236A3190B514C003018DC /* AddServerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 778236A2190B514C003018DC /* AddServerViewController.m */; };
 		7783350718C81DA0008375A6 /* TreesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7783350618C81DA0008375A6 /* TreesViewController.m */; };
 		77ACC40218C9EC6900CE03CA /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 77ACC40118C9EC6900CE03CA /* KeychainItemWrapper.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -189,6 +192,10 @@
 		777AD1CA18C6CAC400DC5E9F /* UsernameViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UsernameViewController.m; sourceTree = "<group>"; };
 		777F673118E515F8004093A8 /* UIView+Ext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Ext.h"; sourceTree = "<group>"; };
 		777F673218E515F8004093A8 /* UIView+Ext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Ext.m"; sourceTree = "<group>"; };
+		77814E5C191D82290063877A /* NotificationFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationFormatter.h; sourceTree = "<group>"; };
+		77814E5D191D82290063877A /* NotificationFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationFormatter.m; sourceTree = "<group>"; };
+		77814E5F191D83F60063877A /* NotificationFormatterTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationFormatterTests.m; sourceTree = "<group>"; };
+		77814E61191D840D0063877A /* notifications.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = notifications.json; sourceTree = "<group>"; };
 		778236A1190B514C003018DC /* AddServerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddServerViewController.h; sourceTree = "<group>"; };
 		778236A2190B514C003018DC /* AddServerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddServerViewController.m; sourceTree = "<group>"; };
 		7783350518C81DA0008375A6 /* TreesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TreesViewController.h; sourceTree = "<group>"; };
@@ -356,6 +363,8 @@
 			isa = PBXGroup;
 			children = (
 				777AD12118C13EFE00DC5E9F /* txtbranchTests.m */,
+				77814E5F191D83F60063877A /* NotificationFormatterTests.m */,
+				77814E61191D840D0063877A /* notifications.json */,
 				777AD11C18C13EFE00DC5E9F /* Supporting Files */,
 			);
 			path = txtbranchTests;
@@ -514,6 +523,8 @@
 				770BB11F1917A4550030CC86 /* Config.m */,
 				771CD72019198AAE00BA826A /* Messages.h */,
 				771CD72119198AAE00BA826A /* Messages.m */,
+				77814E5C191D82290063877A /* NotificationFormatter.h */,
+				77814E5D191D82290063877A /* NotificationFormatter.m */,
 				7765599D18C9682600B9195C /* AuthenticationManager.h */,
 				7765599E18C9682600B9195C /* AuthenticationManager.m */,
 				77ACC40018C9EC6900CE03CA /* KeychainItemWrapper.h */,
@@ -616,6 +627,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				77814E62191D840D0063877A /* notifications.json in Resources */,
 				777AD12018C13EFE00DC5E9F /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -627,6 +639,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				77814E5E191D82290063877A /* NotificationFormatter.m in Sources */,
 				777AD18518C16C3100DC5E9F /* ASIDataCompressor.m in Sources */,
 				777AD10D18C13EFE00DC5E9F /* BranchViewController.m in Sources */,
 				777AD19918C16C3100DC5E9F /* ASIS3ServiceRequest.m in Sources */,
@@ -685,6 +698,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				777AD12218C13EFE00DC5E9F /* txtbranchTests.m in Sources */,
+				77814E60191D83F60063877A /* NotificationFormatterTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -801,6 +815,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "txtbranch/txtbranch-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
@@ -819,6 +834,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "txtbranch/txtbranch-Prefix.pch";
 				HEADER_SEARCH_PATHS = (

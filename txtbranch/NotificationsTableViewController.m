@@ -12,6 +12,7 @@
 #import "NSDictionary+QueryString.h"
 #import "BranchViewController.h"
 #import "TTTAttributedLabel.h"
+#import "NotificationFormatter.h"
 
 @class NotificationTableViewCell;
 
@@ -30,7 +31,7 @@
 
 @property (nonatomic, strong) ASIHTTPRequest* request;
 @property (nonatomic, strong) NSArray* notifications;
-@property (nonatomic, strong) NSMutableDictionary* URLToNotifications;
+@property (nonatomic, strong) NotificationFormatter* formatter;
 
 @end
 
@@ -38,7 +39,8 @@
 
 -(void)viewDidLoad{
     [super viewDidLoad];
-    self.URLToNotifications = [@{} mutableCopy];
+    
+    self.formatter = [[NotificationFormatter alloc] init];
 }
 
 -(void)dealloc{
@@ -109,73 +111,15 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NotificationTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NotificationTableViewCell" forIndexPath:indexPath];
-    cell.attributedLabel.text = [self stringWithNotification:self.notifications[indexPath.row]];
+    cell.attributedLabel.text = [self.formatter stringWithNotification:self.notifications[indexPath.row]];
     
     // Configure the cell...
     
     return cell;
 }
 
--(NSMutableAttributedString*)stringWithNotification:(NSDictionary*)notification{
-    
-    NSDictionary* normalAttributes = @{NSFontAttributeName:[UIFont fontWithName:@"HelveticaNeue-LightItalic" size:15]};
-    
-    NSArray* stringSections = [self stringSectionsWithNotification:notification];
-    
-    NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:@"" attributes:normalAttributes];
-    for (NSDictionary* stringSection in stringSections) {
-        
-        NSDictionary* attributes = nil;
-        
-        if ([stringSection[@"type"] isEqualToString:@"item"]) {
-            NSDictionary* params = @{@"itemType": stringSection[@"itemType"],
-                                     @"notification": notification[@"key"]};
-            NSString* queryString = [params queryStringValue];
-            NSURL* URL = [NSURL URLWithString:[NSString stringWithFormat:@"txtbranch://?%@",queryString]];
-            self.URLToNotifications[URL] = notification;
-            attributes = @{NSFontAttributeName:[UIFont fontWithName:@"HelveticaNeue-Italic" size:15],
-                           NSLinkAttributeName:URL,
-                           NSForegroundColorAttributeName:[UIColor darkGrayColor]};
-        }else{
-            attributes = normalAttributes;
-        }
-        
-        [string appendAttributedString:[[NSAttributedString alloc] initWithString:stringSection[@"string"] attributes:attributes]];
-    }
-    
-    return [string copy];
-    
-}
-
--(NSArray*)stringSectionsWithNotification:(NSDictionary*)notification{
-    
-    NSString* username = notification[@"from_username"];
-    NSString* message = @"";
-    
-    if ([notification[@"notification_type"] isEqualToString:@"new_branch"]) {
-        message = @"added a branch";
-    }else if ([notification[@"notification_type"] isEqualToString:@"edit_branch"]) {
-        message = @"edited a branch";
-    }
-    NSString* treename = notification[@"tree_name"];
-    NSString* link = notification[@"branch_link"];
-    
-    NSMutableArray* array = [NSMutableArray array];
-    
-    [array addObject:@{@"string":username,@"type":@"item",@"itemType":@"username"}];
-    [array addObject:@{@"string":@" ",@"type":@"text"}];
-    [array addObject:@{@"string":message,@"type":@"text"}];
-    [array addObject:@{@"string":@" \"",@"type":@"text"}];
-    [array addObject:@{@"string":link,@"type":@"item",@"itemType":@"link"}];
-    [array addObject:@{@"string":@"\" in ",@"type":@"text"}];
-    [array addObject:@{@"string":treename,@"type":@"item",@"itemType":@"tree_name"}];
-    
-    return [array copy];
-    
-}
-
 - (void)attributedLabel:(TTTAttributedLabel *)label didSelectLinkWithURL:(NSURL *)url{
-    NSDictionary* notification = self.URLToNotifications[url];
+    NSDictionary* notification = self.formatter.URLToNotifications[url];
     //if we have the notification
     if(notification){
         NSDictionary* params = [NSDictionary dictionaryWithQueryString:url.query];
@@ -203,5 +147,4 @@
         }
     }
 }
-
 @end
