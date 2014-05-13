@@ -67,12 +67,12 @@ NSString* ServerListFileLocation(){
     return [_servers allObjects];
 }
 
--(void)addServer:(NSString *)server{
+-(void)addServer:(NSDictionary *)server{
     [_servers addObject:server];
     [self synchronize];
 }
 
--(void)removeServer:(NSString *)server{
+-(void)removeServer:(NSDictionary *)server{
     [_servers removeObject:server];
     [self synchronize];
 }

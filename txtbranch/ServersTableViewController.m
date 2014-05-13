@@ -9,6 +9,7 @@
 #import "ServersTableViewController.h"
 #import "AuthenticationManager.h"
 #import "ServerList.h"
+#import "ServerFormViewController.h"
 
 #define HasChangedServers @"com.gabicoware.txtbranch.HasChangedServers"
 
@@ -16,7 +17,9 @@
 
 @end
 
-@implementation ServersTableViewController
+@implementation ServersTableViewController{
+    NSArray* _servers;
+}
 
 -(void)viewDidLoad{
     [super viewDidLoad];
@@ -35,12 +38,19 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [ServerList instance].servers.count;
+    _servers = [[ServerList instance].servers sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        NSComparisonResult result = [obj1[@"name"] compare:obj2[@"name"] options:NSCaseInsensitiveSearch];
+        if (result == NSOrderedSame) {
+            result = [obj1[@"address"] compare:obj2[@"address"] options:NSCaseInsensitiveSearch];
+        }
+        return result;
+    }];
+    return _servers.count;
 }
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:@"ServerCell"];
-    NSDictionary* server = [ServerList instance].servers[indexPath.row];
+    NSDictionary* server = _servers[indexPath.row];
     cell.textLabel.text = server[@"name"];
     cell.detailTextLabel.text = server[@"address"];
     return cell;
@@ -50,7 +60,7 @@
     if ([segue.identifier isEqualToString:@"Trees"] && sender != nil) {
         NSIndexPath* indexPath = [self.tableView indexPathForCell:sender];
         
-        NSDictionary* server = [ServerList instance].servers[indexPath.row];
+        NSDictionary* server = _servers[indexPath.row];
         
         BOOL hasChanged = [[NSUserDefaults standardUserDefaults] boolForKey:HasChangedServers];
         
@@ -66,7 +76,14 @@
         }
         
         [[ServerList instance] setActiveServer:server];
+        [[AuthenticationManager instance] updateLoginState];
         
+    }else if([segue.identifier isEqual:@"ServerForm"] && [sender isKindOfClass:[UITableViewCell class]]){
+        NSIndexPath* indexPath = [self.tableView indexPathForCell:sender];
+        NSDictionary* server = _servers[indexPath.row];
+        UINavigationController* navController = (UINavigationController*)segue.destinationViewController;
+        ServerFormViewController* controller = navController.viewControllers.firstObject;
+        controller.server = server;
     }
 }
 

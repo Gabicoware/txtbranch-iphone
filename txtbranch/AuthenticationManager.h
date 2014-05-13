@@ -16,4 +16,8 @@
 
 +(instancetype)instance;
 
+//will logout, and clear any additional cookies for the server
+-(void)clearCookiesForServer:(NSString*)server;
+
+-(void)updateLoginState;
 @end

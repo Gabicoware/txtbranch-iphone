@@ -544,11 +544,11 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ServerCell" textLabel="AfQ-21-SCh" detailTextLabel="jka-A9-8fE" style="IBUITableViewCellStyleSubtitle" id="HSE-qR-HOr">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="gray" accessoryType="detailButton" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ServerCell" textLabel="AfQ-21-SCh" detailTextLabel="jka-A9-8fE" style="IBUITableViewCellStyleSubtitle" id="HSE-qR-HOr">
                                 <rect key="frame" x="0.0" y="86" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="HSE-qR-HOr" id="Xv5-iZ-gjt">
-                                    <rect key="frame" x="0.0" y="0.0" width="287" height="43"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="273" height="43"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Server" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="AfQ-21-SCh">
@@ -569,6 +569,7 @@
                                 </tableViewCellContentView>
                                 <connections>
                                     <segue destination="lxG-IJ-cT0" kind="push" identifier="Trees" id="BBm-zW-oKG"/>
+                                    <segue destination="dId-CS-ltk" kind="modal" identifier="ServerForm" trigger="accessoryAction" id="RS0-pL-MlA"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -580,7 +581,7 @@
                     <navigationItem key="navigationItem" title="Servers" id="i7a-7y-Lvk">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="HsP-Jb-IKB">
                             <connections>
-                                <segue destination="dId-CS-ltk" kind="modal" id="CRd-bc-Tpv"/>
+                                <segue destination="dId-CS-ltk" kind="modal" identifier="" id="CRd-bc-Tpv"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -716,10 +717,10 @@
             </objects>
             <point key="canvasLocation" x="-844" y="1025"/>
         </scene>
-        <!--Add Server View Controller - Add a Server-->
+        <!--Server Form View Controller - Add a Server-->
         <scene sceneID="5cJ-49-5IW">
             <objects>
-                <viewController id="fhA-gR-dFX" customClass="AddServerViewController" sceneMemberID="viewController">
+                <viewController id="fhA-gR-dFX" customClass="ServerFormViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="q9H-LN-W6W">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -764,6 +765,18 @@
                                     <action selector="didTapGithubButton:" destination="fhA-gR-dFX" eventType="touchUpInside" id="sYf-nA-kXm"/>
                                 </connections>
                             </button>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="KCh-Cc-RHh">
+                                <rect key="frame" x="0.0" y="376" width="320" height="30"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="19"/>
+                                <state key="normal" title="Delete Server">
+                                    <color key="titleColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="didTapDeleteServerButton:" destination="fhA-gR-dFX" eventType="touchUpInside" id="jKn-Sp-kec"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -781,6 +794,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="addressTextField" destination="DXN-Ru-x1j" id="uda-G5-ehu"/>
+                        <outlet property="deleteButton" destination="KCh-Cc-RHh" id="vtj-Wc-ECI"/>
                         <outlet property="nameTextField" destination="QAv-St-2VI" id="2c2-Wd-BCB"/>
                     </connections>
                 </viewController>
@@ -813,8 +827,9 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="2TW-ky-nJJ"/>
+        <segue reference="RS0-pL-MlA"/>
+        <segue reference="0DL-np-CDl"/>
         <segue reference="Lty-r6-Fwx"/>
-        <segue reference="ai3-tU-c0q"/>
+        <segue reference="2TW-ky-nJJ"/>
     </inferredMetricsTieBreakers>
 </document>

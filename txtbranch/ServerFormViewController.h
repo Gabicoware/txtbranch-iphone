@@ -1,5 +1,5 @@
 //
-//  AddServerViewController.h
+//  ServerFormViewController.h
 //  txtbranch
 //
 //  Created by Daniel Mueller on 4/25/14.
@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AddServerViewController : UIViewController
+@interface ServerFormViewController : UIViewController
+
+@property (nonatomic, strong) NSDictionary* server;
 
 @end

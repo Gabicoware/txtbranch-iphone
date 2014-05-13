@@ -35,38 +35,41 @@
 -(id)init{
     if((self = [super init])){
         
-        
-        
-        NSArray* cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:[NSURL tbURL]];
-        
-        BOOL hasOAuth = NO;
-        NSHTTPCookie* usernameCookie = nil;
-        for (NSHTTPCookie* cookie in cookies) {
-            if ([[cookie name] isEqualToString:@"username"]) {
-                usernameCookie = cookie;
-            }
-#if LOCAL
-            else if ([[cookie name] isEqualToString:@"dev_appserver_login"])
-            {
-                hasOAuth = YES;
-            }
-#endif
-            else if ([[cookie name] isEqualToString:@"_simpleauth_sess"])
-            {
-                hasOAuth = YES;
-            }
-        }
-        
-        _isLoggedIn = hasOAuth && usernameCookie != nil && [usernameCookie value] != nil;
-        if (_isLoggedIn) {
-            _username = [usernameCookie value];
-        }else if(usernameCookie != nil){
-            [[NSHTTPCookieStorage sharedHTTPCookieStorage] deleteCookie:usernameCookie];
-        }
-        
+        [self updateLoginState];
         
     }
     return self;
+}
+
+-(void)updateLoginState{
+    
+    NSArray* cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:[NSURL tbURL]];
+    
+    BOOL hasOAuth = NO;
+    NSHTTPCookie* usernameCookie = nil;
+    for (NSHTTPCookie* cookie in cookies) {
+        if ([[cookie name] isEqualToString:@"username"]) {
+            usernameCookie = cookie;
+        }
+#if LOCAL
+        else if ([[cookie name] isEqualToString:@"dev_appserver_login"])
+        {
+            hasOAuth = YES;
+        }
+#endif
+        else if ([[cookie name] isEqualToString:@"_simpleauth_sess"])
+        {
+            hasOAuth = YES;
+        }
+    }
+    
+    _isLoggedIn = hasOAuth && usernameCookie != nil && [usernameCookie value] != nil;
+    if (_isLoggedIn) {
+        _username = [usernameCookie value];
+    }else if(usernameCookie != nil){
+        [[NSHTTPCookieStorage sharedHTTPCookieStorage] deleteCookie:usernameCookie];
+    }
+    
 }
 
 -(NSString*)username{
@@ -117,6 +120,16 @@
     
     _username = username;
     
+}
+
+-(void)clearCookiesForServer:(NSString*)server{
+    NSURL* URL = [NSURL URLWithString:server];
+    if (URL) {
+        NSArray* cookiesToClear = [[[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:URL] copy];
+        for (NSHTTPCookie* cookie in cookiesToClear) {
+            [[NSHTTPCookieStorage sharedHTTPCookieStorage] deleteCookie:cookie];
+        }
+    }
 }
 
 @end

@@ -66,7 +66,7 @@
 		77814E5E191D82290063877A /* NotificationFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 77814E5D191D82290063877A /* NotificationFormatter.m */; };
 		77814E60191D83F60063877A /* NotificationFormatterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 77814E5F191D83F60063877A /* NotificationFormatterTests.m */; };
 		77814E62191D840D0063877A /* notifications.json in Resources */ = {isa = PBXBuildFile; fileRef = 77814E61191D840D0063877A /* notifications.json */; };
-		778236A3190B514C003018DC /* AddServerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 778236A2190B514C003018DC /* AddServerViewController.m */; };
+		778236A3190B514C003018DC /* ServerFormViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 778236A2190B514C003018DC /* ServerFormViewController.m */; };
 		7783350718C81DA0008375A6 /* TreesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7783350618C81DA0008375A6 /* TreesViewController.m */; };
 		77ACC40218C9EC6900CE03CA /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 77ACC40118C9EC6900CE03CA /* KeychainItemWrapper.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		77ACC40818CA4B5D00CE03CA /* LoginTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 77ACC40718CA4B5D00CE03CA /* LoginTableViewController.m */; };
@@ -196,8 +196,8 @@
 		77814E5D191D82290063877A /* NotificationFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationFormatter.m; sourceTree = "<group>"; };
 		77814E5F191D83F60063877A /* NotificationFormatterTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationFormatterTests.m; sourceTree = "<group>"; };
 		77814E61191D840D0063877A /* notifications.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = notifications.json; sourceTree = "<group>"; };
-		778236A1190B514C003018DC /* AddServerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddServerViewController.h; sourceTree = "<group>"; };
-		778236A2190B514C003018DC /* AddServerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddServerViewController.m; sourceTree = "<group>"; };
+		778236A1190B514C003018DC /* ServerFormViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServerFormViewController.h; sourceTree = "<group>"; };
+		778236A2190B514C003018DC /* ServerFormViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerFormViewController.m; sourceTree = "<group>"; };
 		7783350518C81DA0008375A6 /* TreesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TreesViewController.h; sourceTree = "<group>"; };
 		7783350618C81DA0008375A6 /* TreesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TreesViewController.m; sourceTree = "<group>"; };
 		77ACC40018C9EC6900CE03CA /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
@@ -506,8 +506,8 @@
 			children = (
 				77FD9CAA1909B68900596D65 /* ServersTableViewController.h */,
 				77FD9CAB1909B68900596D65 /* ServersTableViewController.m */,
-				778236A1190B514C003018DC /* AddServerViewController.h */,
-				778236A2190B514C003018DC /* AddServerViewController.m */,
+				778236A1190B514C003018DC /* ServerFormViewController.h */,
+				778236A2190B514C003018DC /* ServerFormViewController.m */,
 			);
 			name = Settings;
 			sourceTree = "<group>";
@@ -645,7 +645,7 @@
 				777AD19918C16C3100DC5E9F /* ASIS3ServiceRequest.m in Sources */,
 				777AD18918C16C3100DC5E9F /* ASIHTTPRequest.m in Sources */,
 				77288B1618F63A5200B97131 /* NSString+URLEncoding.m in Sources */,
-				778236A3190B514C003018DC /* AddServerViewController.m in Sources */,
+				778236A3190B514C003018DC /* ServerFormViewController.m in Sources */,
 				777AD1BC18C57D0200DC5E9F /* TBTextView.m in Sources */,
 				77ACC40818CA4B5D00CE03CA /* LoginTableViewController.m in Sources */,
 				7765599B18C8A06F00B9195C /* LaunchViewController.m in Sources */,
