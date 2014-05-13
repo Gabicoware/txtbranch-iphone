@@ -53,31 +53,38 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
     return self;
 }
 
+-(void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 -(void)handleUpdateTreeNotification:(NSNotification*)notification{
     if ([notification.object isEqualToString:self.treeName]) {
         [self loadTree:_treeName];
     }
 }
 
+#define IntegerValue(key) ([self.data[key] respondsToSelector:@selector(integerValue)] ? [self.data[key] integerValue] : 0)
+#define BoolValue(key) ([self.data[key] respondsToSelector:@selector(boolValue)] ? [self.data[key] boolValue] : 0)
+
 -(NSUInteger)contentMax{
-    return [self.data[@"content_max"] integerValue];
+    return IntegerValue(@"content_max");
 
 }
 
 -(BOOL)contentModeratorOnly{
-    return [self.data[@"content_moderator_only"] boolValue];
+    return BoolValue(@"content_moderator_only");
 }
 
 -(NSUInteger)linkMax{
-    return [self.data[@"link_max"] integerValue];
+    return IntegerValue(@"link_max");
 }
 
 -(BOOL)linkModeratorOnly{
-    return [self.data[@"link_moderator_only"] boolValue];
+    return IntegerValue(@"link_moderator_only");
 }
 
 -(NSUInteger)branchMax{
-    return [self.data[@"branch_max"] integerValue];
+    return BoolValue(@"branch_max");
 }
 
 -(NSString*)conventions{

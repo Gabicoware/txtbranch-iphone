@@ -43,10 +43,6 @@
     self.formatter = [[NotificationFormatter alloc] init];
 }
 
--(void)dealloc{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
 -(void)setQuery:(NSDictionary *)query{
     if (![query isEqualToDictionary:_query]) {
         if (_query[@"from_username"]) {
