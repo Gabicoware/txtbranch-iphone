@@ -8,9 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
-@interface UIView (Ext)
+@interface UIView (Debug)
 
 -(id)recursiveDescription;
+
+@end
+
+@interface UIView (Ext)
 
 +(NSString*)dump;
 

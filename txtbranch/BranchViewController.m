@@ -560,7 +560,7 @@ NS_ENUM(NSInteger, BranchTableSection){
 
 -(void)showHasBranchesAlert{
     
-    NSString* message = [NSString stringWithFormat: @"You have already created the max number of children for this branch (%d). Try finding another branch to add children to.",self.tree.branchMax];
+    NSString* message = [NSString stringWithFormat: @"You have already created the max number of children for this branch (%lu). Try finding another branch to add children to.",(unsigned long)self.tree.branchMax];
     
     [[[UIAlertView alloc] initWithTitle:nil message:message delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil] show];
 }

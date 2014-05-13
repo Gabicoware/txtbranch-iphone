@@ -284,7 +284,7 @@ static NSMutableDictionary* CurrentBranch = nil;
     self.linkTextView.textColor = ColorForCount(linkRemaining);
     self.contentTextView.textColor = ColorForCount(contentRemaining);
     
-    self.countLabel.text = [NSString stringWithFormat:@"link: %d  content: %d ",linkRemaining,contentRemaining];
+    self.countLabel.text = [NSString stringWithFormat:@"link: %ld  content: %ld ",(long)linkRemaining,(long)contentRemaining];
     
     self.saveButton.enabled = HasValidCount(contentRemaining) && HasValidCount(linkRemaining);
     
