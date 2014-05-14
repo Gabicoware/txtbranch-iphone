@@ -1228,7 +1228,7 @@ afterInheritingLabelAttributesAndConfiguringWithBlock:(NSMutableAttributedString
         return nil;
     }
 
-    return self;
+    return [super hitTest:point withEvent:event];
 }
 
 #pragma mark - UIResponder
