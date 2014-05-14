@@ -182,7 +182,7 @@ NS_ENUM(NSInteger, BranchTableSection){
     
     NSMutableArray* reloadedArray = [NSMutableArray array];
     
-    BOOL isNotLink = NO;
+    BOOL isLink = YES;
     
     for (NSDictionary* branch in objects) {
         NSInteger row = [_branchKeys indexOfObject:branch[@"key"]];
@@ -191,7 +191,7 @@ NS_ENUM(NSInteger, BranchTableSection){
         }
         [keys addObject:branch[@"key"]];
         if (![branch[@"parent_branch"] isEqual:_currentBranchKey]) {
-            isNotLink = YES;
+            isLink = NO;
         }
     }
     NSString* parentBranch = self.tree.branches[_branchKeys.firstObject][@"parent_branch"];
@@ -209,7 +209,7 @@ NS_ENUM(NSInteger, BranchTableSection){
     
     [reloadedArray addObject:[NSIndexPath indexPathForRow:_branchKeys.count inSection:BranchTableSectionBranches]];
     
-    if(!isNotLink){
+    if(isLink){
         _childBranchKeys = keys;
     }
     [self.tableView beginUpdates];
@@ -221,21 +221,24 @@ NS_ENUM(NSInteger, BranchTableSection){
                   withRowAnimation:UITableViewRowAnimationAutomatic];
     
     [self.tableView endUpdates];
-    
-    NSIndexPath* indexPath = [NSIndexPath indexPathForRow:([_branchKeys count]-1) inSection:BranchTableSectionBranches];
-    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
+    if (isLink) {
+        NSIndexPath* indexPath = [NSIndexPath indexPathForRow:([_branchKeys count]-1) inSection:BranchTableSectionBranches];
+        [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
+    }
     
 }
 
 -(void)setNeedsParentBranch:(BOOL)needsParentBranch{
+    NSIndexPath* indexPath = [NSIndexPath indexPathForRow:0 inSection:BranchTableSectionLoadParent];
     if (needsParentBranch != _needsParentBranch) {
         _needsParentBranch = needsParentBranch;
-        NSIndexPath* indexPath = [NSIndexPath indexPathForRow:0 inSection:BranchTableSectionLoadParent];
         if (needsParentBranch) {
             [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
         }else{
             [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
         }
+    }else if(needsParentBranch){
+        [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
     }
 }
 
@@ -304,7 +307,7 @@ NS_ENUM(NSInteger, BranchTableSection){
             NSString* parentBranch = self.tree.branches[_branchKeys.firstObject][@"parent_branch"];
             NSDictionary* branchData = self.tree.branches[parentBranch];
             if (branchData == nil) {
-                cell.textLabel.text = [NSString stringWithFormat:@"↑ Load Parent"];
+                cell.textLabel.text = [NSString stringWithFormat:@"↑"];
             }else{
                 cell.textLabel.text = [NSString stringWithFormat:@"↑ %@",branchData[@"link"]];
             }
