@@ -80,7 +80,7 @@
                                                   error:&error];
     if ([result[@"status"] isEqualToString:@"OK"]) {
         
-        [AuthenticationManager instance].isLoggedIn = YES;
+        [[AuthenticationManager instance] updateLoginState];
         [self.navigationController dismissViewControllerAnimated:YES completion:NULL];
     }else{
         [self showUsernameView];

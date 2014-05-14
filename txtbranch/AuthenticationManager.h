@@ -10,7 +10,7 @@
 
 @interface AuthenticationManager : NSObject
 
-@property (nonatomic,assign) BOOL isLoggedIn;
+@property (nonatomic,readonly) BOOL isLoggedIn;
 
 @property (nonatomic,readonly) NSString* username;
 
