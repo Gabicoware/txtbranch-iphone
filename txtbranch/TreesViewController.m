@@ -58,6 +58,7 @@
 
 -(void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self.request cancel];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
