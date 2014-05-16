@@ -11,6 +11,12 @@
 #import "ServerList.h"
 #import "ServerFormViewController.h"
 
+enum {
+    GeneralSection,
+    ServersSection,
+    TotalSection,
+};
+
 #define HasChangedServers @"com.gabicoware.txtbranch.HasChangedServers"
 
 @interface ServersTableViewController ()
@@ -36,24 +42,51 @@
 
 #pragma mark - Table view data source
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    _servers = [[ServerList instance].servers sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-        NSComparisonResult result = [obj1[@"name"] compare:obj2[@"name"] options:NSCaseInsensitiveSearch];
-        if (result == NSOrderedSame) {
-            result = [obj1[@"address"] compare:obj2[@"address"] options:NSCaseInsensitiveSearch];
-        }
-        return result;
-    }];
-    return _servers.count;
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+    return TotalSection;
 }
 
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    switch (section) {
+        case GeneralSection:
+            return 1;
+            break;
+        case ServersSection:
+            _servers = [[ServerList instance].servers sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                NSComparisonResult result = [obj1[@"name"] compare:obj2[@"name"] options:NSCaseInsensitiveSearch];
+                if (result == NSOrderedSame) {
+                    result = [obj1[@"address"] compare:obj2[@"address"] options:NSCaseInsensitiveSearch];
+                }
+                return result;
+            }];
+            return _servers.count;
+        default:
+            return 0;
+            break;
+    }
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
+    if (section == ServersSection) {
+        return @"Servers";
+    }
+    return nil;
+}
+
+
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:@"ServerCell"];
-    NSDictionary* server = _servers[indexPath.row];
-    cell.textLabel.text = server[@"name"];
-    cell.detailTextLabel.text = server[@"address"];
-    return cell;
+    if (indexPath.section == ServersSection) {
+        UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:@"ServerCell"];
+        NSDictionary* server = _servers[indexPath.row];
+        cell.textLabel.text = server[@"name"];
+        cell.detailTextLabel.text = server[@"address"];
+        return cell;
+    }else if (indexPath.section == GeneralSection) {
+        return [tableView dequeueReusableCellWithIdentifier:@"AboutCell"];
+    }
+    NSAssert(NO, @"Should never reach this point");
+    return nil;
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
