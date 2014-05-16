@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "VersionKeychainItem.h"
 
 @implementation AppDelegate
 
@@ -14,7 +15,23 @@
 {
     [[UINavigationBar appearance] setTintColor:[UIColor darkGrayColor]];
     
+    [self recordLaunch];
+    
     return YES;
+}
+
+-(void)recordLaunch{
+    //the recorded versions persist between installations.
+    //a version can be present in the keyvhain, but the app has been uninstalled and reinstalled
+    
+    NSString* bundleVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleVersionKey];
+    
+    VersionKeychainItem* item = [VersionKeychainItem versionKeychainItem];
+    
+    if (![item hasVersion:bundleVersion]) {
+        [item addVersion:bundleVersion];
+    }
+    
 }
 
 @end
