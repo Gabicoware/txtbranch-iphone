@@ -17,7 +17,7 @@
     NSString* vendorID = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
 #endif
     
-    VersionKeychainItem* wrapper = [[VersionKeychainItem alloc] initWithService:@"Versions" account:vendorID accessGroup:@"com.gabicoware"];
+    VersionKeychainItem* wrapper = [[VersionKeychainItem alloc] initWithService:@"Versions" account:vendorID accessGroup:nil];
     
     return wrapper;
 }
