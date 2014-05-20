@@ -406,6 +406,12 @@ NS_ENUM(NSInteger, BranchTableSection){
         _cells[reuseIdentifier] = cell;
     }
     [self customizeCell:cell forRowAtIndexPath:indexPath];
+    if ( cell.frame.size.width != tableView.bounds.size.width ) {
+        CGRect frame = cell.frame;
+        frame.size.width = tableView.bounds.size.width;
+        cell.frame = frame;
+        [cell layoutSubviews];
+    }
     return [cell sizeThatFits:tableView.bounds.size].height;
 }
 

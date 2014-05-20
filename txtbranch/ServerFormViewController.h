@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ServerFormViewController : UIViewController
+@interface ServerFormViewController : UITableViewController
 
 @property (nonatomic, strong) NSDictionary* server;
 

@@ -11,11 +11,20 @@
 #import "UIAlertView+Block.h"
 #import "AuthenticationManager.h"
 
+enum {
+    InfoSection,
+    SoftwareSection,
+    DeleteSection,
+    AddTotalSections=2,
+    EditTotalSections=3,
+};
+
+
+
 @interface ServerFormViewController ()
 
 @property (nonatomic, strong) IBOutlet UITextField* nameTextField;
 @property (nonatomic, strong) IBOutlet UITextField* addressTextField;
-@property (nonatomic, strong) IBOutlet UIButton* deleteButton;
 
 @end
 
@@ -39,7 +48,6 @@
 -(void)updateFields{
     self.nameTextField.text = self.server[@"name"];
     self.addressTextField.text = self.server[@"address"];
-    self.deleteButton.hidden = self.server == nil;
 }
 
 -(IBAction)didTapCancelButton:(id)sender{
@@ -68,21 +76,37 @@
     
 }
 
--(IBAction)didTapGithubButton:(id)sender{
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[sender titleForState:UIControlStateNormal]]];
+-(NSIndexPath*)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    if (indexPath.section == 0 || (indexPath.section == 1 && indexPath.row == 0)) {
+        return nil;
+    }
+    return indexPath;
 }
 
--(IBAction)didTapDeleteServerButton:(id)sender{
-    [[[UIAlertView alloc] initWithTitle:@"Confirm" message:@"Are you sure you want to delete this server?"             cancelButtonTitle:@"Cancel"
-                     otherButtonTitles:@[@"OK"]
-                                 block:^(UIAlertView *alertView, NSInteger buttonIndex) {
-                                     if (buttonIndex == 1) {
-                                         [[ServerList instance] removeServer:self.server];
-                                         [[AuthenticationManager instance] clearCookiesForServer:self.server[@"address"]];
-                                         [self.parentViewController dismissViewControllerAnimated:YES completion:NULL];
-                                     }
-                                 }] show];
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    if (indexPath.section == 1 && indexPath.row == 1) {
+        UITableViewCell* cell = [tableView cellForRowAtIndexPath:indexPath];
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:cell.textLabel.text]];
+    }else if(indexPath.section == 2 && indexPath.row == 0){
+        [[[UIAlertView alloc] initWithTitle:@"Confirm" message:@"Are you sure you want to delete this server?"             cancelButtonTitle:@"Cancel"
+                          otherButtonTitles:@[@"OK"]
+                                      block:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                                          if (buttonIndex == 1) {
+                                              [[ServerList instance] removeServer:self.server];
+                                              [[AuthenticationManager instance] clearCookiesForServer:self.server[@"address"]];
+                                              [self.parentViewController dismissViewControllerAnimated:YES completion:NULL];
+                                          }
+                                      }] show];
+    }
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
 
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+    if (self.server != nil) {
+        return 3;
+    }else{
+        return 2;
+    }
 }
 
 
