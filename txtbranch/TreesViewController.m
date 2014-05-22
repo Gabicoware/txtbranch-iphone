@@ -200,13 +200,16 @@
             cell.detailTextLabel.text = section[@"detailText"];
         }
     }else if (indexPath.section == 1) {
-        static NSString *TreeCellIdentifier = @"TreeTableViewCell";
-        cell = [tableView dequeueReusableCellWithIdentifier:TreeCellIdentifier forIndexPath:indexPath];
+        cell = [tableView dequeueReusableCellWithIdentifier:@"TreeTableViewCell" forIndexPath:indexPath];
         
         NSDictionary* tree = [self.trees objectAtIndex:indexPath.row];
         
         cell.textLabel.text = tree[@"name"];
-        cell.detailTextLabel.text = tree[@"moderator_name"];
+        if ([tree[@"content_moderator_only"] isEqual:@(1)]) {
+            cell.detailTextLabel.text = @"Text Adventure";
+        }else{
+            cell.detailTextLabel.text = @"Collaborative Story";
+        }
         
     }
     return cell;

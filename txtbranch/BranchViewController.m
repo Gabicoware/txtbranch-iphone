@@ -221,7 +221,7 @@ NS_ENUM(NSInteger, BranchTableSection){
                   withRowAnimation:UITableViewRowAnimationAutomatic];
     
     [self.tableView endUpdates];
-    if (isLink) {
+    if (isLink && 1 < _branchKeys.count) {
         NSIndexPath* indexPath = [NSIndexPath indexPathForRow:([_branchKeys count]-1) inSection:BranchTableSectionBranches];
         [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
     }
