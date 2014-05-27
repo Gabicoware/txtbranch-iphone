@@ -15,6 +15,8 @@
 
 @end
 
+#define PLACEHOLDER_TAG 10001
+
 @implementation TBTextView
 
 CGFloat const UI_PLACEHOLDER_TEXT_CHANGED_ANIMATION_DURATION = 0.25;
@@ -69,11 +71,11 @@ CGFloat const UI_PLACEHOLDER_TEXT_CHANGED_ANIMATION_DURATION = 0.25;
     [UIView animateWithDuration:UI_PLACEHOLDER_TEXT_CHANGED_ANIMATION_DURATION animations:^{
         if([[self text] length] == 0)
         {
-            [[self viewWithTag:999] setAlpha:1];
+            [[self viewWithTag:PLACEHOLDER_TAG] setAlpha:1];
         }
         else
         {
-            [[self viewWithTag:999] setAlpha:0];
+            [[self viewWithTag:PLACEHOLDER_TAG] setAlpha:0];
         }
     }];
 }
@@ -87,30 +89,39 @@ CGFloat const UI_PLACEHOLDER_TEXT_CHANGED_ANIMATION_DURATION = 0.25;
 {
     if( [[self placeholder] length] > 0 )
     {
-        if (_placeHolderLabel == nil )
-        {
-            _placeHolderLabel = [[UILabel alloc] initWithFrame:CGRectMake(8,8,self.bounds.size.width - 16,0)];
-            _placeHolderLabel.lineBreakMode = NSLineBreakByWordWrapping;
-            _placeHolderLabel.numberOfLines = 0;
-            _placeHolderLabel.font = self.font;
-            _placeHolderLabel.backgroundColor = [UIColor clearColor];
-            _placeHolderLabel.textColor = self.placeholderColor;
-            _placeHolderLabel.alpha = 0;
-            _placeHolderLabel.tag = 999;
-            [self addSubview:_placeHolderLabel];
-        }
-        
-        _placeHolderLabel.text = self.placeholder;
-        [_placeHolderLabel sizeToFit];
+        [self placeHolderLabel].text = self.placeholder;
+        [[self placeHolderLabel] sizeToFit];
         [self sendSubviewToBack:_placeHolderLabel];
     }
     
     if( [[self text] length] == 0 && [[self placeholder] length] > 0 )
     {
-        [[self viewWithTag:999] setAlpha:1];
+        [[self viewWithTag:PLACEHOLDER_TAG] setAlpha:1];
     }
     
     [super drawRect:rect];
+}
+
+-(CGSize)placeholderSize{
+    [self placeHolderLabel].text = self.placeholder;
+    CGSize size = [[self placeHolderLabel] sizeThatFits:self.bounds.size];
+    return CGSizeMake(size.width + self.placeHolderLabel.frame.origin.x, size.height + self.placeHolderLabel.frame.origin.y);
+}
+
+-(UILabel*)placeHolderLabel{
+    if (_placeHolderLabel == nil )
+    {
+        _placeHolderLabel = [[UILabel alloc] initWithFrame:CGRectMake(8,8,self.bounds.size.width - 16,0)];
+        _placeHolderLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        _placeHolderLabel.numberOfLines = 0;
+        _placeHolderLabel.font = self.font;
+        _placeHolderLabel.backgroundColor = [UIColor clearColor];
+        _placeHolderLabel.textColor = self.placeholderColor;
+        _placeHolderLabel.alpha = 0;
+        _placeHolderLabel.tag = PLACEHOLDER_TAG;
+        [self addSubview:_placeHolderLabel];
+    }
+    return _placeHolderLabel;
 }
 
 @end

@@ -108,11 +108,11 @@
     tree.branches = @{@"root_branch": @{@"key":@"root_branch"}};
     
     SaveBranchStatus s;
-    s = [tree saveBranchStatus:[@{@"parent_branch_key":@"root_branch",@"link":@"aaaaaaa",@"content":@"aaaaaaa"} mutableCopy]];
+    s = [tree saveBranchStatus:[@{@"parent_branch":@"root_branch",@"link":@"aaaaaaa",@"content":@"aaaaaaa"} mutableCopy]];
     
     XCTAssert(s == SaveBranchStatusAllowed, @"should have empty content");
     
-    s = [tree saveBranchStatus:[@{@"parent_branch_key":@"root_branch",@"link":@"",@"content":@""} mutableCopy]];
+    s = [tree saveBranchStatus:[@{@"parent_branch":@"root_branch",@"link":@"",@"content":@""} mutableCopy]];
     
     XCTAssert((s & SaveBranchStatusEmptyContent) != 0, @"should have empty content");
     XCTAssert((s & SaveBranchStatusEmptyLink) != 0, @"should have empty link");
@@ -123,11 +123,11 @@
                   @"link_moderator_only":@(1),
                   @"content_moderator_only":@(1)};
     
-    s = [tree saveBranchStatus:[@{@"parent_branch_key":@"root_branch",@"link":@"aaaaaaa",@"content":@"aaaaaaa"} mutableCopy]];
+    s = [tree saveBranchStatus:[@{@"parent_branch":@"root_branch",@"link":@"aaaaaaa",@"content":@"aaaaaaa"} mutableCopy]];
     
     XCTAssert(s == SaveBranchStatusAllowed, @"should have empty content");
     
-    s = [tree saveBranchStatus:[@{@"parent_branch_key":@"root_branch",@"link":@"",@"content":@""} mutableCopy]];
+    s = [tree saveBranchStatus:[@{@"parent_branch":@"root_branch",@"link":@"",@"content":@""} mutableCopy]];
     
     XCTAssert((s & SaveBranchStatusEmptyContent) != 0, @"should have empty content");
     XCTAssert((s & SaveBranchStatusEmptyLink) != 0, @"should have empty link");
@@ -145,11 +145,11 @@
     tree.branches = @{@"root_branch": @{@"key":@"root_branch"}};
     
     SaveBranchStatus s;
-    s = [tree saveBranchStatus:[@{@"parent_branch_key":@"root_branch",@"link":@"aaaaaaa",@"content":@"aaaaaaa"} mutableCopy]];
+    s = [tree saveBranchStatus:[@{@"parent_branch":@"root_branch",@"link":@"aaaaaaa",@"content":@"aaaaaaa"} mutableCopy]];
     
     XCTAssert(s == SaveBranchStatusAllowed, @"should have empty content");
     
-    s = [tree saveBranchStatus:[@{@"parent_branch_key":@"root_branch",@"link":@"",@"content":@""} mutableCopy]];
+    s = [tree saveBranchStatus:[@{@"parent_branch":@"root_branch",@"link":@"",@"content":@""} mutableCopy]];
     
     XCTAssert((s & SaveBranchStatusEmptyContent) != 0, @"should have empty content");
     XCTAssert((s & SaveBranchStatusEmptyLink) != 0, @"should have empty link");
@@ -162,11 +162,11 @@
     
     
     
-    s = [tree saveBranchStatus:[@{@"parent_branch_key":@"root_branch",@"link":@"",@"content":@""} mutableCopy]];
+    s = [tree saveBranchStatus:[@{@"parent_branch":@"root_branch",@"link":@"",@"content":@""} mutableCopy]];
     
     XCTAssert(s == SaveBranchStatusAllowed, @"should have empty content");
     
-    s = [tree saveBranchStatus:[@{@"parent_branch_key":@"root_branch",@"link":@"aaaaaaa",@"content":@"aaaaaaa"} mutableCopy]];
+    s = [tree saveBranchStatus:[@{@"parent_branch":@"root_branch",@"link":@"aaaaaaa",@"content":@"aaaaaaa"} mutableCopy]];
     
     XCTAssert((s & SaveBranchStatusModeratorOnlyContent) != 0, @"should have empty content");
     XCTAssert((s & SaveBranchStatusModeratorOnlyLink) != 0, @"should have empty link");

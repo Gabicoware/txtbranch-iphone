@@ -7,15 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "TBTextView.h"
-#import "TTTAttributedLabel.h"
-#import "Tree.h"
 
-@interface BranchTableViewCell : UITableViewCell
+@interface LinkTableViewCell : UITableViewCell
 
 @property (nonatomic,assign) BOOL isLink;
 
 @property (nonatomic,strong) IBOutlet UILabel* linkLabel;
+
+@end
+
+@interface ContentTableViewCell : UITableViewCell
+
 @property (nonatomic,strong) IBOutlet UILabel* contentLabel;
 
 @end
@@ -35,40 +37,7 @@
 
 @end
 
-@interface LinkTableViewCell : UITableViewCell
-
-@property (nonatomic,strong) IBOutlet UILabel* linkLabel;
-
-@end
-
 @interface AddBranchTableViewCell : UITableViewCell
 
 @end
-
-//for when the size of the cell needs to update
-extern NSString* AddBranchFormTableViewCellUpdateSizeNotification;
-extern NSString* AddBranchFormTableViewCellSaveNotification;
-extern NSString* AddBranchFormTableViewCellCancelNotification;
-
-@interface AddBranchFormTableViewCell : UITableViewCell<UITextViewDelegate>
-
-@property (nonatomic,weak) IBOutlet TBTextView* linkTextView;
-@property (nonatomic,weak) IBOutlet TBTextView* contentTextView;
-@property (nonatomic,weak) IBOutlet UILabel* countLabel;
-@property (nonatomic,weak) IBOutlet UIButton* saveButton;
-
--(void)setupWithBranch:(NSDictionary*)branch;
--(void)setupWithTree:(Tree*)tree;
-
-@end
-
-@interface BranchMetadataTableViewCell : UITableViewCell
-
-@property (nonatomic,weak) IBOutlet TTTAttributedLabel* deleteButton;
-@property (nonatomic,weak) IBOutlet TTTAttributedLabel* editButton;
-@property (nonatomic,weak) IBOutlet TTTAttributedLabel* bylineLabel;
-
-@end
-
-
 

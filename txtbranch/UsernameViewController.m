@@ -11,7 +11,7 @@
 #import "ASIFormDataRequest.h"
 #import "AuthenticationManager.h"
 
-@interface UsernameViewController ()
+@interface UsernameViewController ()<UITextFieldDelegate>
 
 @property (nonatomic,weak) IBOutlet UITextField* usernameTextField;
 @property (nonatomic,weak) ASIFormDataRequest* request;
@@ -22,18 +22,37 @@
 @implementation UsernameViewController
 
 -(void)viewDidLoad{
-    
     [super viewDidLoad];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(didTapCancel:)];
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(didTapSave:)];
+    self.navigationItem.rightBarButtonItem.enabled = [self hasValidUsername];
+    
 }
 
--(void)didTapCancel:(id)sender{
+-(IBAction)didTapCancel:(id)sender{
     [self.navigationController dismissViewControllerAnimated:YES completion:NULL];
 }
 
--(void)didTapSave:(id)sender{
+-(IBAction)didTapSave:(id)sender{
     
+    if ([self hasValidUsername]) {
+        
+        NSURL* URL = [NSURL tbURLWithPath:@"/api/v1/userinfos"];
+        
+        [self setRequest:[ASIFormDataRequest requestWithURL:URL]];
+        
+        NSString* username = self.usernameTextField.text;
+        [_request addPostValue:username forKey:@"username"];
+        [_request setTimeOutSeconds:20];
+        
+        [_request setDelegate:self];
+        [_request setDidFailSelector:@selector(userinfoRequestFailed:)];
+        [_request setDidFinishSelector:@selector(userinfoRequestFinished:)];
+        _request.cachePolicy = ASIDoNotReadFromCacheCachePolicy;
+        [_request startAsynchronous];
+        
+    }
+}
+
+-(BOOL)hasValidUsername{
     NSString* username = self.usernameTextField.text;
     
     NSError* error = nil;
@@ -46,26 +65,7 @@
                                              options:NSMatchingReportProgress
                                                range:NSMakeRange(0, username.length)];
     
-    if (range.location == 0 && 4 <= username.length && username.length <= 20) {
-        
-        NSURL* URL = [NSURL tbURLWithPath:@"/api/v1/userinfos"];
-        
-        [self setRequest:[ASIFormDataRequest requestWithURL:URL]];
-        
-        [_request addPostValue:username forKey:@"username"];
-        [_request setTimeOutSeconds:20];
-        
-        [_request setDelegate:self];
-        [_request setDidFailSelector:@selector(userinfoRequestFailed:)];
-        [_request setDidFinishSelector:@selector(userinfoRequestFinished:)];
-        _request.cachePolicy = ASIDoNotReadFromCacheCachePolicy;
-        [_request startAsynchronous];
-        
-    }else{
-        
-        
-        
-    }
+    return range.location == 0 && 4 <= username.length && username.length <= 20;
 }
 
 -(void)userinfoRequestFinished:(ASIHTTPRequest*)request{
@@ -87,6 +87,15 @@
     //[self showUsernameView];
 }
 
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{
+    self.navigationItem.rightBarButtonItem.enabled = [self hasValidUsername];
+    return YES;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField{
+    [self didTapSave:nil];
+    return YES;
+}
 
 
 @end

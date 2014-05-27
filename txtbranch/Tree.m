@@ -113,13 +113,15 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
     
     __block BOOL hasChildren = NO;
     
+    BOOL hasParent = [branch[@"parent_branch"] isKindOfClass:[NSString class]];
+    
     [_branches enumerateKeysAndObjectsUsingBlock:^(id key, NSDictionary* obj, BOOL *stop) {
         
-        hasChildren |= [obj[@"parent_branch_key"] isEqualToString:branchKey];
+        hasChildren |= [branchKey isEqual:obj[@"parent_branch"]];
         
     }];
     
-    return canEdit && !hasChildren && branch[@"parent_branch_key"] != nil;
+    return canEdit && hasParent && !hasChildren && branch[@"parent_branch"] != nil;
 }
 
 
@@ -215,7 +217,7 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
 }
 
 -(void)loadChildBranches:(NSString*)parentBranchKey{
-    NSURL* URL = [NSURL tbURLWithPath:[NSString stringWithFormat:@"/api/v1/branchs?parent_branch_key=%@",parentBranchKey]];
+    NSURL* URL = [NSURL tbURLWithPath:[NSString stringWithFormat:@"/api/v1/branchs?parent_branch=%@",parentBranchKey]];
     [self loadBranchesURL:URL];
 }
 
