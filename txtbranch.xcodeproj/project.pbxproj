@@ -69,6 +69,7 @@
 		778236A3190B514C003018DC /* ServerFormViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 778236A2190B514C003018DC /* ServerFormViewController.m */; };
 		7783350718C81DA0008375A6 /* TreesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7783350618C81DA0008375A6 /* TreesViewController.m */; };
 		77A41882192EA8E40058CE13 /* BranchFormViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 77A41881192EA8E40058CE13 /* BranchFormViewController.m */; };
+		77A418851935404B0058CE13 /* UserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 77A418841935404B0058CE13 /* UserViewController.m */; };
 		77ACC40218C9EC6900CE03CA /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 77ACC40118C9EC6900CE03CA /* KeychainItemWrapper.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		77ACC40818CA4B5D00CE03CA /* LoginTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 77ACC40718CA4B5D00CE03CA /* LoginTableViewController.m */; };
 		77B5DA7C19002BE100DDDB00 /* Tree.m in Sources */ = {isa = PBXBuildFile; fileRef = 77B5DA7B19002BE100DDDB00 /* Tree.m */; };
@@ -207,6 +208,8 @@
 		7783350618C81DA0008375A6 /* TreesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TreesViewController.m; sourceTree = "<group>"; };
 		77A41880192EA8E40058CE13 /* BranchFormViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BranchFormViewController.h; sourceTree = "<group>"; };
 		77A41881192EA8E40058CE13 /* BranchFormViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BranchFormViewController.m; sourceTree = "<group>"; };
+		77A418831935404B0058CE13 /* UserViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserViewController.h; sourceTree = "<group>"; };
+		77A418841935404B0058CE13 /* UserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserViewController.m; sourceTree = "<group>"; };
 		77ACC40018C9EC6900CE03CA /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
 		77ACC40118C9EC6900CE03CA /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
 		77ACC40618CA4B5D00CE03CA /* LoginTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginTableViewController.h; sourceTree = "<group>"; };
@@ -357,7 +360,7 @@
 				777AD10818C13EFE00DC5E9F /* Main.storyboard */,
 				77B5DA7D1904BE5C00DDDB00 /* Utilities */,
 				7765599C18C8A0FD00B9195C /* Branch View */,
-				777AD1C818C6CAA500DC5E9F /* SignIn */,
+				777AD1C818C6CAA500DC5E9F /* User */,
 				77288B0818F4A09600B97131 /* Notifications */,
 				777AD10E18C13EFE00DC5E9F /* Images.xcassets */,
 				777AD0FD18C13EFE00DC5E9F /* Supporting Files */,
@@ -504,7 +507,7 @@
 			path = "lib/asi-http-request";
 			sourceTree = "<group>";
 		};
-		777AD1C818C6CAA500DC5E9F /* SignIn */ = {
+		777AD1C818C6CAA500DC5E9F /* User */ = {
 			isa = PBXGroup;
 			children = (
 				7765599918C8A06F00B9195C /* LaunchViewController.h */,
@@ -515,8 +518,10 @@
 				777AD1C118C5F81800DC5E9F /* SignInViewController.m */,
 				777AD1C918C6CAC400DC5E9F /* UsernameViewController.h */,
 				777AD1CA18C6CAC400DC5E9F /* UsernameViewController.m */,
+				77A418831935404B0058CE13 /* UserViewController.h */,
+				77A418841935404B0058CE13 /* UserViewController.m */,
 			);
-			name = SignIn;
+			name = User;
 			sourceTree = "<group>";
 		};
 		778236A0190B463A003018DC /* Settings */ = {
@@ -712,6 +717,7 @@
 				777AD19118C16C3100DC5E9F /* ASICloudFilesObject.m in Sources */,
 				777AD18718C16C3100DC5E9F /* ASIDownloadCache.m in Sources */,
 				777AD1C718C6BF6C00DC5E9F /* NSURL+txtbranch.m in Sources */,
+				77A418851935404B0058CE13 /* UserViewController.m in Sources */,
 				777F673318E515F8004093A8 /* UIView+Ext.m in Sources */,
 				77CF293F1924497900D0A1DE /* AboutViewController.m in Sources */,
 				777AD1AA18C16C3100DC5E9F /* Reachability.m in Sources */,

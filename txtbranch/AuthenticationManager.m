@@ -78,6 +78,9 @@
     }
 }
 
+-(NSNumber*)unreadCount{
+    return @(0.0);
+}
 
 -(void)clearCookiesForServer:(NSString*)server{
     NSURL* URL = [NSURL URLWithString:server];

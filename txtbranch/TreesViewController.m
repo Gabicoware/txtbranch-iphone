@@ -85,15 +85,12 @@
     [self performSegueWithIdentifier:@"OpenTree" sender:notification.object];
 }
 
--(BOOL)hasActivityOrInbox{
-    return [[AuthenticationManager instance] isLoggedIn];
-}
-
 -(void)buildSections{
-    if ([self hasActivityOrInbox]) {
-        self.sections = @[@{@"text":@"Inbox",@"identifier":@"NotificationSectionCell"},
-                          @{@"text":@"Activity",@"identifier":@"NotificationSectionCell",
-                            @"query":@{@"from_username":[[AuthenticationManager instance] username]}}];
+    if ([[AuthenticationManager instance] isLoggedIn]) {
+        self.sections = @[@{@"text":[[AuthenticationManager instance] username],
+                            @"detailText":@"",
+                            @"identifier":@"UsernameCell",
+                            @"query":@{@"username":[[AuthenticationManager instance] username]}}];
     }else{
         self.sections = @[];
     }
@@ -234,7 +231,7 @@
         }
         controller.query = query;
     }
-    if ([segue.identifier isEqualToString:@"OpenNotifications"]) {
+    if ([segue.identifier isEqualToString:@"UserView"]) {
         
         NSIndexPath* indexPath = [self.tableView indexPathForCell:sender];
         NSDictionary* section = self.sections[indexPath.row];

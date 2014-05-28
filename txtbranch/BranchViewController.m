@@ -369,7 +369,7 @@ NS_ENUM(NSInteger, BranchTableSection){
                 [self performSegueWithIdentifier:@"BranchForm" sender:@{@"branchKey":branch[@"key"],@"tree":self.tree}];
             }else if ([title isEqualToString:AuthornameString(branch)]) {
                 NSString* authorname = branch[@"authorname"];
-                [self performSegueWithIdentifier:@"OpenNotifications" sender:authorname];
+                [self performSegueWithIdentifier:@"UserView" sender:authorname];
             }
         }
         
@@ -577,9 +577,10 @@ NS_ENUM(NSInteger, BranchTableSection){
 
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
-    if ([segue.identifier isEqualToString:@"OpenNotifications"] && [sender isKindOfClass:[NSString class]]) {
-        id<Queryable> controller = segue.destinationViewController;
-        controller.query = @{@"from_username":sender};
+    if ([segue.identifier isEqualToString:@"UserView"] && [sender isKindOfClass:[NSString class]]) {
+        UIViewController<Queryable>* controller = segue.destinationViewController;
+        controller.query = @{@"username":sender};
+        controller.title = sender;
     }
     if ([segue.identifier isEqualToString:@"TreeForm"]) {
         UINavigationController* navController = segue.destinationViewController;

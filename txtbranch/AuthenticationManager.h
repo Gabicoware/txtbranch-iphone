@@ -14,6 +14,8 @@
 
 @property (nonatomic,readonly) NSString* username;
 
+@property (nonatomic,readonly) NSNumber* unreadCount;
+
 +(instancetype)instance;
 
 //will logout, and clear any additional cookies for the server

@@ -10,7 +10,6 @@
 #import "ASIHTTPRequest.h"
 #import "NSURL+txtbranch.h"
 #import "NSDictionary+QueryString.h"
-#import "BranchViewController.h"
 #import "TTTAttributedLabel.h"
 #import "NotificationFormatter.h"
 
@@ -122,21 +121,19 @@
         
         UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         if ([params[@"itemType"] isEqualToString:@"username"]) {
-            NSDictionary* query = @{@"from_username":notification[@"from_username"]};
+            NSDictionary* query = @{@"username":notification[@"from_username"]};
             
-            if (![query isEqualToDictionary:self.query]) {
-                NotificationsTableViewController* controller = [storyboard instantiateViewControllerWithIdentifier:@"NotificationsTableViewController"];
-                controller.title = notification[@"from_username"];
-                controller.query = query;
-                [self.navigationController pushViewController:controller animated:YES];
-            }
+            UIViewController<Queryable>* controller = [storyboard instantiateViewControllerWithIdentifier:@"UserViewController"];
+            controller.title = notification[@"from_username"];
+            controller.query = query;
+            [self.navigationController pushViewController:controller animated:YES];
         }else if ([params[@"itemType"] isEqualToString:@"tree_name"]) {
-            BranchViewController* controller = [storyboard instantiateViewControllerWithIdentifier:@"BranchViewController"];
+            UIViewController<Queryable>* controller = [storyboard instantiateViewControllerWithIdentifier:@"BranchViewController"];
             NSDictionary* query = @{@"tree_name":notification[@"tree_name"]};
             controller.query = query;
             [self.navigationController pushViewController:controller animated:YES];
         }else if ([params[@"itemType"] isEqualToString:@"link"]) {
-            BranchViewController* controller = [storyboard instantiateViewControllerWithIdentifier:@"BranchViewController"];
+            UIViewController<Queryable>* controller = [storyboard instantiateViewControllerWithIdentifier:@"BranchViewController"];
             NSDictionary* query = @{@"tree_name":notification[@"tree_name"],@"branch":notification[@"branch"]};
             controller.query = query;
             [self.navigationController pushViewController:controller animated:YES];
