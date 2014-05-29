@@ -20,7 +20,7 @@
 
 -(NSMutableAttributedString*)stringWithNotification:(NSDictionary*)notification{
     
-    NSDictionary* normalAttributes = @{NSFontAttributeName:[UIFont fontWithName:@"HelveticaNeue-LightItalic" size:15]};
+    NSDictionary* normalAttributes = @{NSFontAttributeName:[UIFont fontWithName:@"HelveticaNeue-Medium" size:15]};
     
     NSArray* stringSections = [self stringSectionsWithNotification:notification];
     
