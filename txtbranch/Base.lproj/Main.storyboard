@@ -270,7 +270,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BYN-xm-MJY" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1240" y="-951"/>
+            <point key="canvasLocation" x="1206" y="-1498"/>
         </scene>
         <!--User View Controller-->
         <scene sceneID="8EQ-3n-Vcs">
@@ -315,6 +315,7 @@
                     <navigationItem key="navigationItem" id="HN9-DL-CWE"/>
                     <connections>
                         <segue destination="1u2-bx-reu" kind="push" identifier="Notifications" id="37G-N1-jio"/>
+                        <segue destination="T5l-1F-r3a" kind="push" identifier="TreesView" id="TVY-Yy-7qF"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="r0m-Fu-QQ2" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -836,10 +837,10 @@
             </objects>
             <point key="canvasLocation" x="-1704" y="64"/>
         </scene>
-        <!--Trees View Controller - txtbranch-->
+        <!--Root Trees View Controller - txtbranch-->
         <scene sceneID="hPF-cU-4Wb">
             <objects>
-                <tableViewController title="txtbranch" id="lxG-IJ-cT0" customClass="TreesViewController" sceneMemberID="viewController">
+                <tableViewController title="txtbranch" id="lxG-IJ-cT0" customClass="RootTreesViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="htu-VZ-N5g">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -927,6 +928,56 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7dh-1E-ASe" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-709" y="64"/>
+        </scene>
+        <!--Trees View Controller - txtbranch-->
+        <scene sceneID="cSH-aR-qXb">
+            <objects>
+                <tableViewController title="txtbranch" id="T5l-1F-r3a" customClass="TreesViewController" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="1Mq-5I-Bel">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="TreeTableViewCell" textLabel="gQy-dO-dzt" detailTextLabel="8KQ-5V-C0G" style="IBUITableViewCellStyleSubtitle" id="gOd-i1-bTM">
+                                <rect key="frame" x="0.0" y="86" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="gOd-i1-bTM" id="dGy-ty-UqS">
+                                    <rect key="frame" x="0.0" y="0.0" width="287" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="gQy-dO-dzt">
+                                            <rect key="frame" x="15" y="4" width="36" height="22"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="18"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Subtitle" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="8KQ-5V-C0G">
+                                            <rect key="frame" x="15" y="26" width="41" height="14"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="vXZ-lx-hvc" kind="push" identifier="OpenTree" id="8ms-XN-5RR"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="T5l-1F-r3a" id="R9t-DK-3ej"/>
+                            <outlet property="delegate" destination="T5l-1F-r3a" id="gmc-se-v9d"/>
+                        </connections>
+                    </tableView>
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" id="WDP-qb-uOb"/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="BhO-UH-qDV" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1263" y="-755"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="9Ef-Ef-ayR">
@@ -1183,9 +1234,10 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="gPx-aC-pVR"/>
         <segue reference="CRd-bc-Tpv"/>
-        <segue reference="ai3-tU-c0q"/>
-        <segue reference="Lty-r6-Fwx"/>
+        <segue reference="Syz-1S-Qcn"/>
+        <segue reference="0DL-np-CDl"/>
+        <segue reference="RQV-Tz-j9I"/>
+        <segue reference="8ms-XN-5RR"/>
     </inferredMetricsTieBreakers>
 </document>

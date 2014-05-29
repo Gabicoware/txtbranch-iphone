@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "txtbranch.h"
 
-@interface TreesViewController : UITableViewController
+@interface TreesViewController : UITableViewController<Queryable>
+
+-(void)refresh;
 
 @end

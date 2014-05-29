@@ -22,7 +22,8 @@
 -(void)setQuery:(NSDictionary *)query{
     _query = query;
     
-    self.sections = @[@{@"text":@"Activity",@"segue":@"Notifications",@"query":@{@"from_username":self.query[@"username"]}}];
+    self.sections = @[@{@"text":@"Activity",@"segue":@"Notifications",@"query":@{@"from_username":self.query[@"username"]}},
+                      @{@"text":@"Trees",@"segue":@"TreesView",@"query":@{@"username":self.query[@"username"]}}];
     
     if ([self.query[@"username"] isEqualToString:[[AuthenticationManager instance] username]]) {
         self.sections = [@[@{@"text":@"Inbox",@"segue":@"Notifications",@"query":@{}}] arrayByAddingObjectsFromArray:self.sections];
