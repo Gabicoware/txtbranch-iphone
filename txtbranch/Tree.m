@@ -113,15 +113,15 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
     
     __block BOOL hasChildren = NO;
     
-    BOOL hasParent = [branch[@"parent_branch"] isKindOfClass:[NSString class]];
+    BOOL hasParent = [branch[@"parent_branch_key"] isKindOfClass:[NSString class]];
     
     [_branches enumerateKeysAndObjectsUsingBlock:^(id key, NSDictionary* obj, BOOL *stop) {
         
-        hasChildren |= [branchKey isEqual:obj[@"parent_branch"]];
+        hasChildren |= [branchKey isEqual:obj[@"parent_branch_key"]];
         
     }];
     
-    return canEdit && hasParent && !hasChildren && branch[@"parent_branch"] != nil;
+    return canEdit && hasParent && !hasChildren && branch[@"parent_branch_key"] != nil;
 }
 
 
@@ -172,7 +172,7 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
     NSString* username = [AuthenticationManager instance].username;
     NSArray* values = [_branches allValues];
     NSIndexSet* indexes = [values indexesOfObjectsPassingTest:^BOOL(NSDictionary* obj, NSUInteger idx, BOOL *stop) {
-        return [parentKey isEqualToString:obj[@"parent_branch"]] && [obj[@"authorname"] isEqualToString:username];
+        return [parentKey isEqualToString:obj[@"parent_branch_key"]] && [obj[@"authorname"] isEqualToString:username];
     }];
     return [values objectsAtIndexes:indexes];
 }
@@ -210,14 +210,14 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
 -(void)loadBranches:(NSArray*)branch_keys{
     NSMutableArray* params = [@[] mutableCopy];
     for (NSString* branch_key in branch_keys) {
-        [params addObject:[NSString stringWithFormat:@"branch_key=%@",branch_key]];
+        [params addObject:[NSString stringWithFormat:@"key=%@",branch_key]];
     }
     NSURL* URL = [NSURL tbURLWithPath:[NSString stringWithFormat:@"/api/v1/branchs?%@",[params componentsJoinedByString:@"&"]]];
     [self loadBranchesURL:URL];
 }
 
 -(void)loadChildBranches:(NSString*)parentBranchKey{
-    NSURL* URL = [NSURL tbURLWithPath:[NSString stringWithFormat:@"/api/v1/branchs?parent_branch=%@",parentBranchKey]];
+    NSURL* URL = [NSURL tbURLWithPath:[NSString stringWithFormat:@"/api/v1/branchs?parent_branch_key=%@",parentBranchKey]];
     [self loadBranchesURL:URL];
 }
 
@@ -242,9 +242,11 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
     
     ASIFormDataRequest* request = [[ASIFormDataRequest alloc] initWithURL:[NSURL tbURLWithPath:@"/api/v1/branchs"]];
     
+    request.userInfo = branch;
+    
     [request addPostValue:branch[@"link"] forKey:@"link"];
     [request addPostValue:branch[@"content"] forKey:@"content"];
-    [request addPostValue:branch[@"key"] forKey:@"branch_key"];
+    [request addPostValue:branch[@"key"] forKey:@"key"];
     
     request.requestMethod = @"PUT";
     
@@ -252,7 +254,9 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
 }
 
 -(void)editBranchRequestFailed:(ASIHTTPRequest*)request{
-    [self processFailedRequest:request];
+    [self addUnsavedBranch:request.userInfo forQuery:@{@"branchKey":request.userInfo[@"key"]}];
+    [_activeRequests removeObject:request];
+    [self showEditFormError];
 }
 
 -(void)editBranchRequestFinished:(ASIHTTPRequest*)request{
@@ -285,6 +289,8 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
     
     ASIFormDataRequest* request = [[ASIFormDataRequest alloc] initWithURL:[NSURL tbURLWithPath:@"/api/v1/branchs"]];
     
+    request.userInfo = branch;
+    
     for (NSString* key in branch) {
         id value = branch[key];
         [request addPostValue:value forKey:key];
@@ -295,7 +301,9 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
 }
 
 -(void)addBranchRequestFailed:(ASIHTTPRequest*)request{
-    [self processFailedRequest:request];
+    [self addUnsavedBranch:request.userInfo forQuery:@{@"parentBranchKey":request.userInfo[@"parent_branch_key"]}];
+    [_activeRequests removeObject:request];
+    [self showAddFormError];
 }
 
 -(void)addBranchRequestFinished:(ASIHTTPRequest*)request{
@@ -343,7 +351,6 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
 
 -(void)processFailedRequest:(ASIHTTPRequest*)request
 {
-    NSLog(@"%@",request.responseString);
     [_activeRequests removeObject:request];
     [self showGeneralError];
 }
@@ -373,6 +380,81 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
 
 -(void)showGeneralError{
     [[[UIAlertView alloc] initWithTitle:nil message:@"There was a problem contacting the server. Sorry!" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles: nil] show];
+}
+
+-(void)showAddFormError{
+    [[[UIAlertView alloc] initWithTitle:@"Could not save" message:@"There was a problem saving the branch to the server. It has been saved if you would like to try adding a branch again later." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles: nil] show];
+}
+
+-(void)showEditFormError{
+    [[[UIAlertView alloc] initWithTitle:nil message:@"There was a problem saving the branch to the server. It has been saved if you would like to try editing the branch again later." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles: nil] show];
+}
+
+
+@end
+
+@implementation Tree (UnsavedBranches)
+
+#define BRANCHES_KEY @"unsavedbranches"
+
+-(void)addUnsavedBranch:(id)branch forQuery:(id)query{
+    NSString* key = [self keyWithQuery:query];
+    
+    NSMutableDictionary* unsavedBranches = [[[NSUserDefaults standardUserDefaults] objectForKey:BRANCHES_KEY] mutableCopy];
+    
+    if (key) {
+        if (unsavedBranches == nil) {
+            unsavedBranches = [NSMutableDictionary dictionary];
+        }
+        [unsavedBranches setObject:branch forKey:key];
+        
+    }
+    
+    [[NSUserDefaults standardUserDefaults] setObject:[unsavedBranches copy] forKey:BRANCHES_KEY];
+    
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+}
+
+-(id)getUnsavedBranchForQuery:(id)query{
+    NSString* key = [self keyWithQuery:query];
+    
+    NSDictionary* unsavedBranches = [[NSUserDefaults standardUserDefaults] objectForKey:BRANCHES_KEY];
+    
+    id branch = nil;
+    
+    if ( unsavedBranches && key) {
+        branch = unsavedBranches[key];
+    }
+    
+    return branch;
+}
+
+-(void)deleteUnsavedBranchForQuery:(id)query{
+    NSString* key = [self keyWithQuery:query];
+    
+    NSMutableDictionary* unsavedBranches = [[[NSUserDefaults standardUserDefaults] objectForKey:BRANCHES_KEY] mutableCopy];
+    
+    if ( unsavedBranches && key) {
+        
+        [unsavedBranches removeObjectForKey:key];
+        
+    }
+    
+    [[NSUserDefaults standardUserDefaults] setObject:[unsavedBranches copy] forKey:BRANCHES_KEY];
+    
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+}
+
+-(NSString*)keyWithQuery:(id)query{
+    NSString* result = nil;
+    if (query[@"branchKey"]) {
+        result = [NSString stringWithFormat:@"branch-key-%@",query[@"branchKey"]];
+    }else if(query[@"parentBranchKey"]){
+        result = [NSString stringWithFormat:@"branch-key-%@",query[@"parentBranchKey"]];
+    }
+    return result;
 }
 
 @end

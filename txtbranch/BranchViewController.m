@@ -103,9 +103,9 @@ NS_ENUM(NSInteger, BranchTableSection){
     
     self.title = treeName;
     
-    if (query[@"branch"]) {
-        self.currentBranchKey = query[@"branch"];
-        [self.tree loadBranches:@[query[@"branch"]]];
+    if (query[@"branch_key"]) {
+        self.currentBranchKey = query[@"branch_key"];
+        [self.tree loadBranches:@[query[@"branch_key"]]];
     }
 }
 
@@ -132,11 +132,11 @@ NS_ENUM(NSInteger, BranchTableSection){
             [reloadedArray addObject:[NSIndexPath indexPathForRow:(row*2+1) inSection:BranchTableSectionBranches]];
         }
         [keys addObject:branch[@"key"]];
-        if (![branch[@"parent_branch"] isEqual:_currentBranchKey]) {
+        if (![branch[@"parent_branch_key"] isEqual:_currentBranchKey]) {
             isLink = NO;
         }
     }
-    NSString* parentBranch = self.tree.branches[_branchKeys.firstObject][@"parent_branch"];
+    NSString* parentBranch = self.tree.branches[_branchKeys.firstObject][@"parent_branch_key"];
     if (!IsNotNull(parentBranch)) {
         self.needsParentBranch = NO;
     }else{
@@ -239,7 +239,7 @@ NS_ENUM(NSInteger, BranchTableSection){
         }
         case BranchTableSectionLoadParent:{
             
-            NSString* parentBranch = self.tree.branches[_branchKeys.firstObject][@"parent_branch"];
+            NSString* parentBranch = self.tree.branches[_branchKeys.firstObject][@"parent_branch_key"];
             NSDictionary* branchData = self.tree.branches[parentBranch];
             if (branchData == nil) {
                 cell.textLabel.text = [NSString stringWithFormat:@"↑"];
@@ -261,47 +261,6 @@ NS_ENUM(NSInteger, BranchTableSection){
                     ContentTableViewCell* branchCell = (id)cell;
                     branchCell.contentLabel.text = branch[@"content"];
                 }
-            }else{
-                /*
-                BranchMetadataTableViewCell* metadataCell = (id)cell;
-                metadataCell.bylineLabel.delegate = self;
-                metadataCell.editButton.delegate = self;
-                metadataCell.deleteButton.delegate = self;
-                id branch = self.tree.branches[ _branchKeys.lastObject];
-                
-                if (branch == nil) {
-                    metadataCell.bylineLabel.text = @"";
-                }else{
-                    
-                    
-                    NSDictionary* normalAttributes = @{NSFontAttributeName:[UIFont fontWithName:@"HelveticaNeue-LightItalic" size:15],
-                                                       NSForegroundColorAttributeName:[UIColor darkGrayColor]};
-                    
-                    NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:@"" attributes:normalAttributes];
-                    [string appendAttributedString:[[NSAttributedString alloc] initWithString:@"by " attributes:normalAttributes]];
-                    
-                    
-                    NSDictionary* params = @{@"itemType": @"username",
-                                             @"username": branch[@"authorname"]};
-                    NSString* queryString = [params queryStringValue];
-                    NSDictionary* linkAttributes = [self linkAttributesWithURLString:[NSString stringWithFormat:@"txtbranch://?%@",queryString]];
-                    
-                    [string appendAttributedString:[[NSAttributedString alloc] initWithString:branch[@"authorname"] attributes:linkAttributes]];
-                    metadataCell.bylineLabel.text = [string copy];
-                }
-                
-                
-                BOOL canEdit = [self.tree canEditBranch:_branchKeys.lastObject];
-                BOOL canDelete = [self.tree canDeleteBranch:_branchKeys.lastObject];
-                
-                metadataCell.editButton.hidden = !canEdit || _isEditing;
-                NSDictionary* editLinkAttributes = [self linkAttributesWithURLString:@"txtbranch://?itemType=edit"];
-                metadataCell.editButton.text = [[NSAttributedString alloc] initWithString:@"edit" attributes:editLinkAttributes];
-                
-                metadataCell.deleteButton.hidden = !canDelete || _isEditing;
-                NSDictionary* deleteLinkAttributes = [self linkAttributesWithURLString:@"txtbranch://?itemType=delete"];
-                metadataCell.deleteButton.text = [[NSAttributedString alloc] initWithString:@"delete" attributes:deleteLinkAttributes];
-                 */
             }
             break;
         }
@@ -377,15 +336,6 @@ NS_ENUM(NSInteger, BranchTableSection){
     
 }
 
-/*
--(NSDictionary*)linkAttributesWithURLString:(NSString*)URLString{
-    NSURL* URL = [NSURL URLWithString:URLString];
-    NSDictionary* editLinkAttributes = @{NSFontAttributeName:[UIFont fontWithName:@"HelveticaNeue-Italic" size:15],
-                                         NSLinkAttributeName:URL,
-                                         NSForegroundColorAttributeName:[UIColor darkGrayColor]};
-    return editLinkAttributes;
-}
-*/
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     NSString* reuseIdentifier = [self reuseIdentifierForRowAtIndexPath:indexPath];
     UITableViewCell* cell = _cells[reuseIdentifier];
@@ -451,14 +401,14 @@ NS_ENUM(NSInteger, BranchTableSection){
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     if (indexPath.section == BranchTableSectionLoadParent) {
         
-        NSString* parentBranch = self.tree.branches[_branchKeys.firstObject][@"parent_branch"];
+        NSString* parentBranch = self.tree.branches[_branchKeys.firstObject][@"parent_branch_key"];
         
         if (IsNotNull(parentBranch)) {
             [self.tree loadChildBranches:parentBranch];
             [_branchKeys insertObject:parentBranch atIndex:0];
             [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:BranchTableSectionBranches],[NSIndexPath indexPathForRow:1 inSection:BranchTableSectionBranches]] withRowAnimation:UITableViewRowAnimationFade];
             
-            NSString* nextParentBranch = self.tree.branches[parentBranch][@"parent_branch"];
+            NSString* nextParentBranch = self.tree.branches[parentBranch][@"parent_branch_key"];
             
             self.needsParentBranch = IsNotNull(nextParentBranch);
             if (self.needsParentBranch) {

@@ -61,3 +61,15 @@ typedef enum{
 -(void)addBranch:(NSDictionary*)branch;
 
 @end
+
+@interface Tree (UnsavedBranches)
+
+//checks the unsaved branches before returning the version from the server
+-(void)addUnsavedBranch:(id)branch forQuery:(id)query;
+
+-(id)getUnsavedBranchForQuery:(id)query;
+
+-(void)deleteUnsavedBranchForQuery:(id)query;
+
+@end
+

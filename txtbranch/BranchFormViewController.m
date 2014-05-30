@@ -9,6 +9,7 @@
 #import "BranchFormViewController.h"
 #import "TBTextView.h"
 #import "Tree.h"
+#import "UIAlertView+Block.h"
 
 //for when the size of the cell needs to update
 extern NSString* BranchFormTableViewCellUpdateSizeNotification;
@@ -32,13 +33,18 @@ extern NSString* BranchFormTableViewCellUpdateSizeNotification;
 @property (nonatomic,weak) BranchFormTableViewCell* cell;
 @property (nonatomic,readonly) NSString* branchKey;
 @property (nonatomic,readonly) NSString* parentBranchKey;
+
+@property (nonatomic,strong) NSDictionary* unsavedBranch;
+
 @property (nonatomic,readonly) Tree* tree;
 
 @end
 
 
-@implementation BranchFormViewController
-@synthesize query;
+@implementation BranchFormViewController{
+    BOOL _needsConfirmation;
+}
+@synthesize query=_query;
 
 -(void)viewDidLoad{
     [super viewDidLoad];
@@ -57,6 +63,26 @@ extern NSString* BranchFormTableViewCellUpdateSizeNotification;
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     [self.cell.linkTextView becomeFirstResponder];
+}
+
+-(void)setQuery:(NSDictionary *)query{
+    _query = query;
+    self.unsavedBranch = [self.tree getUnsavedBranchForQuery:self.query];
+    [self.tree deleteUnsavedBranchForQuery:self.query];
+    _needsConfirmation = self.unsavedBranch != nil;
+    if (_needsConfirmation) {
+        [[[UIAlertView alloc] initWithTitle:@"Restore Branch?"
+                                    message:@"You have an unsaved branch would you like to use it? Otherwise it will be deleted."
+                          cancelButtonTitle:@"No"
+                          otherButtonTitles:@[@"Yes"]
+                                      block:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                                          if ( buttonIndex == 0 ) {
+                                              self.unsavedBranch = nil;
+                                          }
+                                          _needsConfirmation = NO;
+                                          [self.tableView reloadData];
+        }] show];
+    }
 }
 
 -(NSString*)branchKey{
@@ -95,7 +121,7 @@ extern NSString* BranchFormTableViewCellUpdateSizeNotification;
     }else{
         branch = [@{@"link": self.cell.linkTextView.text,
                     @"content":self.cell.contentTextView.text,
-                    @"parent_branch":self.parentBranchKey} mutableCopy];
+                    @"parent_branch_key":self.parentBranchKey} mutableCopy];
     }
     
     SaveBranchStatus status = [self.tree saveBranchStatus:branch];
@@ -166,7 +192,7 @@ extern NSString* BranchFormTableViewCellUpdateSizeNotification;
 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return 1;
+    return _needsConfirmation ? 0 : 1 ;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -193,8 +219,12 @@ extern NSString* BranchFormTableViewCellUpdateSizeNotification;
     if (_cell == nil) {
         _cell = [self.tableView dequeueReusableCellWithIdentifier:@"BranchFormTableViewCell"];
         [_cell setupWithTree:self.tree];
-        if (self.branchKey) {
-            [_cell setupWithBranch:self.tree.branches[self.branchKey]];
+        id branch = self.unsavedBranch;
+        if (branch == nil && self.branchKey) {
+            branch = self.tree.branches[self.branchKey];
+        }
+        if (branch) {
+            [_cell setupWithBranch:branch];
         }
         [self.cell layoutSubviews];
     }
@@ -205,10 +235,10 @@ extern NSString* BranchFormTableViewCellUpdateSizeNotification;
 
 NSString* BranchFormTableViewCellUpdateSizeNotification = @"BranchFormTableViewCellUpdateSizeNotification";
 
-static NSMutableDictionary* CurrentBranch = nil;
 
 @interface BranchFormTableViewCell()
 
+@property (nonatomic,strong) NSMutableDictionary* currentBranch;
 @property (nonatomic,assign) NSUInteger linkMax;
 @property (nonatomic,assign) NSUInteger contentMax;
 
@@ -217,12 +247,12 @@ static NSMutableDictionary* CurrentBranch = nil;
 @implementation BranchFormTableViewCell
 
 -(CGSize)sizeThatFits:(CGSize)size{
-    if (![self.linkTextView.text isEqualToString:CurrentBranch[@"link"]]) {
-        self.linkTextView.text = CurrentBranch[@"link"];
+    if (![self.linkTextView.text isEqualToString:self.currentBranch[@"link"]]) {
+        self.linkTextView.text = self.currentBranch[@"link"];
         [self.linkTextView layoutSubviews];
     }
-    if (![self.contentTextView.text isEqualToString:CurrentBranch[@"content"]]) {
-        self.contentTextView.text = CurrentBranch[@"content"];
+    if (![self.contentTextView.text isEqualToString:self.currentBranch[@"content"]]) {
+        self.contentTextView.text = self.currentBranch[@"content"];
         [self.contentTextView layoutSubviews];
     }
     
@@ -250,12 +280,12 @@ static NSMutableDictionary* CurrentBranch = nil;
 
 -(void)layoutSubviews{
     [super layoutSubviews];
-    if (![self.linkTextView.text isEqualToString:CurrentBranch[@"link"]]) {
-        self.linkTextView.text = CurrentBranch[@"link"];
+    if (![self.linkTextView.text isEqualToString:self.currentBranch[@"link"]]) {
+        self.linkTextView.text = self.currentBranch[@"link"];
         [self.linkTextView layoutSubviews];
     }
-    if (![self.contentTextView.text isEqualToString:CurrentBranch[@"content"]]) {
-        self.contentTextView.text = CurrentBranch[@"content"];
+    if (![self.contentTextView.text isEqualToString:self.currentBranch[@"content"]]) {
+        self.contentTextView.text = self.currentBranch[@"content"];
         [self.contentTextView layoutSubviews];
     }
     
@@ -289,8 +319,8 @@ static NSMutableDictionary* CurrentBranch = nil;
 }
 
 -(void)setupWithBranch:(id)branch{
-    if (branch != nil && ![branch[@"key"] isEqualToString:CurrentBranch[@"key"]]) {
-        CurrentBranch = [branch mutableCopy];
+    if (branch != nil && ![branch[@"key"] isEqualToString:self.currentBranch[@"key"]]) {
+        self.currentBranch = [branch mutableCopy];
     }
 }
 
@@ -313,14 +343,14 @@ static NSMutableDictionary* CurrentBranch = nil;
 
 -(void)prepareForReuse{
     [super prepareForReuse];
-    CurrentBranch = [@{@"link":@"",@"content":@""} mutableCopy];
+    self.currentBranch = [@{@"link":@"",@"content":@""} mutableCopy];
     self.linkTextView.text = @"";
     self.contentTextView.text = @"";
 }
 
 -(void)awakeFromNib{
     [super awakeFromNib];
-    CurrentBranch = [@{@"link":@"",@"content":@""} mutableCopy];
+    self.currentBranch = [@{@"link":@"",@"content":@""} mutableCopy];
     self.linkTextView.placeholder = @"Add a teaser...";
     self.contentTextView.placeholder = @"...and continue with some more text";
 }
@@ -344,9 +374,9 @@ static NSMutableDictionary* CurrentBranch = nil;
 
 -(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
     if ([textView isEqual:self.linkTextView]) {
-        CurrentBranch[@"link"] = [textView.text stringByReplacingCharactersInRange:range withString:text];
+        self.currentBranch[@"link"] = [textView.text stringByReplacingCharactersInRange:range withString:text];
     }else if ([textView isEqual:self.contentTextView]) {
-        CurrentBranch[@"content"] = [textView.text stringByReplacingCharactersInRange:range withString:text];
+        self.currentBranch[@"content"] = [textView.text stringByReplacingCharactersInRange:range withString:text];
     }
     [self updateCountLabel];
     return YES;
@@ -357,8 +387,8 @@ static NSMutableDictionary* CurrentBranch = nil;
 
 -(void)updateCountLabel{
     
-    NSInteger contentRemaining = self.contentMax - [CurrentBranch[@"content"] length];
-    NSInteger linkRemaining = self.linkMax - [CurrentBranch[@"link"] length];
+    NSInteger contentRemaining = self.contentMax - [self.currentBranch[@"content"] length];
+    NSInteger linkRemaining = self.linkMax - [self.currentBranch[@"link"] length];
     
     self.linkTextView.textColor = ColorForCount(linkRemaining);
     self.contentTextView.textColor = ColorForCount(contentRemaining);

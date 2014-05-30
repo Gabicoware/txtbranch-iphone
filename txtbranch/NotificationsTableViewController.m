@@ -134,7 +134,7 @@
             [self.navigationController pushViewController:controller animated:YES];
         }else if ([params[@"itemType"] isEqualToString:@"link"]) {
             UIViewController<Queryable>* controller = [storyboard instantiateViewControllerWithIdentifier:@"BranchViewController"];
-            NSDictionary* query = @{@"tree_name":notification[@"tree_name"],@"branch":notification[@"branch"]};
+            NSDictionary* query = @{@"tree_name":notification[@"tree_name"],@"branch_key":notification[@"branch_key"]};
             controller.query = query;
             [self.navigationController pushViewController:controller animated:YES];
         }
