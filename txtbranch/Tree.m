@@ -152,16 +152,20 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
         if(0 < content.length && ![existingBranch[@"content"] isEqualToString:content]){
             result |= SaveBranchStatusModeratorOnlyContent;
         }
-    }else if (!HasString(content, self.contentMax)) {
+    }else if (content == nil || content.length == 0) {
         result |= SaveBranchStatusEmptyContent;
+    }else if(self.contentMax < content.length ){
+        result |= SaveBranchStatusTooLongContent;
     }
     
     if ([self linkModeratorOnly] && ![self isModerator]) {
         if(0 < link.length && ![existingBranch[@"link"] isEqualToString:link]){
             result |= SaveBranchStatusModeratorOnlyLink;
         }
-    }else if (!HasString(link, self.linkMax)) {
+    }else if (link == nil || link.length == 0) {
         result |= SaveBranchStatusEmptyLink;
+    }else if(self.linkMax < link.length ){
+        result |= SaveBranchStatusTooLongLink;
     }
     
     return result;

@@ -141,8 +141,14 @@ extern NSString* BranchFormTableViewCellUpdateSizeNotification;
         if (status & SaveBranchStatusEmptyContent) {
             [message appendString:@"The content cannot be empty. "];
         }
+        if (status & SaveBranchStatusTooLongContent) {
+            [message appendString:@"The content has too many characters. "];
+        }
         if (status & SaveBranchStatusEmptyLink) {
             [message appendString:@"The link cannot be empty. "];
+        }
+        if (status & SaveBranchStatusTooLongLink) {
+            [message appendString:@"The link has too many characters. "];
         }
         if (status & SaveBranchStatusModeratorOnlyContent) {
             [message appendString:@"The content is moderator only. "];

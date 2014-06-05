@@ -23,8 +23,10 @@ typedef enum{
     SaveBranchStatusAllowed = 0,
     SaveBranchStatusEmptyContent = 1 << 0,
     SaveBranchStatusEmptyLink = 1 << 1,
-    SaveBranchStatusModeratorOnlyContent = 1 << 2,
-    SaveBranchStatusModeratorOnlyLink = 1 << 3
+    SaveBranchStatusTooLongContent = 1 << 2,
+    SaveBranchStatusTooLongLink = 1 << 3,
+    SaveBranchStatusModeratorOnlyContent = 1 << 4,
+    SaveBranchStatusModeratorOnlyLink = 1 << 5
 }SaveBranchStatus;
 
 @interface Tree : NSObject
