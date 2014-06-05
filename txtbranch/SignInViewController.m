@@ -82,8 +82,13 @@
         
         [[AuthenticationManager instance] updateLoginState];
         [self.navigationController dismissViewControllerAnimated:YES completion:NULL];
-    }else{
+    }else if([result[@"result"] containsObject:@"needs_username"]){
         [self showUsernameView];
+    }else{
+        //not a common scenario, but the best way to handle this is to dismiss the UI, and start again
+        [[[UIAlertView alloc] initWithTitle:@"Login Error" message:@"Could not login. Please try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+        
+        [self.navigationController dismissViewControllerAnimated:YES completion:NULL];
     }
 }
 
