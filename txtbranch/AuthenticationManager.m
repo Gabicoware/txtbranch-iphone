@@ -8,6 +8,7 @@
 
 #import "AuthenticationManager.h"
 #import "NSURL+txtbranch.h"
+#import "Inbox.h"
 
 #if DEBUG
 
@@ -21,6 +22,7 @@
 
 @implementation AuthenticationManager{
     NSString* _username;
+    Inbox* _inbox;
 }
 
 +(instancetype)instance{
@@ -78,11 +80,8 @@
     }
 }
 
--(NSNumber*)unreadCount{
-    return @(0.0);
-}
 
--(void)clearCookiesForServer:(NSString*)server{
+-(void)resetForServer:(NSString*)server{
     NSURL* URL = [NSURL URLWithString:server];
     if (URL) {
         NSArray* cookiesToClear = [[[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:URL] copy];
@@ -90,6 +89,27 @@
             [[NSHTTPCookieStorage sharedHTTPCookieStorage] deleteCookie:cookie];
         }
     }
+    _inbox = nil;
+}
+
+-(Inbox*)inbox{
+    if (self.username != nil) {
+        if (_inbox == nil) {
+            _inbox = [[Inbox alloc] init];
+            [_inbox refresh];
+        }
+    }
+    return _inbox;
 }
 
 @end
+
+@implementation AuthenticationManager (Convenience)
+
++(NSString*)unreadCountString{
+    NSUInteger unreadCount = [[[self instance] inbox] unreadCount];
+    return unreadCount > 0 ? [NSString stringWithFormat:@"%lu",unreadCount] : @"" ;
+}
+
+@end
+

@@ -93,7 +93,7 @@ enum {
                                       block:^(UIAlertView *alertView, NSInteger buttonIndex) {
                                           if (buttonIndex == 1) {
                                               [[ServerList instance] removeServer:self.server];
-                                              [[AuthenticationManager instance] clearCookiesForServer:self.server[@"address"]];
+                                              [[AuthenticationManager instance] resetForServer:self.server[@"address"]];
                                               [self.parentViewController dismissViewControllerAnimated:YES completion:NULL];
                                           }
                                       }] show];

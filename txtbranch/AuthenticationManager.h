@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Inbox.h"
 
 @interface AuthenticationManager : NSObject
 
@@ -14,12 +15,20 @@
 
 @property (nonatomic,readonly) NSString* username;
 
-@property (nonatomic,readonly) NSNumber* unreadCount;
-
 +(instancetype)instance;
 
-//will logout, and clear any additional cookies for the server
--(void)clearCookiesForServer:(NSString*)server;
+//will logout, and clear any additional cookies for the server, and reset the inbox
+-(void)resetForServer:(NSString*)server;
 
 -(void)updateLoginState;
+
+@property (nonatomic, readonly) Inbox* inbox;
+
+@end
+
+@interface AuthenticationManager (Convenience)
+
+//returns a digit or an empty string
++(NSString*)unreadCountString;
+
 @end

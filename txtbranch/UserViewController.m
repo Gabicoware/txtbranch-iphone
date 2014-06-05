@@ -19,16 +19,26 @@
 
 @synthesize query=_query;
 
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self buildSections];
+    [self.tableView reloadData];
+}
+
 -(void)setQuery:(NSDictionary *)query{
     _query = query;
+    [self buildSections];
+    [self.tableView reloadData];
+}
+
+-(void)buildSections{
     
     self.sections = @[@{@"text":@"Activity",@"segue":@"Notifications",@"query":@{@"from_username":self.query[@"username"]}},
                       @{@"text":@"Trees",@"segue":@"TreesView",@"query":@{@"username":self.query[@"username"]}}];
     
     if ([self.query[@"username"] isEqualToString:[[AuthenticationManager instance] username]]) {
-        self.sections = [@[@{@"text":@"Inbox",@"segue":@"Notifications",@"query":@{}}] arrayByAddingObjectsFromArray:self.sections];
+        self.sections = [@[@{@"text":@"Inbox",@"detailText":[AuthenticationManager unreadCountString],@"segue":@"Inbox",@"query":@{}}] arrayByAddingObjectsFromArray:self.sections];
     }
-    [self.tableView reloadData];
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{

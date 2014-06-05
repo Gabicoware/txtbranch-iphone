@@ -7,8 +7,7 @@
 //
 
 #import "NotificationsTableViewController.h"
-#import "ASIHTTPRequest.h"
-#import "NSURL+txtbranch.h"
+#import "QueryableList.h"
 #import "NSDictionary+QueryString.h"
 #import "TTTAttributedLabel.h"
 #import "NotificationFormatter.h"
@@ -28,13 +27,15 @@
 
 @interface NotificationsTableViewController ()<TTTAttributedLabelDelegate>
 
-@property (nonatomic, strong) ASIHTTPRequest* request;
-@property (nonatomic, strong) NSArray* notifications;
 @property (nonatomic, strong) NotificationFormatter* formatter;
 
 @end
 
 @implementation NotificationsTableViewController
+
+-(void)dealloc{
+    [self.list removeObserver:self forKeyPath:@"items"];
+}
 
 -(void)viewDidLoad{
     [super viewDidLoad];
@@ -48,50 +49,20 @@
             self.title = _query[@"from_username"];
         }
         _query = [query copy];
-        [self refresh];
+        
+        [self.list removeObserver:self forKeyPath:@"items"];
+        self.list = [[QueryableList alloc] init];
+        self.list.query = _query;
+        self.list.basePath = @"/api/v1/notifications";
+        
+        [self.list addObserver:self forKeyPath:@"items" options:NSKeyValueObservingOptionNew context:NULL];
+        
+        [self.list refresh];
     }
 }
 
--(void)refresh{
-    
-    [_request cancel];
-    
-    NSString* path = nil;
-    if (self.query ) {
-        NSString* queryString = [self.query queryStringValue];
-        path = [NSString stringWithFormat:@"/api/v1/notifications?%@",queryString] ;
-    }else{
-        path = @"/api/v1/notifications" ;
-    }
-    NSURL* URL = [NSURL tbURLWithPath:path];
-    
-    [self setRequest:[ASIHTTPRequest requestWithURL:URL]];
-    [_request setTimeOutSeconds:20];
-    
-    [_request setDelegate:self];
-    [_request setDidFailSelector:@selector(listRequestFailed:)];
-    [_request setDidFinishSelector:@selector(listRequestFinished:)];
-    
-    [_request startAsynchronous];
-}
-
--(void)listRequestFinished:(ASIHTTPRequest*)request{
-    [self.refreshControl endRefreshing];
-    
-    
-    NSError* error = nil;
-    id result = [NSJSONSerialization JSONObjectWithData:[request responseData]
-                                                options:0
-                                                  error:&error];
-    if ([result[@"status"] isEqualToString:@"OK"]) {
-        self.notifications = result[@"result"];
-        [self.tableView reloadData];
-    }
-}
-
--(void)listRequestFailed:(ASIHTTPRequest*)sender{
-    [self.refreshControl endRefreshing];
-    NSLog(@"");
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
+    [self.tableView reloadData];
 }
 
 #pragma mark - Table view data source
@@ -99,14 +70,14 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    return self.notifications.count;
+    return self.list.items.count;
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NotificationTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NotificationTableViewCell" forIndexPath:indexPath];
-    cell.attributedLabel.text = [self.formatter stringWithNotification:self.notifications[indexPath.row]];
+    cell.attributedLabel.text = [self.formatter stringWithNotification:self.list.items[indexPath.row]];
     
     // Configure the cell...
     

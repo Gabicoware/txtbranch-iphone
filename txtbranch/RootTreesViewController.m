@@ -23,8 +23,20 @@
 
 @implementation RootTreesViewController
 
+-(void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+-(void)handleInboxUnreadCountDidUpdateNotification:(NSNotification*)notification{
+    [self buildSections];
+    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[((Inbox*)notification.object) unreadCount]];
+}
+
 - (void)viewDidLoad
 {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleInboxUnreadCountDidUpdateNotification:) name:InboxUnreadCountDidUpdate object:nil];
+    
     [super viewDidLoad];
     self.title = [NSURL tbURLName];
     
@@ -65,7 +77,7 @@
 -(void)buildSections{
     if ([[AuthenticationManager instance] isLoggedIn]) {
         self.sections = @[@{@"text":[[AuthenticationManager instance] username],
-                            @"detailText":@"",
+                            @"detailText":[AuthenticationManager  unreadCountString],
                             @"identifier":@"UsernameCell",
                             @"query":@{@"username":[[AuthenticationManager instance] username]}}];
     }else{
@@ -79,6 +91,7 @@
 
 -(void)refresh{
     if ([Config currentConfig].data) {
+        [[[AuthenticationManager instance] inbox] refresh];
         [super refresh];
     }else{
         [[Config currentConfig] reloadData];
