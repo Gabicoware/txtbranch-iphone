@@ -267,11 +267,13 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
 
 -(void)deleteBranch:(NSDictionary*)branch{
     
-    NSString* path = [NSString stringWithFormat:@"/api/v1/branchs?branch_key=%@",branch[@"key"]];
+    NSString* path = [NSString stringWithFormat:@"/api/v1/branchs?key=%@",branch[@"key"]];
     
     ASIHTTPRequest* request = [[ASIHTTPRequest alloc] initWithURL:[NSURL tbURLWithPath:path]];
     
     request.requestMethod = @"DELETE";
+    
+    request.userInfo = branch;
     
     [self performRequest:request selectorBase:@"deleteBranch"];
     
@@ -282,7 +284,11 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
 }
 
 -(void)deleteBranchRequestFinished:(ASIHTTPRequest*)request{
-    [self processRequest:request completion:^(id result) {}];
+    [self processRequest:request completion:^(id result) {
+        if ( request.userInfo[@"key"] && _branches[request.userInfo[@"key"]] != nil) {
+            [_branches removeObjectForKey:request.userInfo[@"key"]];
+        }
+    }];
 }
 
 -(void)addBranch:(NSDictionary*)branch{
