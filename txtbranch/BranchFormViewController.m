@@ -373,7 +373,14 @@ NSString* BranchFormTableViewCellUpdateSizeNotification = @"BranchFormTableViewC
 }
 
 -(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
-    if ([textView isEqual:self.linkTextView]) {
+    if( [text isEqualToString:@"\t"] ){
+        if ([textView isEqual:self.linkTextView]) {
+            [self.contentTextView becomeFirstResponder];
+        }else if ([textView isEqual:self.contentTextView]) {
+            [self.linkTextView becomeFirstResponder];
+        }
+        return NO;
+    }else if ([textView isEqual:self.linkTextView]) {
         self.currentBranch[@"link"] = [textView.text stringByReplacingCharactersInRange:range withString:text];
     }else if ([textView isEqual:self.contentTextView]) {
         self.currentBranch[@"content"] = [textView.text stringByReplacingCharactersInRange:range withString:text];
