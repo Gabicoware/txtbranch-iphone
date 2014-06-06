@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "txtbranch.h"
 
+@class ASIHTTPRequest;
+
 @interface QueryableList : NSObject<Queryable>
 
 @property (nonatomic, strong) NSString* basePath;
@@ -17,5 +19,13 @@
 
 //does not load inifite items
 -(void)refresh;
+
+@end
+
+@interface QueryableList (SubclassingHooks)
+
+-(void)listRequestFinished:(ASIHTTPRequest*)request;
+
+-(void)listRequestFailed:(ASIHTTPRequest*)sender;
 
 @end

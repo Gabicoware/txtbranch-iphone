@@ -11,17 +11,15 @@
 
 #define InboxUnreadCountDidUpdate @"com.txtbranch.InboxUnreadCountDidUpdate"
 
-@interface Inbox : NSObject
-
-@property (nonatomic, strong) QueryableList* list;
+@interface Inbox : QueryableList
 
 //this is readwrite for the sake of KVO, but you probably wouldn't want to
 //assign anything to it (other than 0)
 @property (nonatomic, assign) NSUInteger unreadCount;
 
--(void)refresh;
-
 //This is a temporary implementation
 @property (nonatomic, assign) NSString* lastReadNotificationKey;
+
+-(void)refreshWithCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler;
 
 @end

@@ -7,22 +7,33 @@
 //
 
 #import "Inbox.h"
+#import "ASIHTTPRequest.h"
+
+@interface Inbox()
+
+@property (nonatomic, strong) void (^completionHandler)(UIBackgroundFetchResult);
+
+@end
 
 @implementation Inbox
 
--(void)refresh{
-    if (self.list == nil) {
-        self.list = [[QueryableList alloc] init];
-        self.list.basePath = @"/api/v1/notifications";
-        self.list.query = @{};
-        [self.list addObserver:self forKeyPath:@"items" options:NSKeyValueObservingOptionNew context:NULL];
+-(instancetype)init{
+    if ((self = [super init])) {
+        self.basePath = @"/api/v1/notifications";
+        self.query = @{};
     }
-    [self.list refresh];
-
+    return self;
 }
 
--(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
-    [self updateUnreadCount];
+-(void)refresh{
+    [self refreshWithCompletionHandler:NULL];
+}
+
+-(void)refreshWithCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler;
+{
+    self.completionHandler = completionHandler;
+    [super refresh];
+
 }
 
 #define LastReadNotificationKeyKey @"com.txtbranch.LastReadNotificationKeyKey"
@@ -43,7 +54,7 @@
 }
 
 -(void)updateUnreadCount{
-    NSArray* keys = [self.list.items valueForKey:@"key"];
+    NSArray* keys = [self.items valueForKey:@"key"];
     NSUInteger index = [keys indexOfObject:self.lastReadNotificationKey];
     if ( index == NSNotFound ) {
         self.unreadCount = keys.count;
@@ -52,5 +63,32 @@
     }
     [[NSNotificationCenter defaultCenter] postNotificationName:InboxUnreadCountDidUpdate object:self];
 }
+
+-(void)listRequestFinished:(ASIHTTPRequest*)request{
+    
+    [super listRequestFinished:request];
+    NSError* error = nil;
+    id result = [NSJSONSerialization JSONObjectWithData:[request responseData]
+                                                options:0
+                                                  error:&error];
+    if ([result[@"status"] isEqualToString:@"OK"]) {
+        [self updateUnreadCount];
+        if (self.completionHandler != NULL) {
+            self.completionHandler(UIBackgroundFetchResultNewData);
+        }
+    }else{
+        if (self.completionHandler != NULL) {
+            self.completionHandler(UIBackgroundFetchResultNoData);
+        }
+    }
+}
+
+-(void)listRequestFailed:(ASIHTTPRequest*)sender{
+    [super listRequestFailed:sender];
+    if (self.completionHandler) {
+        self.completionHandler(UIBackgroundFetchResultFailed);
+    }
+}
+
 
 @end

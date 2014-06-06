@@ -108,7 +108,7 @@
 
 +(NSString*)unreadCountString{
     NSUInteger unreadCount = [[[self instance] inbox] unreadCount];
-    return unreadCount > 0 ? [NSString stringWithFormat:@"%lu",unreadCount] : @"" ;
+    return unreadCount > 0 ? [NSString stringWithFormat:@"%d",(int)unreadCount] : @"" ;
 }
 
 @end

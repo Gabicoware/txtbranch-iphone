@@ -24,25 +24,27 @@
 
 -(void)refresh{
     
-    [_request cancel];
-    
-    NSString* path = nil;
-    if ([self.query allValues].count > 0 ) {
-        NSString* queryString = [self.query queryStringValue];
-        path = [NSString stringWithFormat:@"%@?%@",self.basePath, queryString] ;
-    }else{
-        path = self.basePath ;
+    if (_request == nil) {
+        [_request cancel];
+        
+        NSString* path = nil;
+        if ([self.query allValues].count > 0 ) {
+            NSString* queryString = [self.query queryStringValue];
+            path = [NSString stringWithFormat:@"%@?%@",self.basePath, queryString] ;
+        }else{
+            path = self.basePath ;
+        }
+        NSURL* URL = [NSURL tbURLWithPath:path];
+        
+        [self setRequest:[ASIHTTPRequest requestWithURL:URL]];
+        [_request setTimeOutSeconds:20];
+        
+        [_request setDelegate:self];
+        [_request setDidFailSelector:@selector(listRequestFailed:)];
+        [_request setDidFinishSelector:@selector(listRequestFinished:)];
+        
+        [_request startAsynchronous];
     }
-    NSURL* URL = [NSURL tbURLWithPath:path];
-    
-    [self setRequest:[ASIHTTPRequest requestWithURL:URL]];
-    [_request setTimeOutSeconds:20];
-    
-    [_request setDelegate:self];
-    [_request setDidFailSelector:@selector(listRequestFailed:)];
-    [_request setDidFinishSelector:@selector(listRequestFinished:)];
-    
-    [_request startAsynchronous];
 }
 
 -(void)listRequestFinished:(ASIHTTPRequest*)request{
@@ -53,11 +55,13 @@
                                                   error:&error];
     if ([result[@"status"] isEqualToString:@"OK"]) {
         self.items = result[@"result"];
+    }else{
+        self.items = nil;
     }
 }
 
 -(void)listRequestFailed:(ASIHTTPRequest*)sender{
-    NSLog(@"");
+    self.items = nil;
 }
 
 

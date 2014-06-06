@@ -8,11 +8,16 @@
 
 #import "AppDelegate.h"
 #import "VersionKeychainItem.h"
+#import "AuthenticationManager.h"
+
+#define BackgroundFetchInterval 60*60*3
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [application setMinimumBackgroundFetchInterval:BackgroundFetchInterval];
+    
     [[UINavigationBar appearance] setTintColor:[UIColor darkGrayColor]];
     
     [self recordLaunch];
@@ -33,5 +38,15 @@
     }
     
 }
+
+- (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler{
+    Inbox* inbox = [[AuthenticationManager instance] inbox];
+    if (inbox) {
+        [inbox refreshWithCompletionHandler:completionHandler];
+    }else{
+        completionHandler(UIBackgroundFetchResultNoData);
+    }
+}
+
 
 @end
