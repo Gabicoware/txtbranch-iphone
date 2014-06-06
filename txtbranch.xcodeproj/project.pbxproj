@@ -75,6 +75,11 @@
 		77ACC40818CA4B5D00CE03CA /* LoginTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 77ACC40718CA4B5D00CE03CA /* LoginTableViewController.m */; };
 		77B5DA7C19002BE100DDDB00 /* Tree.m in Sources */ = {isa = PBXBuildFile; fileRef = 77B5DA7B19002BE100DDDB00 /* Tree.m */; };
 		77B5DA801904BE9400DDDB00 /* UIAlertView+Block.m in Sources */ = {isa = PBXBuildFile; fileRef = 77B5DA7F1904BE9400DDDB00 /* UIAlertView+Block.m */; };
+		77C8BE64194162F600D061A6 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 77C8BE5E194162F600D061A6 /* LICENSE */; };
+		77C8BE65194162F600D061A6 /* NSDate+TimeAgo.m in Sources */ = {isa = PBXBuildFile; fileRef = 77C8BE60194162F600D061A6 /* NSDate+TimeAgo.m */; };
+		77C8BE66194162F600D061A6 /* NSDate+TimeAgo.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 77C8BE61194162F600D061A6 /* NSDate+TimeAgo.podspec */; };
+		77C8BE67194162F600D061A6 /* NSDateTimeAgo.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 77C8BE62194162F600D061A6 /* NSDateTimeAgo.bundle */; };
+		77C8BE68194162F600D061A6 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 77C8BE63194162F600D061A6 /* README.md */; };
 		77CF293F1924497900D0A1DE /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 77CF293E1924497900D0A1DE /* AboutViewController.m */; };
 		77CF29411925800900D0A1DE /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 77CF29401925800900D0A1DE /* MessageUI.framework */; };
 		77CF294419264C1F00D0A1DE /* VersionKeychainItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 77CF294319264C1F00D0A1DE /* VersionKeychainItem.m */; };
@@ -224,6 +229,12 @@
 		77B5DA7B19002BE100DDDB00 /* Tree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tree.m; sourceTree = "<group>"; };
 		77B5DA7E1904BE9400DDDB00 /* UIAlertView+Block.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+Block.h"; sourceTree = "<group>"; };
 		77B5DA7F1904BE9400DDDB00 /* UIAlertView+Block.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertView+Block.m"; sourceTree = "<group>"; };
+		77C8BE5E194162F600D061A6 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		77C8BE5F194162F600D061A6 /* NSDate+TimeAgo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+TimeAgo.h"; sourceTree = "<group>"; };
+		77C8BE60194162F600D061A6 /* NSDate+TimeAgo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+TimeAgo.m"; sourceTree = "<group>"; };
+		77C8BE61194162F600D061A6 /* NSDate+TimeAgo.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "NSDate+TimeAgo.podspec"; sourceTree = "<group>"; };
+		77C8BE62194162F600D061A6 /* NSDateTimeAgo.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = NSDateTimeAgo.bundle; sourceTree = "<group>"; };
+		77C8BE63194162F600D061A6 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		77CF293D1924497900D0A1DE /* AboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
 		77CF293E1924497900D0A1DE /* AboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutViewController.m; sourceTree = "<group>"; };
 		77CF29401925800900D0A1DE /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
@@ -355,6 +366,7 @@
 		777AD0F518C13EFE00DC5E9F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				77C8BE5D194162F600D061A6 /* NSDate-TimeAgo */,
 				77CF29401925800900D0A1DE /* MessageUI.framework */,
 				77288B2818F899DE00B97131 /* TTTAttributedLabel */,
 				777AD1B218C1829700DC5E9F /* asi-http-request */,
@@ -588,6 +600,20 @@
 			name = Utilities;
 			sourceTree = "<group>";
 		};
+		77C8BE5D194162F600D061A6 /* NSDate-TimeAgo */ = {
+			isa = PBXGroup;
+			children = (
+				77C8BE5E194162F600D061A6 /* LICENSE */,
+				77C8BE5F194162F600D061A6 /* NSDate+TimeAgo.h */,
+				77C8BE60194162F600D061A6 /* NSDate+TimeAgo.m */,
+				77C8BE61194162F600D061A6 /* NSDate+TimeAgo.podspec */,
+				77C8BE62194162F600D061A6 /* NSDateTimeAgo.bundle */,
+				77C8BE63194162F600D061A6 /* README.md */,
+			);
+			name = "NSDate-TimeAgo";
+			path = "lib/NSDate-TimeAgo";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -635,6 +661,13 @@
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = Gabicoware;
 				TargetAttributes = {
+					777AD0F218C13EFE00DC5E9F = {
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
+					};
 					777AD11318C13EFE00DC5E9F = {
 						TestTargetID = 777AD0F218C13EFE00DC5E9F;
 					};
@@ -665,7 +698,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				777AD10F18C13EFE00DC5E9F /* Images.xcassets in Resources */,
+				77C8BE66194162F600D061A6 /* NSDate+TimeAgo.podspec in Resources */,
 				777AD10118C13EFE00DC5E9F /* InfoPlist.strings in Resources */,
+				77C8BE68194162F600D061A6 /* README.md in Resources */,
+				77C8BE67194162F600D061A6 /* NSDateTimeAgo.bundle in Resources */,
+				77C8BE64194162F600D061A6 /* LICENSE in Resources */,
 				777AD10A18C13EFE00DC5E9F /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -721,6 +758,7 @@
 				77B5DA7C19002BE100DDDB00 /* Tree.m in Sources */,
 				777AD19318C16C3100DC5E9F /* ASICloudFilesRequest.m in Sources */,
 				777AD1CB18C6CAC400DC5E9F /* UsernameViewController.m in Sources */,
+				77C8BE65194162F600D061A6 /* NSDate+TimeAgo.m in Sources */,
 				777AD18C18C16C3100DC5E9F /* ASIWebPageRequest.m in Sources */,
 				77E0F849193FF30A00902DA5 /* QueryableList.m in Sources */,
 				777AD18E18C16C3100DC5E9F /* ASICloudFilesContainer.m in Sources */,

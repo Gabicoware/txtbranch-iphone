@@ -8,12 +8,17 @@
 
 #import "NotificationFormatter.h"
 #import "NSDictionary+QueryString.h"
+#import "NSDate+TimeAgo.h"
 
-@implementation NotificationFormatter
+@implementation NotificationFormatter{
+    NSDateFormatter* _formatter;
+}
 
 -(id)init{
     if((self = [super init])){
         self.URLToNotifications = [NSMutableDictionary dictionary];
+        _formatter = [[NSDateFormatter alloc] init];
+        [_formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss.SSS"];
     }
     return self;
 }
@@ -91,6 +96,12 @@
     if ([treename isKindOfClass:[NSString class]]) {
         [array addObject:@{@"string":treename,@"type":@"item",@"itemType":@"tree_name"}];
     }
+    
+    [array addObject:@{@"string":@" ",@"type":@"text"}];
+    NSDate* date = [_formatter dateFromString:notification[@"date"]];
+    
+    [array addObject:@{@"string":[date timeAgo],@"type":@"text"}];
+    
     
     return [array copy];
     
