@@ -30,7 +30,6 @@
 -(void)handleInboxUnreadCountDidUpdateNotification:(NSNotification*)notification{
     [self buildSections];
     [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
-    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[((Inbox*)notification.object) unreadCount]];
 }
 
 - (void)viewDidLoad

@@ -61,6 +61,7 @@
     }else{
         self.unreadCount = index;
     }
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:self.unreadCount];
     [[NSNotificationCenter defaultCenter] postNotificationName:InboxUnreadCountDidUpdate object:self];
 }
 

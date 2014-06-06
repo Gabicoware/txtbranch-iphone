@@ -20,6 +20,8 @@
 
 #endif
 
+#define BackgroundFetchInterval 60*60*3
+
 @implementation AuthenticationManager{
     NSString* _username;
     Inbox* _inbox;
@@ -64,10 +66,16 @@
     }
     
     _isLoggedIn = hasOAuth && usernameCookie != nil && [usernameCookie value] != nil;
+    
+    
     if (_isLoggedIn) {
         _username = [usernameCookie value];
-    }else if(usernameCookie != nil){
-        [[NSHTTPCookieStorage sharedHTTPCookieStorage] deleteCookie:usernameCookie];
+        [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:BackgroundFetchInterval];
+    }else{
+        [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalNever];
+        if(usernameCookie != nil){
+            [[NSHTTPCookieStorage sharedHTTPCookieStorage] deleteCookie:usernameCookie];
+        }
     }
     
 }

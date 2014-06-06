@@ -10,13 +10,10 @@
 #import "VersionKeychainItem.h"
 #import "AuthenticationManager.h"
 
-#define BackgroundFetchInterval 60*60*3
-
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [application setMinimumBackgroundFetchInterval:BackgroundFetchInterval];
     
     [[UINavigationBar appearance] setTintColor:[UIColor darkGrayColor]];
     
