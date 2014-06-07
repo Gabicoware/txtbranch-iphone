@@ -50,6 +50,8 @@
 #import "KeychainItemWrapper.h"
 #import <Security/Security.h>
 
+#define ASSERT_FAILURES 0
+
 /*
 
 These are the default constants and their respective types,
@@ -202,7 +204,9 @@ Keychain API expects as a validly constructed container class.
     {
         NSMutableDictionary *tempDictionary = [self dictionaryToSecItemFormat:keychainItemData];
 		junk = SecItemDelete((CFDictionaryRef)tempDictionary);
+#if ASSERT_FAILURES
         NSAssert( junk == noErr || junk == errSecItemNotFound, @"Problem deleting current dictionary." );
+#endif
     }
     
     // Default attributes for keychain item.
@@ -255,12 +259,13 @@ Keychain API expects as a validly constructed container class.
         // Add the password to the dictionary, converting from NSData to NSString.
         [returnDictionary setObject:passwordData forKey:(id)kSecValueData];
     }
+#if ASSERT_FAILURES
     else
     {
         // Don't do anything if nothing is found.
         NSAssert(NO, @"Serious error, no matching item found in the keychain.\n");
     }
-    
+#endif
     [passwordData release];
    
 	return returnDictionary;
@@ -316,7 +321,9 @@ Keychain API expects as a validly constructed container class.
             [self logOSStatusError:result];
         }
 #endif
+#if ASSERT_FAILURES
         NSAssert( result == noErr, @"Couldn't update the Keychain Item." );
+#endif
     }
     else
     {
@@ -329,7 +336,9 @@ Keychain API expects as a validly constructed container class.
             [self logOSStatusError:result];
         }
 #endif
+#if ASSERT_FAILURES
         NSAssert( result == noErr, @"Couldn't update the Keychain Item." );
+#endif
     }
 }
 
