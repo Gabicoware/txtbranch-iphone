@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
+#ifdef DEBUG
 @interface UIView (Debug)
 
 -(id)recursiveDescription;
@@ -19,3 +20,4 @@
 +(NSString*)dump;
 
 @end
+#endif

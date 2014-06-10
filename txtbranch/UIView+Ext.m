@@ -8,6 +8,7 @@
 
 #import "UIView+Ext.h"
 
+#ifdef DEBUG
 @implementation UIView (Ext)
 
 +(NSString*)dump{
@@ -15,3 +16,4 @@
 }
 
 @end
+#endif
