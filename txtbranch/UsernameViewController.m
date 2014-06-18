@@ -10,6 +10,7 @@
 #import "NSURL+txtbranch.h"
 #import "ASIFormDataRequest.h"
 #import "AuthenticationManager.h"
+#import "AFHTTPSessionManager+txtbranch.h"
 
 @interface UsernameViewController ()<UITextFieldDelegate>
 
@@ -35,19 +36,19 @@
     
     if ([self hasValidUsername]) {
         
-        NSURL* URL = [NSURL tbURLWithPath:@"/api/v1/userinfos"];
         
-        [self setRequest:[ASIFormDataRequest requestWithURL:URL]];
-        
-        NSString* username = self.usernameTextField.text;
-        [_request addPostValue:username forKey:@"username"];
-        [_request setTimeOutSeconds:20];
-        
-        [_request setDelegate:self];
-        [_request setDidFailSelector:@selector(userinfoRequestFailed:)];
-        [_request setDidFinishSelector:@selector(userinfoRequestFinished:)];
-        _request.cachePolicy = ASIDoNotReadFromCacheCachePolicy;
-        [_request startAsynchronous];
+        [[AFHTTPSessionManager currentManager] POST:@"/api/v1/userinfos" parameters:@{@"username":self.usernameTextField.text} success:^(NSURLSessionDataTask *task, id responseObject) {
+            if ([responseObject[@"status"] isEqualToString:@"OK"]) {
+                
+                [[AuthenticationManager instance] updateLoginState];
+                [self.navigationController dismissViewControllerAnimated:YES completion:NULL];
+            }else{
+                //[self showUsernameView];
+            }
+
+        } failure:^(NSURLSessionDataTask *task, NSError *error) {
+            //[self showUsernameView];
+        }];
         
     }
 }
@@ -66,25 +67,6 @@
                                                range:NSMakeRange(0, username.length)];
     
     return range.location == 0 && 4 <= username.length && username.length <= 20;
-}
-
--(void)userinfoRequestFinished:(ASIHTTPRequest*)request{
-    
-    NSError* error = nil;
-    id result = [NSJSONSerialization JSONObjectWithData:[request responseData]
-                                                options:0
-                                                  error:&error];
-    if ([result[@"status"] isEqualToString:@"OK"]) {
-        
-        [[AuthenticationManager instance] updateLoginState];
-        [self.navigationController dismissViewControllerAnimated:YES completion:NULL];
-    }else{
-        //[self showUsernameView];
-    }
-}
-
--(void)userinfoRequestFailed:(ASIHTTPRequest*)request{
-    //[self showUsernameView];
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{

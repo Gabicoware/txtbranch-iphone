@@ -7,17 +7,10 @@
 //
 
 #import "TreesViewController.h"
-#import "ASIHTTPRequest.h"
-#import "ASIFormDataRequest.h"
-#import "NSURL+txtbranch.h"
-#import "BranchViewController.h"
-#import "AuthenticationManager.h"
-#import "NSURL+txtbranch.h"
 #import "Messages.h"
+#import "AFHTTPSessionManager+txtbranch.h"
 
 @interface TreesViewController ()
-
-@property (nonatomic,strong) ASIHTTPRequest* request;
 
 @property (nonatomic, strong) NSArray* trees;
 
@@ -50,7 +43,6 @@
 
 -(void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [self.request cancel];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -59,49 +51,32 @@
 }
 
 -(void)refresh{
-    [_request cancel];
     
-    NSURL* URL = nil;
+    id parameters = nil;
     if (self.query[@"username"]) {
-        URL = [NSURL tbURLWithPath:[NSString stringWithFormat:@"/api/v1/trees?moderator=%@",self.query[@"username"]]];
+        parameters = @{@"moderator":self.query[@"username"]};
     }else{
-        URL = [NSURL tbURLWithPath:@"/api/v1/trees?list=main"];
+        parameters = @{@"list":@"main"};
     }
     
+    __weak TreesViewController* weakSelf = self;
     
-	[self setRequest:[ASIHTTPRequest requestWithURL:URL]];
-	[_request setTimeOutSeconds:20];
-    
-	[_request setDelegate:self];
-	[_request setDidFailSelector:@selector(listRequestFailed:)];
-	[_request setDidFinishSelector:@selector(listRequestFinished:)];
-	
-	[_request startAsynchronous];
-}
-
--(void)listRequestFinished:(ASIHTTPRequest*)request{
-    [self.refreshControl endRefreshing];
-    NSError* error = nil;
-    id result = [NSJSONSerialization JSONObjectWithData:[request responseData]
-                                                options:0
-                                                  error:&error];
-    if (result != nil && [result[@"status"] isEqualToString:@"OK"]) {
-        
-        self.trees = result[@"result"];
-        [self.tableView reloadData];
-    }else{
-        [self showErrors:result[@"result"]];
-    }
-    _request = nil;
-
+    [[AFHTTPSessionManager currentManager] GET:@"/api/v1/trees" parameters:parameters success:^(NSURLSessionDataTask *task, id responseObject) {
+        [weakSelf.refreshControl endRefreshing];
+        if (responseObject != nil && [responseObject[@"status"] isEqualToString:@"OK"]) {
+            
+            weakSelf.trees = responseObject[@"result"];
+            [weakSelf.tableView reloadData];
+        }else{
+            [weakSelf showErrors:responseObject[@"result"]];
+        }
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        [weakSelf.refreshControl endRefreshing];
+        [weakSelf showGeneralError];
+    }];
     
 }
 
--(void)listRequestFailed:(ASIHTTPRequest*)sender{
-    [self.refreshControl endRefreshing];
-    [self showGeneralError];
-    _request = nil;
-}
 //this should get generalized with the logic in Tree
 -(void)showErrors:(NSArray*)errors{
     if (errors.count > 0) {

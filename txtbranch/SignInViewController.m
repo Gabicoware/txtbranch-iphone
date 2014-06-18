@@ -8,15 +8,13 @@
 
 #import "SignInViewController.h"
 #import "NSURL+txtbranch.h"
-#import "ASIHTTPRequest.h"
 #import "UsernameViewController.h"
 #import "AuthenticationManager.h"
+#import "AFHTTPSessionManager+txtbranch.h"
 
 @interface SignInViewController ()<UIWebViewDelegate>
 
 @property (nonatomic,weak) IBOutlet UIWebView* webView;
-
-@property (nonatomic,strong) ASIHTTPRequest* request;
 
 @property (nonatomic,strong) IBOutlet UIView* activityView;
 
@@ -56,44 +54,29 @@
 
 -(void)getUserInfo{
     
-    NSURL* URL = [NSURL tbURLWithPath:@"/api/v1/userinfos?set_cookie=1"];
-    
     [self.view addSubview:self.activityView];
     
+    __weak SignInViewController* weakSelf = self;
     
-    [self setRequest:[ASIHTTPRequest requestWithURL:URL]];
-    [_request setTimeOutSeconds:20];
+    [[AFHTTPSessionManager currentManager] GET:@"/api/v1/userinfos"
+                                    parameters:@{@"set_cookie":@"1"}
+                                       success:^(NSURLSessionDataTask *task, id result) {
+                                           if ([result[@"status"] isEqualToString:@"OK"]) {
+                                               
+                                               [[AuthenticationManager instance] updateLoginState];
+                                               [weakSelf.navigationController dismissViewControllerAnimated:YES completion:NULL];
+                                           }else if([result[@"result"] containsObject:@"needs_username"]){
+                                               [weakSelf showUsernameView];
+                                           }else{
+                                               //not a common scenario, but the best way to handle this is to dismiss the UI, and start again
+                                               [[[UIAlertView alloc] initWithTitle:@"Login Error" message:@"Could not login. Please try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+                                               
+                                               [weakSelf.navigationController dismissViewControllerAnimated:YES completion:NULL];
+                                           }
+                                       } failure:^(NSURLSessionDataTask *task, NSError *error) {
+                                           [self showUsernameView];
+                                       }];
     
-    [_request setDelegate:self];
-    [_request setDidFailSelector:@selector(userinfoRequestFailed:)];
-    [_request setDidFinishSelector:@selector(userinfoRequestFinished:)];
-    _request.cachePolicy = ASIDoNotReadFromCacheCachePolicy;
-    [_request startAsynchronous];
-    
-}
-
--(void)userinfoRequestFinished:(ASIHTTPRequest*)request{
-    
-    NSError* error = nil;
-    id result = [NSJSONSerialization JSONObjectWithData:[request responseData]
-                                                options:0
-                                                  error:&error];
-    if ([result[@"status"] isEqualToString:@"OK"]) {
-        
-        [[AuthenticationManager instance] updateLoginState];
-        [self.navigationController dismissViewControllerAnimated:YES completion:NULL];
-    }else if([result[@"result"] containsObject:@"needs_username"]){
-        [self showUsernameView];
-    }else{
-        //not a common scenario, but the best way to handle this is to dismiss the UI, and start again
-        [[[UIAlertView alloc] initWithTitle:@"Login Error" message:@"Could not login. Please try again." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
-        
-        [self.navigationController dismissViewControllerAnimated:YES completion:NULL];
-    }
-}
-
--(void)userinfoRequestFailed:(ASIHTTPRequest*)request{
-    [self showUsernameView];
 }
 
 -(void)showUsernameView{

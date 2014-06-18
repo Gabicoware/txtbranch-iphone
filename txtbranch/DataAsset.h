@@ -14,7 +14,7 @@ extern NSString* DataAssetDidLoad;
 
 +(instancetype)currentAsset;
 
-+(NSURL*)currenURL;
++(NSString*)path;
 
 @property (nonatomic, copy) NSDictionary* data;
 

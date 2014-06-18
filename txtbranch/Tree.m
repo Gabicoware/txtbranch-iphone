@@ -12,6 +12,7 @@
 #import "ASIFormDataRequest.h"
 #import "NSURL+txtbranch.h"
 #import "Messages.h"
+#import "AFHTTPSessionManager+txtbranch.h"
 
 NSString* const TreeDidUpdateTreeNotification = @"TreeDidUpdateTreeNotification";
 NSString* const TreeDidAddBranchesNotification = @"TreeDidAddBranchesNotification";
@@ -184,89 +185,82 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
 
 -(void)loadTree:(NSString*)name{
     
-    NSURL* URL = [NSURL tbURLWithPath:[NSString stringWithFormat:@"/api/v1/trees?name=%@",name]];
-    
-    ASIHTTPRequest* request = [ASIHTTPRequest requestWithURL:URL];
-    
-    [self performRequest:request selectorBase:@"tree"];
-}
-
--(void)treeRequestFailed:(ASIHTTPRequest*)request{
-    [self processFailedRequest:request];
-}
-
--(void)treeRequestFinished:(ASIHTTPRequest*)request{
-        
-    [self processRequest:request completion:^(id result) {
-        self.data = [TreeDefaults dictionaryByMergingValues: result];
-        //load the root branch immediately if we don't have it
-        if (_branches[result[@"root_branch_key"]] == nil) {
-            [self loadBranches:@[result[@"root_branch_key"]]];
-        }
-    }];
-
-    [[NSNotificationCenter defaultCenter] postNotificationName:TreeDidUpdateTreeNotification
-                                                        object:self
-                                                      userInfo:nil];
-    
+    [[AFHTTPSessionManager currentManager] GET:@"/api/v1/trees"
+                                    parameters:@{@"name":name}
+                                       success:^(NSURLSessionDataTask *task, id result) {
+                                           if (result != nil && [result[@"status"] isEqualToString:@"OK"]) {
+                                               self.data = [TreeDefaults dictionaryByMergingValues: result];
+                                               //load the root branch immediately if we don't have it
+                                               if (_branches[result[@"root_branch_key"]] == nil) {
+                                                   [self loadBranches:@[result[@"root_branch_key"]]];
+                                               }
+                                           }else{
+                                               [self showErrors:result[@"result"]];
+                                           }
+                                           [[NSNotificationCenter defaultCenter] postNotificationName:TreeDidUpdateTreeNotification
+                                                                                               object:self
+                                                                                             userInfo:nil];
+                                       }
+                                       failure:^(NSURLSessionDataTask *task, NSError *error) {
+                                           [self showGeneralError];
+                                       }];
 }
 
 -(void)loadBranches:(NSArray*)branch_keys{
+#warning THIS IS NOT BEING HANDLED BY 
+    
     NSMutableArray* params = [@[] mutableCopy];
     for (NSString* branch_key in branch_keys) {
         [params addObject:[NSString stringWithFormat:@"key=%@",branch_key]];
     }
-    NSURL* URL = [NSURL tbURLWithPath:[NSString stringWithFormat:@"/api/v1/branchs?%@",[params componentsJoinedByString:@"&"]]];
-    [self loadBranchesURL:URL];
+    NSString* path = [NSString stringWithFormat:@"/api/v1/branchs?%@",[params componentsJoinedByString:@"&"]];
+
+    __weak Tree* weakSelf = self;
+    [self performGET:path params:nil completion:^(id responseObject) {
+        [weakSelf updateBranches:responseObject];
+    }];
 }
 
 -(void)loadChildBranches:(NSString*)parentBranchKey{
-    NSURL* URL = [NSURL tbURLWithPath:[NSString stringWithFormat:@"/api/v1/branchs?parent_branch_key=%@",parentBranchKey]];
-    [self loadBranchesURL:URL];
-}
-
--(void)loadBranchesURL:(NSURL*)URL{
-    
-    ASIHTTPRequest* request = [ASIHTTPRequest requestWithURL:URL];
-    
-    [self performRequest:request selectorBase:@"branch"];
-}
-
--(void)branchRequestFailed:(ASIHTTPRequest*)request{
-    [self processFailedRequest:request];
-}
-
--(void)branchRequestFinished:(ASIHTTPRequest*)request{
-    [self processRequest:request completion:^(id result) {
-        [self updateBranches:result];
+    __weak Tree* weakSelf = self;
+    [self performGET:@"/api/v1/branchs" params:@{@"parent_branch_key":parentBranchKey} completion:^(id responseObject) {
+        [weakSelf updateBranches:responseObject];
     }];
+    
+}
+
+-(void)performGET:(NSString*)path params:(NSDictionary*)params completion:(void (^)( id responseObject))success{
+    __weak Tree* weakSelf = self;
+    [[AFHTTPSessionManager currentManager] GET:path
+                                    parameters:params
+                                       success:^(NSURLSessionDataTask *task, id result) {
+                                           if (result != nil && [result[@"status"] isEqualToString:@"OK"]) {
+                                               success(result[@"result"]);
+                                           }else{
+                                               [weakSelf showErrors:result[@"result"]];
+                                           }
+                                       }
+                                       failure:^(NSURLSessionDataTask *task, NSError *error) {
+                                           [weakSelf showGeneralError];
+                                       }];
 }
 
 -(void)editBranch:(NSDictionary*)branch{
     
-    ASIFormDataRequest* request = [[ASIFormDataRequest alloc] initWithURL:[NSURL tbURLWithPath:@"/api/v1/branchs"]];
-    
-    request.userInfo = branch;
-    
-    [request addPostValue:branch[@"link"] forKey:@"link"];
-    [request addPostValue:branch[@"content"] forKey:@"content"];
-    [request addPostValue:branch[@"key"] forKey:@"key"];
-    
-    request.requestMethod = @"PUT";
-    
-    [self performRequest:request selectorBase:@"editBranch"];
-}
-
--(void)editBranchRequestFailed:(ASIHTTPRequest*)request{
-    [self addUnsavedBranch:request.userInfo forQuery:@{@"branchKey":request.userInfo[@"key"]}];
-    [_activeRequests removeObject:request];
-    [self showEditFormError];
-}
-
--(void)editBranchRequestFinished:(ASIHTTPRequest*)request{
-    [self processRequest:request completion:^(id result) {
-        [self updateBranches:@[result]];
-    }];
+    __weak Tree* weakSelf = self;
+    [[AFHTTPSessionManager currentManager] PUT:@"/api/v1/branchs"
+                                    parameters:@{@"link":branch[@"link"], @"content":branch[@"content"], @"key":branch[@"key"] }
+                                       success:^(NSURLSessionDataTask *task, id result) {
+                                           if (result != nil && [result[@"status"] isEqualToString:@"OK"]) {
+                                               [weakSelf updateBranches:@[result[@"result"]]];
+                                           }else{
+                                               [weakSelf showErrors:result[@"result"]];
+                                           }
+                                       }
+                                       failure:^(NSURLSessionDataTask *task, NSError *error) {
+                                           [weakSelf addUnsavedBranch:branch forQuery:@{@"branchKey":branch[@"key"]}];
+                                           [weakSelf showEditFormError];
+                                       }];
 }
 
 -(void)deleteBranch:(NSDictionary*)branch{

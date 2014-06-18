@@ -8,9 +8,6 @@
 
 #import "BranchViewController.h"
 #import "Tree.h"
-#import "ASIHTTPRequest.h"
-#import "ASIFormDataRequest.h"
-#import "NSURL+txtbranch.h"
 #import "BranchTableViewCell.h"
 #import "TBTextView.h"
 #import "AuthenticationManager.h"
@@ -38,7 +35,6 @@ NS_ENUM(NSInteger, BranchTableSection){
 @interface BranchViewController ()<UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate>
 
 @property (nonatomic, assign) BOOL needsParentBranch;
-@property (nonatomic,strong) ASIHTTPRequest* request;
 @property (nonatomic,strong) IBOutlet UITableView* tableView;
 @property (nonatomic,strong) IBOutlet UIBarButtonItem* editItem;
 @property (nonatomic,strong) Tree* tree;

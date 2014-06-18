@@ -11,8 +11,8 @@
 
 @implementation Messages
 
-+(NSURL*)currenURL{
-    return [NSURL tbURLWithPath:@"/messages.json"];
++(NSString*)path{
+    return @"/messages.json";
 }
 
 +(instancetype)currentMessages{

@@ -8,12 +8,11 @@
 
 #import "Config.h"
 #import "NSURL+txtbranch.h"
-#import "ASIHTTPRequest.h"
 
 @implementation Config
 
-+(NSURL*)currenURL{
-    return [NSURL tbURLWithPath:@"/config.json"];
++(NSString*)path{
+    return @"/config.json";
 }
 
 +(instancetype)currentConfig{

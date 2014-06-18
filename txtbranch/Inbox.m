@@ -7,13 +7,7 @@
 //
 
 #import "Inbox.h"
-#import "ASIHTTPRequest.h"
-
-@interface Inbox()
-
-@property (nonatomic, strong) void (^completionHandler)(UIBackgroundFetchResult);
-
-@end
+#import "AFHTTPSessionManager+txtbranch.h"
 
 @implementation Inbox
 
@@ -31,8 +25,25 @@
 
 -(void)refreshWithCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler;
 {
-    self.completionHandler = completionHandler;
-    [super refresh];
+    [[AFHTTPSessionManager currentManager] GET:self.basePath parameters:self.query success:^(NSURLSessionDataTask *task, id result) {
+        if ([result[@"status"] isEqualToString:@"OK"]) {
+            self.items = result[@"result"];
+            [self updateUnreadCount];
+            if (completionHandler != NULL) {
+                completionHandler(UIBackgroundFetchResultNewData);
+            }
+        }else{
+            self.items = nil;
+            if (completionHandler != NULL) {
+                completionHandler(UIBackgroundFetchResultNoData);
+            }
+        }
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        self.items = nil;
+        if (completionHandler) {
+            completionHandler(UIBackgroundFetchResultFailed);
+        }
+    }];
 
 }
 
@@ -63,32 +74,6 @@
     }
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:self.unreadCount];
     [[NSNotificationCenter defaultCenter] postNotificationName:InboxUnreadCountDidUpdate object:self];
-}
-
--(void)listRequestFinished:(ASIHTTPRequest*)request{
-    
-    [super listRequestFinished:request];
-    NSError* error = nil;
-    id result = [NSJSONSerialization JSONObjectWithData:[request responseData]
-                                                options:0
-                                                  error:&error];
-    if ([result[@"status"] isEqualToString:@"OK"]) {
-        [self updateUnreadCount];
-        if (self.completionHandler != NULL) {
-            self.completionHandler(UIBackgroundFetchResultNewData);
-        }
-    }else{
-        if (self.completionHandler != NULL) {
-            self.completionHandler(UIBackgroundFetchResultNoData);
-        }
-    }
-}
-
--(void)listRequestFailed:(ASIHTTPRequest*)sender{
-    [super listRequestFailed:sender];
-    if (self.completionHandler) {
-        self.completionHandler(UIBackgroundFetchResultFailed);
-    }
 }
 
 

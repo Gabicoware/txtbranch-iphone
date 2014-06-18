@@ -8,20 +8,18 @@
 
 #import "DataAsset.h"
 #import "NSURL+txtbranch.h"
-#import "ASIHTTPRequest.h"
+#import "AFHTTPSessionManager+txtbranch.h"
 
 NSString* DataAssetDidLoad = @"DataAssetDidLoad";
 
-@interface DataAsset()
-
-@property (nonatomic, strong) ASIHTTPRequest* request;
-
-@end
-
 @implementation DataAsset
 
-+(NSURL*)currenURL{
-    return [NSURL tbURL];
++(NSURL*)currentURL{
+    return [NSURL tbURLWithPath:[[self class] path]];
+}
+
++(NSString*)path{
+    return @"";
 }
 
 +(NSMutableDictionary*)assets{
@@ -34,7 +32,7 @@ NSString* DataAssetDidLoad = @"DataAssetDidLoad";
 }
 
 +(instancetype)currentAsset{
-    NSURL* URL = [[self class] currenURL];
+    NSURL* URL = [[self class] currentURL];
     DataAsset* asset = [self assets][URL];
     if (asset == nil) {
         asset = [[self class] new];
@@ -44,27 +42,17 @@ NSString* DataAssetDidLoad = @"DataAssetDidLoad";
 }
 
 -(void)reloadData{
-    self.request = [[ASIHTTPRequest alloc] initWithURL:[[self class] currenURL]];
-    __weak DataAsset* weakSelf = self;
-    [self.request setCompletionBlock:^{
-        NSError* error = nil;
-        id result = [NSJSONSerialization JSONObjectWithData:[weakSelf.request responseData]
-                                                    options:0
-                                                      error:&error];
-        if (error == nil) {
-            weakSelf.data = result;
-        }else{
-            weakSelf.data = nil;
-        }
-        [[NSNotificationCenter defaultCenter] postNotificationName:DataAssetDidLoad object:weakSelf];
-    }];
     
-    [self.request setFailedBlock:^{
+    __weak DataAsset* weakSelf = self;
+    
+    [[AFHTTPSessionManager currentManager] GET:[[self class] path] parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
+        weakSelf.data = responseObject;
+        [[NSNotificationCenter defaultCenter] postNotificationName:DataAssetDidLoad object:weakSelf];
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
         weakSelf.data = nil;
         [[NSNotificationCenter defaultCenter] postNotificationName:DataAssetDidLoad object:weakSelf];
     }];
     
-    [self.request startAsynchronous];
 }
 
 @end

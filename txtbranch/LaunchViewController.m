@@ -7,17 +7,8 @@
 //
 
 #import "LaunchViewController.h"
-#import "ASIHTTPRequest.h"
-#import "ASIFormDataRequest.h"
-#import "NSURL+txtbranch.h"
-#import "SignInViewController.h"
 #import "AuthenticationManager.h"
-
-@interface LaunchViewController ()
-
-@property (nonatomic,strong) ASIHTTPRequest* request;
-
-@end
+#import "AFHTTPSessionManager+txtbranch.h"
 
 @implementation LaunchViewController
 
@@ -30,34 +21,20 @@
 
 -(void)getUserInfo{
     
-    NSURL* URL = [NSURL tbURLWithPath:@"/api/v1/userinfos?set_cookie=1"];
+    __weak LaunchViewController* weakSelf = self;
     
-    [self setRequest:[ASIHTTPRequest requestWithURL:URL]];
-    [_request setTimeOutSeconds:3];
+    [[AFHTTPSessionManager currentManager] GET:@"/api/v1/userinfos"
+                                    parameters:@{@"set_cookie":@"1"}
+                                       success:^(NSURLSessionDataTask *task, id responseObject) {
+                                           if ([responseObject[@"status"] isEqualToString:@"OK"]) {
+                                               [weakSelf.navigationController dismissViewControllerAnimated:YES completion:NULL];
+                                           }else{
+                                               [weakSelf performSegueWithIdentifier:@"Login" sender:self];
+                                           }
+                                       } failure:^(NSURLSessionDataTask *task, NSError *error) {
+                                           [weakSelf performSegueWithIdentifier:@"Login" sender:self];
+                                       }];
     
-    [_request setDelegate:self];
-    [_request setDidFailSelector:@selector(userinfoRequestFailed:)];
-    [_request setDidFinishSelector:@selector(userinfoRequestFinished:)];
-    _request.cachePolicy = ASIDoNotReadFromCacheCachePolicy;
-    [_request startAsynchronous];
-    
-}
-
--(void)userinfoRequestFinished:(ASIHTTPRequest*)request{
-    
-    NSError* error = nil;
-    id result = [NSJSONSerialization JSONObjectWithData:[request responseData]
-                                                options:0
-                                                  error:&error];
-    if ([result[@"status"] isEqualToString:@"OK"]) {
-        [self.navigationController dismissViewControllerAnimated:YES completion:NULL];
-    }else{
-        [self performSegueWithIdentifier:@"Login" sender:self];
-    }
-}
-
--(void)userinfoRequestFailed:(ASIHTTPRequest*)request{
-    [self performSegueWithIdentifier:@"Login" sender:self];
 }
 
 @end
