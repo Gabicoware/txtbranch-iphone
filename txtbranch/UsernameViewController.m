@@ -8,14 +8,12 @@
 
 #import "UsernameViewController.h"
 #import "NSURL+txtbranch.h"
-#import "ASIFormDataRequest.h"
 #import "AuthenticationManager.h"
 #import "AFHTTPSessionManager+txtbranch.h"
 
 @interface UsernameViewController ()<UITextFieldDelegate>
 
 @property (nonatomic,weak) IBOutlet UITextField* usernameTextField;
-@property (nonatomic,weak) ASIFormDataRequest* request;
 
 
 @end
