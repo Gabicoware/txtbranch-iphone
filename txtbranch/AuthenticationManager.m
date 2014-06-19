@@ -10,6 +10,11 @@
 #import "NSURL+txtbranch.h"
 #import "Inbox.h"
 
+#ifdef TARGET_IPHONE_SIMULATOR
+#import "KeychainItemWrapper.h"
+#endif
+
+
 #if DEBUG
 
 #define AccessGroup nil
@@ -50,6 +55,9 @@
     NSArray* cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:[NSURL tbURL]];
     
     BOOL hasOAuth = NO;
+#ifdef TARGET_IPHONE_SIMULATOR
+    NSHTTPCookie* oauthCookie = nil;
+#endif
     NSHTTPCookie* usernameCookie = nil;
     for (NSHTTPCookie* cookie in cookies) {
         if ([[cookie name] isEqualToString:@"username"]) {
@@ -57,6 +65,10 @@
         }
         else if ([[cookie name] isEqualToString:@"dev_appserver_login"])
         {
+#ifdef TARGET_IPHONE_SIMULATOR
+            //we only store the dev server login
+            oauthCookie = cookie;
+#endif
             hasOAuth = YES;
         }
         else if ([[cookie name] isEqualToString:@"_simpleauth_sess"])
@@ -65,12 +77,45 @@
         }
     }
     
+#ifdef TARGET_IPHONE_SIMULATOR
+    
+    if (!hasOAuth && [usernameCookie value] != nil) {
+        KeychainItemWrapper* item = [[KeychainItemWrapper alloc] initWithService:@"authCookie"
+                                                                         account:[usernameCookie value]
+                                                                     accessGroup:AccessGroup];
+        NSData* data = [item objectForKey:(__bridge id)kSecValueData];
+        
+        if (data != nil) {
+            NSDictionary* authCookie = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
+            if (authCookie != nil) {
+                NSHTTPCookie* cookie = [NSHTTPCookie cookieWithProperties:authCookie];
+                
+                [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:cookie];
+                hasOAuth = YES;
+            }
+        }
+        
+    }
+    
+#endif
+
     _isLoggedIn = hasOAuth && usernameCookie != nil && [usernameCookie value] != nil;
     
     
     if (_isLoggedIn) {
         _username = [usernameCookie value];
         [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:BackgroundFetchInterval];
+        
+#ifdef TARGET_IPHONE_SIMULATOR
+        if (oauthCookie != nil) {
+            KeychainItemWrapper* item = [[KeychainItemWrapper alloc] initWithService:@"authCookie"
+                                                                             account:_username
+                                                                         accessGroup:AccessGroup];
+            NSData* data = [NSJSONSerialization dataWithJSONObject:[oauthCookie properties] options:0 error:NULL];
+            [item setObject:data forKey:(__bridge id)kSecValueData];
+        }
+#endif
+        
     }else{
         [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalNever];
         if(usernameCookie != nil){
