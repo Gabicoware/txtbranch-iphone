@@ -185,15 +185,15 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
     
     [[AFHTTPSessionManager currentManager] GET:@"/api/v1/trees"
                                     parameters:@{@"name":name}
-                                       success:^(NSURLSessionDataTask *task, id result) {
-                                           if (result != nil && [result[@"status"] isEqualToString:@"OK"]) {
-                                               self.data = [TreeDefaults dictionaryByMergingValues: result];
+                                       success:^(NSURLSessionDataTask *task, id responseObject) {
+                                           if (responseObject != nil && [responseObject[@"status"] isEqualToString:@"OK"]) {
+                                               self.data = [TreeDefaults dictionaryByMergingValues: responseObject[@"result"]];
                                                //load the root branch immediately if we don't have it
-                                               if (_branches[result[@"result"][@"root_branch_key"]] == nil) {
-                                                   [self loadBranches:@[result[@"result"][@"root_branch_key"]]];
+                                               if (_branches[self.data[@"root_branch_key"]] == nil) {
+                                                   [self loadBranches:@[self.data[@"root_branch_key"]]];
                                                }
                                            }else{
-                                               [self showErrors:result[@"result"]];
+                                               [self showErrors:responseObject[@"result"]];
                                            }
                                            [[NSNotificationCenter defaultCenter] postNotificationName:TreeDidUpdateTreeNotification
                                                                                                object:self
@@ -205,7 +205,6 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
 }
 
 -(void)loadBranches:(NSArray*)branch_keys{
-#warning THIS IS NOT BEING HANDLED BY 
     
     NSMutableArray* params = [@[] mutableCopy];
     for (NSString* branch_key in branch_keys) {
