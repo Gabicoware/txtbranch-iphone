@@ -35,6 +35,7 @@ NS_ENUM(NSInteger, BranchTableSection){
 @interface BranchViewController ()<UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate>
 
 @property (nonatomic, assign) BOOL needsParentBranch;
+@property (nonatomic, assign) BOOL isCurrentBranchValid;
 @property (nonatomic,strong) IBOutlet UITableView* tableView;
 @property (nonatomic,strong) IBOutlet UIBarButtonItem* editItem;
 @property (nonatomic,strong) Tree* tree;
@@ -49,7 +50,6 @@ NS_ENUM(NSInteger, BranchTableSection){
     NSArray* _childBranchKeys;
     BOOL _isAboutHidden;
     NSMutableDictionary* _cells;
-    NSString* _currentBranchKey;
 }
 
 -(void)dealloc{
@@ -150,6 +150,8 @@ NS_ENUM(NSInteger, BranchTableSection){
     }
     [self.tableView beginUpdates];
     
+    [self updateIsCurrentBranchValid];
+    
     [self.tableView reloadRowsAtIndexPaths:reloadedArray
                           withRowAnimation:UITableViewRowAnimationFade];
     
@@ -211,10 +213,41 @@ NS_ENUM(NSInteger, BranchTableSection){
             result = [_childBranchKeys count] * 2;
             break;
         case BranchTableSectionAddBranch:
-            result = 1;
+            result = self.isCurrentBranchValid ? 1 : 0;
             break;
     }
     return result;
+}
+
+-(void)setIsCurrentBranchValid:(BOOL)isCurrentBranchValid{
+    if( _isCurrentBranchValid != isCurrentBranchValid ){
+        _isCurrentBranchValid = isCurrentBranchValid;
+        
+        
+        NSArray* indexPaths = @[[NSIndexPath indexPathForRow:0 inSection:BranchTableSectionAddBranch]];
+        
+        if ( _isCurrentBranchValid ) {
+            [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+        }else{
+            [self.tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+        }
+        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:_branchKeys.count*2 inSection:BranchTableSectionBranches]] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+}
+
+-(void)setCurrentBranchKey:(NSString *)currentBranchKey{
+    if (![currentBranchKey isEqualToString:_currentBranchKey]) {
+        _currentBranchKey = currentBranchKey;
+        [self updateIsCurrentBranchValid];
+    }
+}
+
+#define IsValidString(string) ( ([string isKindOfClass:[NSString class]] && ((NSString*)string).length > 0 ) )
+
+-(void)updateIsCurrentBranchValid{
+    NSDictionary* currentBranch = _currentBranchKey != nil ? [self.tree.branches objectForKey:_currentBranchKey] : nil ;
+    BOOL isValid = IsValidString(currentBranch[@"content"]) && IsValidString(currentBranch[@"link"]);
+    self.isCurrentBranchValid = isValid;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -256,6 +289,12 @@ NS_ENUM(NSInteger, BranchTableSection){
                 }else{
                     ContentTableViewCell* branchCell = (id)cell;
                     branchCell.contentLabel.text = branch[@"content"];
+                }
+            }else{
+                if (self.isCurrentBranchValid) {
+                    cell.textLabel.text = @"What happens next?";
+                }else{
+                    cell.textLabel.text = @"Waiting for additional content";
                 }
             }
             break;
@@ -314,7 +353,7 @@ NS_ENUM(NSInteger, BranchTableSection){
                         NSDictionary * branch = self.tree.branches[_currentBranchKey];
                         
                         [_branchKeys removeLastObject];
-                        _currentBranchKey = [_branchKeys lastObject];
+                        self.currentBranchKey = [_branchKeys lastObject];
                         [self.tableView reloadData];
                         [self.tree deleteBranch:branch];
                     }
@@ -365,7 +404,7 @@ NS_ENUM(NSInteger, BranchTableSection){
                     return @"ContentTableViewCell";
                 }
             }else{
-                return @"CurrentBranchMedatataCell";
+                return @"CurrentBranchTextCell";
             }
             break;
         case BranchTableSectionLinks:
@@ -425,7 +464,7 @@ NS_ENUM(NSInteger, BranchTableSection){
         if (IsOrRow( indexPath )) {
             return;
         }
-        _currentBranchKey = _childBranchKeys[LinkRow(indexPath)];
+        self.currentBranchKey = _childBranchKeys[LinkRow(indexPath)];
         NSIndexPath* newLinkIndexPath = [NSIndexPath indexPathForRow:([_branchKeys count]*2) inSection:BranchTableSectionBranches];
         NSIndexPath* newContentIndexPath = [NSIndexPath indexPathForRow:([_branchKeys count]*2 + 1) inSection:BranchTableSectionBranches];
         [_branchKeys addObject:_currentBranchKey];
@@ -454,7 +493,7 @@ NS_ENUM(NSInteger, BranchTableSection){
             [self.tree loadChildBranches:_currentBranchKey];
             return;
         }
-        _currentBranchKey = _branchKeys[branchIndex];
+        self.currentBranchKey = _branchKeys[branchIndex];
         NSRange range = NSMakeRange(branchIndex+1, _branchKeys.count - branchIndex-1);
         NSMutableArray* indexes = [@[] mutableCopy];
         for (NSInteger index = range.location; index < range.length + range.location; index++) {
@@ -510,7 +549,7 @@ NS_ENUM(NSInteger, BranchTableSection){
 -(void)handleTreeDidAddBranchesNotification:(NSNotification*)notification{
     NSArray * branches = notification.userInfo[TreeNotificationBranchesUserInfoKey];
     
-    _currentBranchKey = branches.firstObject[@"key"];
+    self.currentBranchKey = branches.firstObject[@"key"];
     [_branchKeys addObject:_currentBranchKey];
     _childBranchKeys = nil;
     [self.tableView reloadData];
