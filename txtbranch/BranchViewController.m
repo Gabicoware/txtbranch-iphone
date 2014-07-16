@@ -22,7 +22,6 @@
 
 
 NS_ENUM(NSInteger, BranchTableSection){
-    BranchTableSectionAbout,
     BranchTableSectionLoadParent,
     BranchTableSectionBranches,
     BranchTableSectionLinks,
@@ -37,7 +36,6 @@ NS_ENUM(NSInteger, BranchTableSection){
 @property (nonatomic, assign) BOOL needsParentBranch;
 @property (nonatomic, assign) BOOL isCurrentBranchValid;
 @property (nonatomic,strong) IBOutlet UITableView* tableView;
-@property (nonatomic,strong) IBOutlet UIBarButtonItem* editItem;
 @property (nonatomic,strong) Tree* tree;
 
 @property (nonatomic, strong) NSString* currentBranchKey;
@@ -48,7 +46,6 @@ NS_ENUM(NSInteger, BranchTableSection){
     NSString* _branchKey;
     NSMutableArray* _branchKeys;
     NSArray* _childBranchKeys;
-    BOOL _isAboutHidden;
     NSMutableDictionary* _cells;
 }
 
@@ -70,23 +67,11 @@ NS_ENUM(NSInteger, BranchTableSection){
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleTreeDidAddBranchesNotification:) name:TreeDidAddBranchesNotification object:nil];
 }
 
--(void)viewDidLoad{
-    [super viewDidLoad];
-}
-
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
-    [self updateEditButton];
 }
 
--(void)updateEditButton{
-    if ([AuthenticationManager instance].isLoggedIn && [self.tree isModerator] ) {
-        self.navigationItem.rightBarButtonItem = self.editItem;
-    }else{
-        self.navigationItem.rightBarButtonItem = nil;
-    }
-}
 
 -(void)setQuery:(NSDictionary *)query{
     _query = [query copy];
@@ -188,7 +173,6 @@ NS_ENUM(NSInteger, BranchTableSection){
         _branchKeys = [@[_currentBranchKey] mutableCopy];
         [self.tableView reloadData];
         [self.tree loadChildBranches:_currentBranchKey];
-        [self updateEditButton];
     }
     
 }
@@ -200,9 +184,6 @@ NS_ENUM(NSInteger, BranchTableSection){
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     NSInteger result = 0;
     switch (section) {
-        case BranchTableSectionAbout:
-            result = 1;
-            break;
         case BranchTableSectionLoadParent:
             result = self.needsParentBranch ? 1 : 0;
             break;
@@ -260,12 +241,6 @@ NS_ENUM(NSInteger, BranchTableSection){
 
 -(void)customizeCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
     switch ([indexPath section]) {
-        case BranchTableSectionAbout:{
-            AboutTableViewCell* headerCell = (id)cell;
-            headerCell.aboutLabel.text = self.tree.data[@"conventions"];
-            headerCell.isAboutHidden = _isAboutHidden;
-            break;
-        }
         case BranchTableSectionLoadParent:{
             
             NSString* parentBranch = self.tree.branches[_branchKeys.firstObject][@"parent_branch_key"];
@@ -337,9 +312,44 @@ NS_ENUM(NSInteger, BranchTableSection){
     
 }
 
+- (IBAction)didTapInfoButton:(id)sender{
+    NSString* editButtonTitle = nil;
+    
+    if([AuthenticationManager instance].isLoggedIn && [self.tree isModerator]){
+        editButtonTitle = @"Edit";
+    }
+    
+    NSString* moderatorName = self.tree.data[@"moderatorname"];
+    
+    NSString* title = [NSString stringWithFormat:@"%@ moderated by %@",self.tree.treeName,moderatorName];
+    
+    UIActionSheet* actionSheet = [[UIActionSheet alloc] initWithTitle:title
+                                                             delegate:self
+                                                    cancelButtonTitle:@"Cancel"
+                                               destructiveButtonTitle:nil
+                                                    otherButtonTitles:@"About", @"Activity",moderatorName, editButtonTitle, nil];
+    actionSheet.tag = -1;
+    [actionSheet showInView:self.view];
+}
+
+
 -(void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex{
     
-    if (actionSheet.tag < _branchKeys.count) {
+    if (actionSheet.tag < 0) {
+        NSString* title = [actionSheet buttonTitleAtIndex:buttonIndex];
+        
+        NSString* moderatorName = self.tree.data[@"moderatorname"];
+        if ([title isEqualToString:moderatorName]) {
+            [self performSegueWithIdentifier:@"UserView" sender:moderatorName];
+        }else if ([title isEqualToString:@"About"]) {
+            [self performSegueWithIdentifier:@"About" sender:nil];
+        }else if ([title isEqualToString:@"Activity"]) {
+            [self performSegueWithIdentifier:@"TreeActivity" sender:nil];
+        }else if ([title isEqualToString:@"Edit"]) {
+            [self performSegueWithIdentifier:@"TreeForm" sender:nil];
+        }
+        
+    }else if (actionSheet.tag < _branchKeys.count) {
         NSString* key = _branchKeys[actionSheet.tag];
         
         id branch = self.tree.branches[ key ];
@@ -390,9 +400,6 @@ NS_ENUM(NSInteger, BranchTableSection){
 
 -(NSString*)reuseIdentifierForRowAtIndexPath:(NSIndexPath *)indexPath{
     switch ([indexPath section]) {
-        case BranchTableSectionAbout:
-            return @"AboutTableViewCell";
-            break;
         case BranchTableSectionLoadParent:
             return @"LoadParentTableViewCell";
             break;
@@ -452,14 +459,6 @@ NS_ENUM(NSInteger, BranchTableSection){
             
         }
         
-    }else if (indexPath.section == BranchTableSectionAbout) {
-        _isAboutHidden = !_isAboutHidden;
-        //update the current cell
-        AboutTableViewCell* cell = (id)[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:BranchTableSectionAbout]];
-        cell.isAboutHidden = _isAboutHidden;
-        //update the heights
-        [tableView beginUpdates];
-        [tableView endUpdates];
     }else if (indexPath.section == BranchTableSectionLinks) {
         if (IsOrRow( indexPath )) {
             return;
@@ -562,6 +561,16 @@ NS_ENUM(NSInteger, BranchTableSection){
 
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+    if ([segue.identifier isEqualToString:@"About"]) {
+        UIViewController<Queryable>* controller = segue.destinationViewController;
+        controller.query = @{@"tree":self.tree.treeName, @"about":self.tree.conventions};
+        controller.title = self.tree.treeName;
+    }
+    if ([segue.identifier isEqualToString:@"TreeActivity"]) {
+        UIViewController<Queryable>* controller = segue.destinationViewController;
+        controller.query = @{@"tree":self.tree.treeName};
+        controller.title = self.tree.treeName;
+    }
     if ([segue.identifier isEqualToString:@"UserView"] && [sender isKindOfClass:[NSString class]]) {
         UIViewController<Queryable>* controller = segue.destinationViewController;
         controller.query = @{@"username":sender};
