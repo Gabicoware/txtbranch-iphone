@@ -11,32 +11,30 @@
 #import "Tree.h"
 #import "UIAlertView+Block.h"
 
-//for when the size of the cell needs to update
-extern NSString* BranchFormTableViewCellUpdateSizeNotification;
-
-@interface BranchFormTableViewCell : UITableViewCell<UITextViewDelegate>
-
-@property (nonatomic,weak) IBOutlet TBTextView* linkTextView;
-@property (nonatomic,weak) IBOutlet TBTextView* contentTextView;
-@property (nonatomic,weak) IBOutlet UILabel* countLabel;
-
--(void)setupWithBranch:(NSDictionary*)branch;
--(void)setupWithTree:(Tree*)tree;
-
-@end
-
 @interface BranchFormViewController()
 
 -(IBAction)didTapCancelButton:(id)sender;
 -(IBAction)didTapSaveButton:(id)sender;
 
-@property (nonatomic,weak) BranchFormTableViewCell* cell;
+//TODO: consolidate these properties
+
+@property (nonatomic,weak) IBOutlet TBTextView* linkTextView;
+@property (nonatomic,weak) IBOutlet TBTextView* contentTextView;
+@property (nonatomic,weak) IBOutlet UILabel* countLabel;
+
 @property (nonatomic,readonly) NSString* branchKey;
 @property (nonatomic,readonly) NSString* parentBranchKey;
 
 @property (nonatomic,strong) NSDictionary* unsavedBranch;
 
 @property (nonatomic,readonly) Tree* tree;
+@property (nonatomic,strong) NSDictionary* branch;
+@property (nonatomic,readonly) UIScrollView* scrollView;
+
+@property (nonatomic,strong) NSMutableDictionary* currentBranch;
+@property (nonatomic,assign) NSUInteger linkMax;
+@property (nonatomic,assign) NSUInteger contentMax;
+
 
 @end
 
@@ -46,6 +44,10 @@ extern NSString* BranchFormTableViewCellUpdateSizeNotification;
 }
 @synthesize query=_query;
 
+-(UIScrollView*)scrollView{
+    return (UIScrollView*)self.view;
+}
+
 -(void)viewDidLoad{
     [super viewDidLoad];
     [self setupNotifications];
@@ -54,6 +56,11 @@ extern NSString* BranchFormTableViewCellUpdateSizeNotification;
     }else{
         self.title = @"Add a Branch";
     }
+    
+    self.currentBranch = [@{@"link":@"",@"content":@""} mutableCopy];
+    self.linkTextView.placeholder = @"Add a teaser...";
+    self.contentTextView.placeholder = @"...and continue with some more text";
+    [self setFields];
 }
 
 -(void)dealloc{
@@ -62,7 +69,39 @@ extern NSString* BranchFormTableViewCellUpdateSizeNotification;
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-    [self.cell.linkTextView becomeFirstResponder];
+    [self.linkTextView becomeFirstResponder];
+}
+
+-(void)viewWillLayoutSubviews{
+    [super viewWillLayoutSubviews];
+    
+    [self.linkTextView layoutSubviews];
+    [self.contentTextView layoutSubviews];
+    
+    [self.linkTextView sizeToFit];
+    [self.contentTextView sizeToFit];
+    
+    CGRect linkTextViewFrame = self.linkTextView.frame;
+    CGRect contentTextViewFrame = self.contentTextView.frame;
+    
+    contentTextViewFrame.origin.y = linkTextViewFrame.origin.y + linkTextViewFrame.size.height;
+    
+    self.contentTextView.frame = contentTextViewFrame;
+    
+    CGRect countLabelFrame = self.countLabel.frame;
+    
+    countLabelFrame.origin.y = contentTextViewFrame.origin.y + contentTextViewFrame.size.height;
+    
+    self.countLabel.frame = countLabelFrame;
+    
+    [self updateCountLabel];
+    
+    CGSize contentSize = CGSizeZero;
+    
+    contentSize.width = self.scrollView.frame.size.width;
+    contentSize.height = CGRectGetMaxY(countLabelFrame) + linkTextViewFrame.origin.y;
+    
+    self.scrollView.contentSize = contentSize;
 }
 
 -(void)setQuery:(NSDictionary *)query{
@@ -72,7 +111,7 @@ extern NSString* BranchFormTableViewCellUpdateSizeNotification;
     _needsConfirmation = self.unsavedBranch != nil;
     if (_needsConfirmation) {
         [[[UIAlertView alloc] initWithTitle:@"Restore Branch?"
-                                    message:@"You have an unsaved branch would you like to use it? Otherwise it will be deleted."
+                                    message:@"You have an unsaved branch. Would you like to use it? Otherwise it will be deleted."
                           cancelButtonTitle:@"No"
                           otherButtonTitles:@[@"Yes"]
                                       block:^(UIAlertView *alertView, NSInteger buttonIndex) {
@@ -80,8 +119,31 @@ extern NSString* BranchFormTableViewCellUpdateSizeNotification;
                                               self.unsavedBranch = nil;
                                           }
                                           _needsConfirmation = NO;
-                                          [self.tableView reloadData];
+                                          [self setFields];
         }] show];
+    }
+    [self setFields];
+}
+
+-(void)setFields{
+    if (!_needsConfirmation) {
+        
+        [self setupWithTree:self.tree];
+
+        
+        id branch = self.unsavedBranch;
+        if (branch == nil && self.branchKey) {
+            branch = self.tree.branches[self.branchKey];
+        }
+        if (branch) {
+            self.contentTextView.text =branch[@"content"];
+            self.linkTextView.text =branch[@"link"];
+            [self setupWithBranch:branch];
+        }
+        
+        [self.view setNeedsLayout];
+
+        
     }
 }
 
@@ -95,13 +157,7 @@ extern NSString* BranchFormTableViewCellUpdateSizeNotification;
     return self.query[@"tree"];
 }
 
--(void)handleUpdateSize:(NSNotification*)notification{
-    [self.tableView beginUpdates];
-    [self.tableView endUpdates];
-}
-
 -(void)setupNotifications{
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleUpdateSize:) name:BranchFormTableViewCellUpdateSizeNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleKeyboardNotification:) name:UIKeyboardDidShowNotification object:nil];
 }
 
@@ -115,12 +171,12 @@ extern NSString* BranchFormTableViewCellUpdateSizeNotification;
     if (self.branchKey != nil) {
         
         branch = [self.tree.branches[ self.branchKey ] mutableCopy];
-        ((NSMutableDictionary*)branch)[@"content"] = self.cell.contentTextView.text;
-        ((NSMutableDictionary*)branch)[@"link"] = self.cell.linkTextView.text;
+        ((NSMutableDictionary*)branch)[@"content"] = self.contentTextView.text;
+        ((NSMutableDictionary*)branch)[@"link"] = self.linkTextView.text;
         
     }else{
-        branch = [@{@"link": self.cell.linkTextView.text,
-                    @"content":self.cell.contentTextView.text,
+        branch = [@{@"link": self.linkTextView.text,
+                    @"content":self.contentTextView.text,
                     @"parent_branch_key":self.parentBranchKey} mutableCopy];
     }
     
@@ -162,18 +218,27 @@ extern NSString* BranchFormTableViewCellUpdateSizeNotification;
 }
 
 -(void)handleKeyboardNotification:(NSNotification*)notification{
-    for (UITableViewCell* cell in self.tableView.visibleCells) {
-        if ([cell isKindOfClass:[BranchFormTableViewCell class]]) {
-            BranchFormTableViewCell* formCell = (id)cell;
-            if(formCell.linkTextView.isFirstResponder){
-                [self centerTextView:formCell.contentTextView];
-            }
-            if (formCell.contentTextView.isFirstResponder) {
-                [self centerTextView:formCell.contentTextView];
-            }
-            
-        }
+    if(self.linkTextView.isFirstResponder){
+        [self centerTextView:self.linkTextView];
     }
+    if (self.contentTextView.isFirstResponder) {
+        [self centerTextView:self.contentTextView];
+    }
+    
+    CGRect endFrame = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    
+    CGRect convertedRect = [self.scrollView.superview convertRect:endFrame fromView:self.view.window];
+    
+    UIEdgeInsets insets = self.scrollView.contentInset;
+    
+    if (CGRectIntersectsRect(convertedRect, self.view.frame)) {
+        CGRect intersection = CGRectIntersection(convertedRect, self.view.frame);
+        insets.bottom = intersection.size.height;
+        
+    }else{
+        insets.bottom = 0.0;
+    }
+    self.scrollView.contentInset = insets;
 }
 
 -(void)centerTextView:(UITextView*)textView{
@@ -182,146 +247,17 @@ extern NSString* BranchFormTableViewCellUpdateSizeNotification;
     CGRect selectionEndRect = [textView caretRectForPosition:selectionRange.end];
     CGPoint selectionCenterPoint = (CGPoint){(selectionStartRect.origin.x + selectionEndRect.origin.x)/2,(selectionStartRect.origin.y + selectionStartRect.size.height / 2)};
     
-    CGPoint point = [self.tableView convertPoint:selectionCenterPoint fromView:textView];
+    CGPoint point = [self.scrollView convertPoint:selectionCenterPoint fromView:textView];
     
     
-    if (!CGRectContainsPoint( CGRectInset( self.tableView.bounds, 0, 30) , point )) {
+    if (!CGRectContainsPoint( CGRectInset( self.scrollView.bounds, 0, 30) , point )) {
         
         CGPoint offsetPoint = CGPointZero;
-        offsetPoint.y = point.y - self.tableView.bounds.size.height*0.66666;
+        offsetPoint.y = point.y - self.scrollView.bounds.size.height*0.66666;
         
-        [self.tableView setContentOffset:offsetPoint animated:YES];
+        [self.scrollView setContentOffset:offsetPoint animated:YES];
     }
     
-}
-
-
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return _needsConfirmation ? 0 : 1 ;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return self.cell;
-}
-
--(NSIndexPath*)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    return nil;
-}
-
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    
-    if ( self.cell.frame.size.width != tableView.bounds.size.width ) {
-        CGRect frame = self.cell.frame;
-        frame.size.width = tableView.bounds.size.width;
-        self.cell.frame = frame;
-        [self.cell layoutSubviews];
-    }
-    return [self.cell sizeThatFits:tableView.bounds.size].height;
-    
-}
-
--(BranchFormTableViewCell*)cell{
-    if (_cell == nil) {
-        _cell = [self.tableView dequeueReusableCellWithIdentifier:@"BranchFormTableViewCell"];
-        [_cell setupWithTree:self.tree];
-        id branch = self.unsavedBranch;
-        if (branch == nil && self.branchKey) {
-            branch = self.tree.branches[self.branchKey];
-        }
-        if (branch) {
-            [_cell setupWithBranch:branch];
-        }
-        [self.cell layoutSubviews];
-    }
-    return _cell;
-}
-
-@end
-
-NSString* BranchFormTableViewCellUpdateSizeNotification = @"BranchFormTableViewCellUpdateSizeNotification";
-
-
-@interface BranchFormTableViewCell()
-
-@property (nonatomic,strong) NSMutableDictionary* currentBranch;
-@property (nonatomic,assign) NSUInteger linkMax;
-@property (nonatomic,assign) NSUInteger contentMax;
-
-@end
-
-@implementation BranchFormTableViewCell
-
--(CGSize)sizeThatFits:(CGSize)size{
-    if (![self.linkTextView.text isEqualToString:self.currentBranch[@"link"]]) {
-        self.linkTextView.text = self.currentBranch[@"link"];
-        [self.linkTextView layoutSubviews];
-    }
-    if (![self.contentTextView.text isEqualToString:self.currentBranch[@"content"]]) {
-        self.contentTextView.text = self.currentBranch[@"content"];
-        [self.contentTextView layoutSubviews];
-    }
-    
-    CGSize selfSize = self.frame.size;
-    
-    CGFloat linkHeightDiff = 0.0;
-    if (![self.linkTextView.text isEqualToString:@""]) {
-        linkHeightDiff = self.linkTextView.contentSize.height - self.linkTextView.frame.size.height;
-    }else{
-        linkHeightDiff = self.linkTextView.placeholderSize.height - self.linkTextView.frame.size.height;
-    }
-    
-    CGFloat contentHeightDiff = 0.0;
-    if (![self.contentTextView.text isEqualToString:@""]) {
-        contentHeightDiff = self.contentTextView.contentSize.height - self.contentTextView.frame.size.height;
-    }else{
-        contentHeightDiff = self.contentTextView.placeholderSize.height - self.contentTextView.frame.size.height;
-    }
-    
-    selfSize.height += linkHeightDiff;
-    selfSize.height += contentHeightDiff;
-    
-    return selfSize;
-}
-
--(void)layoutSubviews{
-    [super layoutSubviews];
-    if (![self.linkTextView.text isEqualToString:self.currentBranch[@"link"]]) {
-        self.linkTextView.text = self.currentBranch[@"link"];
-        [self.linkTextView layoutSubviews];
-    }
-    if (![self.contentTextView.text isEqualToString:self.currentBranch[@"content"]]) {
-        self.contentTextView.text = self.currentBranch[@"content"];
-        [self.contentTextView layoutSubviews];
-    }
-    
-    
-    CGFloat linkHeightDiff = 0.0;
-    if (![self.linkTextView.text isEqualToString:@""]) {
-        linkHeightDiff = self.linkTextView.contentSize.height - self.linkTextView.frame.size.height;
-    }else{
-        linkHeightDiff = self.linkTextView.placeholderSize.height - self.linkTextView.frame.size.height;
-    }
-    
-    CGFloat contentHeightDiff = 0.0;
-    if (![self.contentTextView.text isEqualToString:@""]) {
-        contentHeightDiff = self.contentTextView.contentSize.height - self.contentTextView.frame.size.height;
-    }else{
-        contentHeightDiff = self.contentTextView.placeholderSize.height - self.contentTextView.frame.size.height;
-    }
-    
-    
-    CGRect linkTextViewFrame = self.linkTextView.frame;
-    CGRect contentTextViewFrame = self.contentTextView.frame;
-    
-    contentTextViewFrame.origin.y = contentTextViewFrame.origin.y + linkHeightDiff;
-    contentTextViewFrame.size.height = contentTextViewFrame.size.height + contentHeightDiff;
-    linkTextViewFrame.size.height = linkTextViewFrame.size.height + linkHeightDiff;
-    
-    self.linkTextView.frame = linkTextViewFrame;
-    self.contentTextView.frame = contentTextViewFrame;
-    
-    [self updateCountLabel];
 }
 
 -(void)setupWithBranch:(id)branch{
@@ -338,44 +274,12 @@ NSString* BranchFormTableViewCellUpdateSizeNotification = @"BranchFormTableViewC
     self.contentTextView.placeholder = tree.data[@"content_prompt"];
     self.contentTextView.userInteractionEnabled = !tree.contentModeratorOnly || tree.isModerator;
     self.contentMax = self.contentTextView.userInteractionEnabled ? tree.contentMax : 0;
-}
-
--(void)willMoveToWindow:(UIWindow *)newWindow{
-    [super willMoveToWindow:newWindow];
-    if (newWindow != nil) {
-        [self setNeedsLayout];
-    }
-}
-
--(void)prepareForReuse{
-    [super prepareForReuse];
-    self.currentBranch = [@{@"link":@"",@"content":@""} mutableCopy];
-    self.linkTextView.text = @"";
-    self.contentTextView.text = @"";
-}
-
--(void)awakeFromNib{
-    [super awakeFromNib];
-    self.currentBranch = [@{@"link":@"",@"content":@""} mutableCopy];
-    self.linkTextView.placeholder = @"Add a teaser...";
-    self.contentTextView.placeholder = @"...and continue with some more text";
+    [self updateCountLabel];
 }
 
 - (void)textViewDidChange:(UITextView *)textView{
-    
-    CGFloat linkHeightDiff = 0.0;
-    if (![self.linkTextView.text isEqualToString:@""]) {
-        linkHeightDiff = self.linkTextView.contentSize.height - self.linkTextView.frame.size.height;
-    }
-    
-    CGFloat contentHeightDiff = 0.0;
-    if (![self.contentTextView.text isEqualToString:@""]) {
-        contentHeightDiff = self.contentTextView.contentSize.height - self.contentTextView.frame.size.height;
-    }
-    
-    if (0 != contentHeightDiff || 0 != linkHeightDiff) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:BranchFormTableViewCellUpdateSizeNotification object:self];
-    }
+    [self.view setNeedsLayout];
+    [self updateCountLabel];
 }
 
 -(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{

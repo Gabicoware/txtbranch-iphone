@@ -325,77 +325,63 @@
             <point key="canvasLocation" x="805" y="-951"/>
         </scene>
         <!--Branch Form View Controller - Add a Branch-->
-        <scene sceneID="QUX-hh-VPC">
+        <scene sceneID="uHc-N5-tBC">
             <objects>
-                <tableViewController id="FGL-eu-CeZ" customClass="BranchFormViewController" sceneMemberID="viewController">
-                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="97" sectionHeaderHeight="22" sectionFooterHeight="22" id="WBW-B5-Rab">
+                <viewController id="piJ-B8-2jw" customClass="BranchFormViewController" sceneMemberID="viewController">
+                    <scrollView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" indicatorStyle="white" id="MOd-Lk-Jfb">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="BranchFormTableViewCell" rowHeight="97" id="bbC-ae-UG0" customClass="BranchFormTableViewCell">
-                                <rect key="frame" x="0.0" y="86" width="320" height="97"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="bbC-ae-UG0" id="mbq-Lm-hBC">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="97"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" id="gbM-OZ-BvE" customClass="TBTextView">
-                                            <rect key="frame" x="15" y="40" width="290" height="36"/>
-                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="16"/>
-                                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                            <connections>
-                                                <outlet property="delegate" destination="bbC-ae-UG0" id="3qW-SV-9i5"/>
-                                            </connections>
-                                        </textView>
-                                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" id="I9f-Hw-ajl" customClass="TBTextView">
-                                            <rect key="frame" x="15" y="3" width="290" height="38"/>
-                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="17"/>
-                                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                            <connections>
-                                                <outlet property="delegate" destination="bbC-ae-UG0" id="s6U-hv-UCC"/>
-                                            </connections>
-                                        </textView>
-                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="content: %d link: %d" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="cUZ-O3-cIS">
-                                            <rect key="frame" x="15" y="76" width="290" height="21"/>
-                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                            <fontDescription key="fontDescription" name="HelveticaNeue-ThinItalic" family="Helvetica Neue" pointSize="13"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                    </subviews>
-                                </tableViewCellContentView>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" id="Kuz-9Q-pfz" customClass="TBTextView">
+                                <rect key="frame" x="20" y="20" width="290" height="38"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="17"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                 <connections>
-                                    <outlet property="contentTextView" destination="gbM-OZ-BvE" id="2n5-mz-O0J"/>
-                                    <outlet property="countLabel" destination="cUZ-O3-cIS" id="5A2-37-b0c"/>
-                                    <outlet property="linkTextView" destination="I9f-Hw-ajl" id="pBI-Rn-WGS"/>
+                                    <outlet property="delegate" destination="piJ-B8-2jw" id="USr-pv-ftR"/>
                                 </connections>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="FGL-eu-CeZ" id="zhD-OI-1FF"/>
-                            <outlet property="delegate" destination="FGL-eu-CeZ" id="6Yu-rW-z6u"/>
-                        </connections>
-                    </tableView>
-                    <navigationItem key="navigationItem" title="Add a Branch" id="3Jl-Tn-nL6">
-                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="rih-Qp-7Wd">
+                            </textView>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" delaysContentTouches="NO" canCancelContentTouches="NO" bouncesZoom="NO" id="kBw-PI-SZw" customClass="TBTextView">
+                                <rect key="frame" x="20" y="57" width="290" height="36"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="16"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                <connections>
+                                    <outlet property="delegate" destination="piJ-B8-2jw" id="ClT-dM-ldb"/>
+                                </connections>
+                            </textView>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="content: %d link: %d" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="aHB-b2-Eh3">
+                                <rect key="frame" x="20" y="93" width="290" height="21"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-ThinItalic" family="Helvetica Neue" pointSize="13"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </scrollView>
+                    <navigationItem key="navigationItem" title="Add a Branch" id="U5m-ad-hTc">
+                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="QOE-bE-Mey">
                             <connections>
-                                <action selector="didTapCancelButton:" destination="FGL-eu-CeZ" id="Hqa-pg-RPG"/>
+                                <action selector="didTapCancelButton:" destination="piJ-B8-2jw" id="R64-8H-oRB"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Done" style="done" id="pff-rA-cYJ">
+                        <barButtonItem key="rightBarButtonItem" title="Done" style="done" id="32A-ET-Gse">
                             <connections>
-                                <action selector="didTapSaveButton:" destination="FGL-eu-CeZ" id="jNh-AO-mYq"/>
+                                <action selector="didTapSaveButton:" destination="piJ-B8-2jw" id="XkI-5f-Ffe"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Pv4-4U-jpE" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                    <connections>
+                        <outlet property="contentTextView" destination="kBw-PI-SZw" id="y94-xG-U5k"/>
+                        <outlet property="countLabel" destination="aHB-b2-Eh3" id="AiP-Gl-azU"/>
+                        <outlet property="linkTextView" destination="Kuz-9Q-pfz" id="CRv-v3-pFc"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="9OG-fk-91T" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1435" y="52"/>
+            <point key="canvasLocation" x="1420" y="52"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="BJz-Ie-B2h">
@@ -405,7 +391,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
-                        <segue destination="FGL-eu-CeZ" kind="relationship" relationship="rootViewController" id="3hE-Qx-Oi4"/>
+                        <segue destination="piJ-B8-2jw" kind="relationship" relationship="rootViewController" id="edj-nT-b6d"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fR4-ew-ADX" userLabel="First Responder" sceneMemberID="firstResponder"/>

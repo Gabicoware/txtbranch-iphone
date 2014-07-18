@@ -124,4 +124,13 @@ CGFloat const UI_PLACEHOLDER_TEXT_CHANGED_ANIMATION_DURATION = 0.25;
     return _placeHolderLabel;
 }
 
+-(CGSize)sizeThatFits:(CGSize)size{
+    CGSize result = [super sizeThatFits:size];
+    if ([self.text isEqualToString:@""]) {
+        result.height = self.placeholderSize.height;
+    }
+    result.width = size.width;
+    return result;
+}
+
 @end

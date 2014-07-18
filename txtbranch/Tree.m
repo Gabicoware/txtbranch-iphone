@@ -332,7 +332,7 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
 
 #define BRANCHES_KEY @"unsavedbranches"
 
--(void)addUnsavedBranch:(id)branch forQuery:(id)query{
+-(void)addUnsavedBranch:(NSDictionary*)branch forQuery:(id)query{
     NSString* key = [self keyWithQuery:query];
     
     NSMutableDictionary* unsavedBranches = [[[NSUserDefaults standardUserDefaults] objectForKey:BRANCHES_KEY] mutableCopy];
@@ -341,7 +341,14 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
         if (unsavedBranches == nil) {
             unsavedBranches = [NSMutableDictionary dictionary];
         }
-        [unsavedBranches setObject:branch forKey:key];
+        
+        NSSet* keys = [(NSDictionary*)branch keysOfEntriesPassingTest:^BOOL(id key, id obj, BOOL *stop) {
+            return ![obj isEqual:[NSNull null]];
+        }];
+        
+        NSDictionary* cleanBranch = [branch dictionaryWithValuesForKeys:[keys allObjects]];
+        
+        [unsavedBranches setObject:cleanBranch forKey:key];
         
     }
     

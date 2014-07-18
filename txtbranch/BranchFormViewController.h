@@ -9,6 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "txtbranch.h"
 
-@interface BranchFormViewController : UITableViewController<Queryable>
+@interface BranchFormViewController : UIViewController<Queryable>
 
 @end
