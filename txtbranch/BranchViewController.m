@@ -568,7 +568,7 @@ NS_ENUM(NSInteger, BranchTableSection){
     }
     if ([segue.identifier isEqualToString:@"TreeActivity"]) {
         UIViewController<Queryable>* controller = segue.destinationViewController;
-        controller.query = @{@"tree":self.tree.treeName};
+        controller.query = @{@"tree_name":self.tree.treeName};
         controller.title = self.tree.treeName;
     }
     if ([segue.identifier isEqualToString:@"UserView"] && [sender isKindOfClass:[NSString class]]) {
