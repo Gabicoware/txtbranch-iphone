@@ -10,7 +10,7 @@
 #import "NSURL+txtbranch.h"
 #import "Inbox.h"
 
-#ifdef TARGET_IPHONE_SIMULATOR
+#if TARGET_IPHONE_SIMULATOR
 #import "KeychainItemWrapper.h"
 #endif
 
@@ -55,7 +55,7 @@
     NSArray* cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:[NSURL tbURL]];
     
     BOOL hasOAuth = NO;
-#ifdef TARGET_IPHONE_SIMULATOR
+#if TARGET_IPHONE_SIMULATOR
     NSHTTPCookie* oauthCookie = nil;
 #endif
     NSHTTPCookie* usernameCookie = nil;
@@ -65,7 +65,7 @@
         }
         else if ([[cookie name] isEqualToString:@"dev_appserver_login"])
         {
-#ifdef TARGET_IPHONE_SIMULATOR
+#if TARGET_IPHONE_SIMULATOR
             //we only store the dev server login
             oauthCookie = cookie;
 #endif
@@ -77,7 +77,7 @@
         }
     }
     
-#ifdef TARGET_IPHONE_SIMULATOR
+#if TARGET_IPHONE_SIMULATOR
     
     if (!hasOAuth && [usernameCookie value] != nil) {
         KeychainItemWrapper* item = [[KeychainItemWrapper alloc] initWithService:@"authCookie"
@@ -106,7 +106,7 @@
         _username = [usernameCookie value];
         [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:BackgroundFetchInterval];
         
-#ifdef TARGET_IPHONE_SIMULATOR
+#if TARGET_IPHONE_SIMULATOR
         if (oauthCookie != nil) {
             KeychainItemWrapper* item = [[KeychainItemWrapper alloc] initWithService:@"authCookie"
                                                                              account:_username
