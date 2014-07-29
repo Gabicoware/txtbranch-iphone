@@ -204,12 +204,11 @@ NS_ENUM(NSInteger, BranchTableSection){
     if( _isCurrentBranchValid != isCurrentBranchValid ){
         _isCurrentBranchValid = isCurrentBranchValid;
         
-        
         NSArray* indexPaths = @[[NSIndexPath indexPathForRow:0 inSection:BranchTableSectionAddBranch]];
         
-        if ( _isCurrentBranchValid ) {
+        if ( _isCurrentBranchValid && [self.tableView numberOfRowsInSection:BranchTableSectionAddBranch] == 0 ) {
             [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
-        }else{
+        }else if(!_isCurrentBranchValid && [self.tableView numberOfRowsInSection:BranchTableSectionAddBranch] == 1){
             [self.tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
         }
         [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:_branchKeys.count*2 inSection:BranchTableSectionBranches]] withRowAnimation:UITableViewRowAnimationAutomatic];
