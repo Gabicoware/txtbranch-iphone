@@ -36,5 +36,13 @@
     return @"There was an error contacting the server. Please check your connectivity and try again.";
 }
 
+-(NSString*)resetLoginTitle{
+    return @"We're Sorry";
+}
+-(NSString*)resetLoginMessage{
+    return @"You've been logged out. This is likely due to a bug we are scrambling to fix. Please log in again if you wish.";
+}
+
+
 
 @end

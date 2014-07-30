@@ -9,6 +9,8 @@
 #import "AppDelegate.h"
 #import "VersionKeychainItem.h"
 #import "AuthenticationManager.h"
+#import "AFHTTPSessionManager+txtbranch.h"
+#import "Messages.h"
 
 @implementation AppDelegate
 
@@ -18,6 +20,8 @@
     [[UINavigationBar appearance] setTintColor:[UIColor darkGrayColor]];
     
     [self recordLaunch];
+    
+    [self refreshCookies];
     
     return YES;
 }
@@ -42,6 +46,25 @@
         [inbox refreshWithCompletionHandler:completionHandler];
     }else{
         completionHandler(UIBackgroundFetchResultNoData);
+    }
+}
+
+//reset cookies when things are borked
+
+-(void)refreshCookies{
+    if ([[AuthenticationManager instance] isLoggedIn]) {
+        [[AFHTTPSessionManager currentManager] GET:@"/api/v1/userinfos"
+                                        parameters:@{@"set_cookie":@"1"}
+                                           success:^(NSURLSessionDataTask *task, id responseObject) {
+                                               
+                                               [[AuthenticationManager instance] updateLoginState];
+                                               if(![[AuthenticationManager instance] isLoggedIn]){
+                                                   [[[UIAlertView alloc] initWithTitle:[[Messages currentMessages] resetLoginTitle]
+                                                                               message:[[Messages currentMessages] resetLoginMessage]
+                                                                              delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+                                               }
+                                               
+                                           } failure:^(NSURLSessionDataTask *task, NSError *error) {}];
     }
 }
 

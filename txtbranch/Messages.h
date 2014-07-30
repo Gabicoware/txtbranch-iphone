@@ -14,6 +14,11 @@
 
 -(NSString*)errorMessageForResult:(id)result;
 
+//static messages
 -(NSString*)requestFailureMessage;
+
+-(NSString*)resetLoginTitle;
+
+-(NSString*)resetLoginMessage;
 
 @end
