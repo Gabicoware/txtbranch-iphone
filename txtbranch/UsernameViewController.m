@@ -10,6 +10,7 @@
 #import "NSURL+txtbranch.h"
 #import "AuthenticationManager.h"
 #import "AFHTTPSessionManager+txtbranch.h"
+#import "Messages.h"
 
 @interface UsernameViewController ()<UITextFieldDelegate>
 
@@ -22,8 +23,7 @@
 
 -(void)viewDidLoad{
     [super viewDidLoad];
-    self.navigationItem.rightBarButtonItem.enabled = [self hasValidUsername];
-    
+    self.navigationItem.rightBarButtonItem.enabled = [self isValidUsername:self.usernameTextField.text];
 }
 
 -(IBAction)didTapCancel:(id)sender{
@@ -32,8 +32,7 @@
 
 -(IBAction)didTapSave:(id)sender{
     
-    if ([self hasValidUsername]) {
-        
+    if ([self isValidUsername:self.usernameTextField.text]) {
         
         [[AFHTTPSessionManager currentManager] POST:@"/api/v1/userinfos" parameters:@{@"username":self.usernameTextField.text} success:^(NSURLSessionDataTask *task, id responseObject) {
             if ([responseObject[@"status"] isEqualToString:@"OK"]) {
@@ -41,18 +40,22 @@
                 [[AuthenticationManager instance] updateLoginState];
                 [self.navigationController dismissViewControllerAnimated:YES completion:NULL];
             }else{
-                //[self showUsernameView];
+                NSString* message = [[Messages currentMessages] errorMessageForResult:responseObject[@"result"]];
+                [[[UIAlertView alloc] initWithTitle:nil message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
             }
 
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
-            //[self showUsernameView];
+            [[[UIAlertView alloc] initWithTitle:nil
+                                        message:[[Messages currentMessages] requestFailureMessage]
+                                       delegate:nil
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles: nil] show];
         }];
         
     }
 }
 
--(BOOL)hasValidUsername{
-    NSString* username = self.usernameTextField.text;
+-(BOOL)isValidUsername:(NSString*)username{
     
     NSError* error = nil;
     
@@ -68,7 +71,12 @@
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{
-    self.navigationItem.rightBarButtonItem.enabled = [self hasValidUsername];
+    NSString* username = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    BOOL isValid = [self isValidUsername:username];
+    self.navigationItem.rightBarButtonItem.enabled = isValid;
+    
+    textField.textColor = isValid ? [UIColor blackColor] : [UIColor redColor];
+    
     return YES;
 }
 

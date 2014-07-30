@@ -14,4 +14,6 @@
 
 -(NSString*)errorMessageForResult:(id)result;
 
+-(NSString*)requestFailureMessage;
+
 @end

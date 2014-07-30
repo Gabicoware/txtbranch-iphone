@@ -32,4 +32,9 @@
     return message;
 }
 
+-(NSString*)requestFailureMessage{
+    return @"There was an error contacting the server. Please check your connectivity and try again.";
+}
+
+
 @end

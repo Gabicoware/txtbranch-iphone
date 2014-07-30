@@ -554,6 +554,7 @@
 				ORGANIZATIONNAME = Gabicoware;
 				TargetAttributes = {
 					777AD0F218C13EFE00DC5E9F = {
+						DevelopmentTeam = Q257Q56R4S;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
