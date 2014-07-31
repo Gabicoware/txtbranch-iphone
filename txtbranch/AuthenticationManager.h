@@ -22,6 +22,8 @@
 
 -(void)updateLoginState;
 
+-(void)clearCurrentSession;
+
 @property (nonatomic, readonly) Inbox* inbox;
 
 @end

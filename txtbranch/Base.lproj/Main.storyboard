@@ -313,8 +313,16 @@
                             <outlet property="delegate" destination="ExS-Bx-Myc" id="eTl-HW-9KR"/>
                         </connections>
                     </tableView>
+                    <toolbarItems>
+                        <barButtonItem title="Sign Out" style="done" id="dml-fs-ubt">
+                            <connections>
+                                <action selector="didTapSignOutButton:" destination="ExS-Bx-Myc" id="eiA-TV-Vwu"/>
+                            </connections>
+                        </barButtonItem>
+                    </toolbarItems>
                     <navigationItem key="navigationItem" id="HN9-DL-CWE"/>
                     <connections>
+                        <outlet property="signOutItem" destination="dml-fs-ubt" id="nNC-A1-5av"/>
                         <segue destination="1u2-bx-reu" kind="push" identifier="Notifications" id="37G-N1-jio"/>
                         <segue destination="T5l-1F-r3a" kind="push" identifier="TreesView" id="TVY-Yy-7qF"/>
                         <segue destination="JQD-Zh-GYX" kind="push" identifier="Inbox" id="W5w-r1-Jby"/>
@@ -661,6 +669,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
+                    <toolbarItems/>
                     <navigationItem key="navigationItem" id="M0B-dP-OI1">
                         <barButtonItem key="leftBarButtonItem" title="Cancel" id="cYM-lr-XGx">
                             <connections>
@@ -673,6 +682,7 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="usernameTextField" destination="nbv-Qm-71Z" id="2uY-dt-BFF"/>
                     </connections>
@@ -1156,11 +1166,11 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="CRd-bc-Tpv"/>
-        <segue reference="n8t-sa-PDV"/>
-        <segue reference="ai3-tU-c0q"/>
         <segue reference="gPx-aC-pVR"/>
+        <segue reference="n8t-sa-PDV"/>
+        <segue reference="CRd-bc-Tpv"/>
         <segue reference="Bju-cW-cfx"/>
-        <segue reference="0EI-uz-Ref"/>
+        <segue reference="ai3-tU-c0q"/>
+        <segue reference="37G-N1-jio"/>
     </inferredMetricsTieBreakers>
 </document>

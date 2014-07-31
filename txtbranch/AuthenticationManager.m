@@ -145,6 +145,11 @@
     _inbox = nil;
 }
 
+-(void)clearCurrentSession{
+    [self resetForServer:[[NSURL tbURL] absoluteString]];
+    [self updateLoginState];
+}
+
 -(Inbox*)inbox{
     if (self.username != nil) {
         if (_inbox == nil) {
