@@ -251,6 +251,8 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
                                            if (result != nil && [result[@"status"] isEqualToString:@"OK"]) {
                                                [weakSelf updateBranches:@[result[@"result"]]];
                                            }else{
+                                               [weakSelf addUnsavedBranch:branch forQuery:@{@"branchKey":branch[@"key"]}];
+                                               [weakSelf showEditFormError];
                                                [weakSelf showErrors:result[@"result"]];
                                            }
                                        }
@@ -305,8 +307,8 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
 }
 
 -(void)showErrors:(NSArray*)errors{
-    if (errors.count > 0) {
-        NSString* message = [[Messages currentMessages] errorMessageForResult:errors];
+    NSString* message = [[Messages currentMessages] errorMessageForResult:errors];
+    if (message.length > 0) {
         [[[UIAlertView alloc] initWithTitle:nil message:message delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles: nil] show];
     }else{
         [self showGeneralError];
