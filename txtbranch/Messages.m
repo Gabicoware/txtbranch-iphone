@@ -40,7 +40,7 @@
     return @"We're Sorry";
 }
 -(NSString*)resetLoginMessage{
-    return @"You've been logged out. This is likely due to a bug we are scrambling to fix. Please log in again if you wish.";
+    return @"There may be an issue with your login. Please Sign Out and Sign In again. This is likely due to a bug we are working hard to fix.";
 }
 
 

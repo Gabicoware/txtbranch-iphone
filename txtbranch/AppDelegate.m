@@ -11,6 +11,7 @@
 #import "AuthenticationManager.h"
 #import "AFHTTPSessionManager+txtbranch.h"
 #import "Messages.h"
+#import "UIAlertView+Block.h"
 
 @implementation AppDelegate
 
@@ -58,7 +59,11 @@
                                            success:^(NSURLSessionDataTask *task, id responseObject) {
                                                
                                                [[AuthenticationManager instance] updateLoginState];
-                                               if(![[AuthenticationManager instance] isLoggedIn]){
+                                               
+                                               BOOL hasStatusError = [responseObject[@"status"] isEqualToString:@"Error"];
+                                               BOOL isNotLoggedIn = ![[AuthenticationManager instance] isLoggedIn];
+                                               
+                                               if(hasStatusError || isNotLoggedIn){
                                                    [[[UIAlertView alloc] initWithTitle:[[Messages currentMessages] resetLoginTitle]
                                                                                message:[[Messages currentMessages] resetLoginMessage]
                                                                               delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
