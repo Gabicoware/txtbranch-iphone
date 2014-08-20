@@ -43,11 +43,13 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleOpenTreeNotification:) name:@"OpenTree" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDataAssetDidLoad:) name:DataAssetDidLoad object:[Config currentConfig]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationDidBecomeActiveNotification:) name:UIApplicationDidBecomeActiveNotification object:nil];
     
-    //we reload these every time
-    [[Config currentConfig] reloadData];
-    [[Messages currentMessages] reloadData];
-    
+    if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
+        //we reload these every time if the application is active
+        [[Config currentConfig] reloadData];
+        [[Messages currentMessages] reloadData];
+    }
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -73,6 +75,11 @@
     [self performSegueWithIdentifier:@"OpenTree" sender:notification.object];
 }
 
+-(void)handleApplicationDidBecomeActiveNotification:(NSNotification*)notification{
+    [[Config currentConfig] reloadData];
+    [[Messages currentMessages] reloadData];
+}
+
 -(void)buildSections{
     if ([[AuthenticationManager instance] isLoggedIn]) {
         self.sections = @[@{@"text":[[AuthenticationManager instance] username],
@@ -89,12 +96,14 @@
 }
 
 -(void)refresh{
-    if ([Config currentConfig].data) {
-        [[[AuthenticationManager instance] inbox] refresh];
-        [super refresh];
-    }else{
-        [[Config currentConfig] reloadData];
-        [[Messages currentMessages] reloadData];
+    if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
+        if ([Config currentConfig].data) {
+            [[[AuthenticationManager instance] inbox] refresh];
+            [super refresh];
+        }else{
+            [[Config currentConfig] reloadData];
+            [[Messages currentMessages] reloadData];
+        }
     }
 }
 
