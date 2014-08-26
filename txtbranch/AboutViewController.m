@@ -19,6 +19,12 @@ enum{
 
 @implementation AboutViewController
 
+-(void)viewDidLoad{
+    [super viewDidLoad];
+    
+    self.title = [NSString stringWithFormat:@"Version %@", [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]];
+}
+
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell* cell = [tableView cellForRowAtIndexPath:indexPath];
     if (indexPath.section == 1) {
