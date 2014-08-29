@@ -61,6 +61,17 @@
     self.linkTextView.placeholder = @"Add a teaser...";
     self.contentTextView.placeholder = @"...and continue with some more text";
     [self setFields];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleApplicationWillTerminateNotification:)
+                                                 name:UIApplicationWillTerminateNotification
+                                               object:nil];
+    
+}
+
+-(void)handleApplicationWillTerminateNotification:(NSNotification*)notification{
+    [self.tree addUnsavedBranch:[self branchData]
+                       forQuery:self.query];
 }
 
 -(void)dealloc{
@@ -165,7 +176,7 @@
     [self dismissViewControllerAnimated:YES completion:NULL];
 }
 
--(IBAction)didTapSaveButton:(id)sender{
+-(NSDictionary*)branchData{
     NSMutableDictionary* branch = nil;
     
     if (self.branchKey != nil) {
@@ -179,6 +190,11 @@
                     @"content":self.contentTextView.text,
                     @"parent_branch_key":self.parentBranchKey} mutableCopy];
     }
+    return branch;
+}
+
+-(IBAction)didTapSaveButton:(id)sender{
+    NSMutableDictionary* branch = [self branchData];
     
     SaveBranchStatus status = [self.tree saveBranchStatus:branch];
     
