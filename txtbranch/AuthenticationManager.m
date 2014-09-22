@@ -115,6 +115,10 @@
             [item setObject:data forKey:(__bridge id)kSecValueData];
         }
 #endif
+        if(NSClassFromString(@"UIUserNotificationSettings")){
+            UIUserNotificationSettings* notificationSettings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeBadge categories:nil];
+            [[UIApplication sharedApplication] registerUserNotificationSettings:notificationSettings];
+        }
         
     }else{
         [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalNever];

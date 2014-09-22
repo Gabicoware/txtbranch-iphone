@@ -72,9 +72,19 @@
     }else{
         self.unreadCount = index;
     }
-    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:self.unreadCount];
+    if ([self shouldSetBadge]) {
+        [[UIApplication sharedApplication] setApplicationIconBadgeNumber:self.unreadCount];
+    }
     [[NSNotificationCenter defaultCenter] postNotificationName:InboxUnreadCountDidUpdate object:self];
 }
 
+-(BOOL)shouldSetBadge{
+    BOOL result = YES;
+    if(NSClassFromString(@"UIUserNotificationSettings")){
+        UIUserNotificationSettings* notificationSettings = [[UIApplication sharedApplication] currentUserNotificationSettings];
+        result = (notificationSettings.types & UIUserNotificationTypeBadge) != 0;
+    }
+    return result;
+}
 
 @end
