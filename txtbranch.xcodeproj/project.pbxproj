@@ -16,6 +16,7 @@
 		77288B1318F638E100B97131 /* NSDictionary+QueryString.m in Sources */ = {isa = PBXBuildFile; fileRef = 77288B1218F638E100B97131 /* NSDictionary+QueryString.m */; };
 		77288B1618F63A5200B97131 /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 77288B1518F63A5200B97131 /* NSString+URLEncoding.m */; };
 		77288B2B18F899DE00B97131 /* TTTAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 77288B2A18F899DE00B97131 /* TTTAttributedLabel.m */; };
+		774FEEB519CFBEC200A92D98 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 774FEEB419CFBEC200A92D98 /* LaunchScreen.storyboard */; };
 		775CF451194A8BD6006DE686 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 775CF43F194A8BD6006DE686 /* AFHTTPRequestOperation.m */; };
 		775CF452194A8BD6006DE686 /* AFHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 775CF441194A8BD6006DE686 /* AFHTTPRequestOperationManager.m */; };
 		775CF453194A8BD6006DE686 /* AFHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 775CF443194A8BD6006DE686 /* AFHTTPSessionManager.m */; };
@@ -107,6 +108,7 @@
 		77288B1518F63A5200B97131 /* NSString+URLEncoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+URLEncoding.m"; sourceTree = "<group>"; };
 		77288B2918F899DE00B97131 /* TTTAttributedLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTAttributedLabel.h; sourceTree = "<group>"; };
 		77288B2A18F899DE00B97131 /* TTTAttributedLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTAttributedLabel.m; sourceTree = "<group>"; };
+		774FEEB419CFBEC200A92D98 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		775CF43E194A8BD6006DE686 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
 		775CF43F194A8BD6006DE686 /* AFHTTPRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperation.m; sourceTree = "<group>"; };
 		775CF440194A8BD6006DE686 /* AFHTTPRequestOperationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperationManager.h; sourceTree = "<group>"; };
@@ -385,6 +387,7 @@
 				77ED53A41912F21400AD9F4C /* txtbranch.h */,
 				777AD10518C13EFE00DC5E9F /* AppDelegate.h */,
 				777AD10618C13EFE00DC5E9F /* AppDelegate.m */,
+				774FEEB419CFBEC200A92D98 /* LaunchScreen.storyboard */,
 				777AD10818C13EFE00DC5E9F /* Main.storyboard */,
 				771C498C1976087600445EA5 /* About */,
 				77B5DA7D1904BE5C00DDDB00 /* Utilities */,
@@ -591,6 +594,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				777AD10F18C13EFE00DC5E9F /* Images.xcassets in Resources */,
+				774FEEB519CFBEC200A92D98 /* LaunchScreen.storyboard in Resources */,
 				77C8BE66194162F600D061A6 /* NSDate+TimeAgo.podspec in Resources */,
 				777AD10118C13EFE00DC5E9F /* InfoPlist.strings in Resources */,
 				77C8BE68194162F600D061A6 /* README.md in Resources */,
