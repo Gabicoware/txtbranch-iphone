@@ -46,6 +46,8 @@ typedef enum{
 @property (nonatomic, readonly) BOOL linkModeratorOnly;
 @property (nonatomic, readonly) BOOL contentModeratorOnly;
 
+-(NSDictionary*)branchesForKeys:(NSArray*)keys;
+
 -(BOOL)canEditBranch:(NSString *)branchKey;
 -(BOOL)canDeleteBranch:(NSString*)branchKey;
 -(BOOL)isModerator;

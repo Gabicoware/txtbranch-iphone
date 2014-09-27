@@ -176,7 +176,7 @@
     [self dismissViewControllerAnimated:YES completion:NULL];
 }
 
--(NSDictionary*)branchData{
+-(NSMutableDictionary*)branchData{
     NSMutableDictionary* branch = nil;
     
     if (self.branchKey != nil) {

@@ -17,6 +17,9 @@
 		77288B1618F63A5200B97131 /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 77288B1518F63A5200B97131 /* NSString+URLEncoding.m */; };
 		77288B2B18F899DE00B97131 /* TTTAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 77288B2A18F899DE00B97131 /* TTTAttributedLabel.m */; };
 		774FEEB519CFBEC200A92D98 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 774FEEB419CFBEC200A92D98 /* LaunchScreen.storyboard */; };
+		774FEEB819D0EC6A00A92D98 /* BranchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 774FEEB719D0EC6A00A92D98 /* BranchViewModel.swift */; };
+		774FEEBD19D2DA5300A92D98 /* BranchViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 774FEEBC19D2DA5300A92D98 /* BranchViewModelTests.swift */; };
+		774FEEC019D421A700A92D98 /* NSFoundation+Ext.m in Sources */ = {isa = PBXBuildFile; fileRef = 774FEEBF19D421A700A92D98 /* NSFoundation+Ext.m */; };
 		775CF451194A8BD6006DE686 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 775CF43F194A8BD6006DE686 /* AFHTTPRequestOperation.m */; };
 		775CF452194A8BD6006DE686 /* AFHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 775CF441194A8BD6006DE686 /* AFHTTPRequestOperationManager.m */; };
 		775CF453194A8BD6006DE686 /* AFHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 775CF443194A8BD6006DE686 /* AFHTTPSessionManager.m */; };
@@ -109,6 +112,12 @@
 		77288B2918F899DE00B97131 /* TTTAttributedLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTAttributedLabel.h; sourceTree = "<group>"; };
 		77288B2A18F899DE00B97131 /* TTTAttributedLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTAttributedLabel.m; sourceTree = "<group>"; };
 		774FEEB419CFBEC200A92D98 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		774FEEB619D0EC6900A92D98 /* txtbranch-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "txtbranch-Bridging-Header.h"; sourceTree = "<group>"; };
+		774FEEB719D0EC6A00A92D98 /* BranchViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BranchViewModel.swift; sourceTree = "<group>"; };
+		774FEEB919D2DA3200A92D98 /* txtbranchTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "txtbranchTests-Bridging-Header.h"; sourceTree = "<group>"; };
+		774FEEBC19D2DA5300A92D98 /* BranchViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BranchViewModelTests.swift; sourceTree = "<group>"; };
+		774FEEBE19D421A700A92D98 /* NSFoundation+Ext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFoundation+Ext.h"; sourceTree = "<group>"; };
+		774FEEBF19D421A700A92D98 /* NSFoundation+Ext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFoundation+Ext.m"; sourceTree = "<group>"; };
 		775CF43E194A8BD6006DE686 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
 		775CF43F194A8BD6006DE686 /* AFHTTPRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperation.m; sourceTree = "<group>"; };
 		775CF440194A8BD6006DE686 /* AFHTTPRequestOperationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperationManager.h; sourceTree = "<group>"; };
@@ -317,6 +326,7 @@
 		7765599C18C8A0FD00B9195C /* Branch View */ = {
 			isa = PBXGroup;
 			children = (
+				774FEEB719D0EC6A00A92D98 /* BranchViewModel.swift */,
 				777AD10B18C13EFE00DC5E9F /* BranchViewController.h */,
 				777AD10C18C13EFE00DC5E9F /* BranchViewController.m */,
 				777AD1BD18C5819A00DC5E9F /* BranchTableViewCell.h */,
@@ -325,6 +335,7 @@
 				77A41881192EA8E40058CE13 /* BranchFormViewController.m */,
 				777AD1BA18C57D0200DC5E9F /* TBTextView.h */,
 				777AD1BB18C57D0200DC5E9F /* TBTextView.m */,
+				774FEEB619D0EC6900A92D98 /* txtbranch-Bridging-Header.h */,
 			);
 			name = "Branch View";
 			sourceTree = "<group>";
@@ -416,9 +427,11 @@
 			children = (
 				777AD12118C13EFE00DC5E9F /* txtbranchTests.m */,
 				77814E5F191D83F60063877A /* NotificationFormatterTests.m */,
+				774FEEBC19D2DA5300A92D98 /* BranchViewModelTests.swift */,
 				77CF294519264D4B00D0A1DE /* VersionKeychainItemTests.m */,
 				77814E61191D840D0063877A /* notifications.json */,
 				777AD11C18C13EFE00DC5E9F /* Supporting Files */,
+				774FEEB919D2DA3200A92D98 /* txtbranchTests-Bridging-Header.h */,
 			);
 			path = txtbranchTests;
 			sourceTree = "<group>";
@@ -481,6 +494,8 @@
 				77ACC40118C9EC6900CE03CA /* KeychainItemWrapper.m */,
 				777AD1C518C6BF6C00DC5E9F /* NSURL+txtbranch.h */,
 				777AD1C618C6BF6C00DC5E9F /* NSURL+txtbranch.m */,
+				774FEEBE19D421A700A92D98 /* NSFoundation+Ext.h */,
+				774FEEBF19D421A700A92D98 /* NSFoundation+Ext.m */,
 				777F673118E515F8004093A8 /* UIView+Ext.h */,
 				777F673218E515F8004093A8 /* UIView+Ext.m */,
 				77B5DA7E1904BE9400DDDB00 /* UIAlertView+Block.h */,
@@ -634,6 +649,7 @@
 				7765599B18C8A06F00B9195C /* LaunchViewController.m in Sources */,
 				77A41882192EA8E40058CE13 /* BranchFormViewController.m in Sources */,
 				77ACC40218C9EC6900CE03CA /* KeychainItemWrapper.m in Sources */,
+				774FEEB819D0EC6A00A92D98 /* BranchViewModel.swift in Sources */,
 				771C498F197608AC00445EA5 /* AboutTreeViewController.m in Sources */,
 				7783350718C81DA0008375A6 /* TreesViewController.m in Sources */,
 				775CF452194A8BD6006DE686 /* AFHTTPRequestOperationManager.m in Sources */,
@@ -662,6 +678,7 @@
 				770BB1201917A4550030CC86 /* Config.m in Sources */,
 				775CF45C194A8E50006DE686 /* AFHTTPSessionManager+txtbranch.m in Sources */,
 				775CF454194A8BD6006DE686 /* AFNetworkReachabilityManager.m in Sources */,
+				774FEEC019D421A700A92D98 /* NSFoundation+Ext.m in Sources */,
 				77288B2B18F899DE00B97131 /* TTTAttributedLabel.m in Sources */,
 				777AD1C718C6BF6C00DC5E9F /* NSURL+txtbranch.m in Sources */,
 				77A418851935404B0058CE13 /* UserViewController.m in Sources */,
@@ -677,6 +694,7 @@
 			files = (
 				777AD12218C13EFE00DC5E9F /* txtbranchTests.m in Sources */,
 				77CF294619264D4B00D0A1DE /* VersionKeychainItemTests.m in Sources */,
+				774FEEBD19D2DA5300A92D98 /* BranchViewModelTests.swift in Sources */,
 				77814E60191D83F60063877A /* NotificationFormatterTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -796,6 +814,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "txtbranch/txtbranch-Prefix.pch";
@@ -805,7 +824,10 @@
 					"${SDK_DIR}/usr/include/libxml2",
 				);
 				INFOPLIST_FILE = "txtbranch/txtbranch-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)$(BUNDLE_SUFFIX)";
+				SWIFT_OBJC_BRIDGING_HEADER = "txtbranch/txtbranch-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -815,6 +837,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "txtbranch/txtbranch-Prefix.pch";
@@ -824,7 +847,9 @@
 					"${SDK_DIR}/usr/include/libxml2",
 				);
 				INFOPLIST_FILE = "txtbranch/txtbranch-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)$(BUNDLE_SUFFIX)";
+				SWIFT_OBJC_BRIDGING_HEADER = "txtbranch/txtbranch-Bridging-Header.h";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -833,6 +858,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/txtbranch.app/txtbranch";
+				CLANG_ENABLE_MODULES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -845,7 +871,10 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "txtbranchTests/txtbranchTests-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "txtbranchTests/txtbranchTests-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
 			};
@@ -855,6 +884,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/txtbranch.app/txtbranch";
+				CLANG_ENABLE_MODULES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -863,7 +893,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "txtbranch/txtbranch-Prefix.pch";
 				INFOPLIST_FILE = "txtbranchTests/txtbranchTests-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "txtbranchTests/txtbranchTests-Bridging-Header.h";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
 			};
@@ -913,6 +945,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "txtbranch/txtbranch-Prefix.pch";
@@ -922,7 +955,10 @@
 					"${SDK_DIR}/usr/include/libxml2",
 				);
 				INFOPLIST_FILE = "txtbranch/txtbranch-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)$(BUNDLE_SUFFIX)";
+				SWIFT_OBJC_BRIDGING_HEADER = "txtbranch/txtbranch-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug.S;
@@ -931,6 +967,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/txtbranch.app/txtbranch";
+				CLANG_ENABLE_MODULES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -943,7 +980,10 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "txtbranchTests/txtbranchTests-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "txtbranchTests/txtbranchTests-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
 			};

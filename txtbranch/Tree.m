@@ -11,6 +11,8 @@
 #import "NSURL+txtbranch.h"
 #import "Messages.h"
 #import "AFHTTPSessionManager+txtbranch.h"
+#import "NSFoundation+Ext.h"
+
 
 NSString* const TreeDidUpdateTreeNotification = @"TreeDidUpdateTreeNotification";
 NSString* const TreeDidAddBranchesNotification = @"TreeDidAddBranchesNotification";
@@ -23,12 +25,6 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
 @"content_max":@(256),@"content_moderator_only":@(NO),@"content_prompt":@"",\
 @"link_max":@(256),@"link_moderator_only":@(NO),@"link_prompt":@"",\
 }
-
-@interface NSDictionary(Merge)
-
--(NSDictionary*)dictionaryByMergingValues:(NSDictionary*)values;
-
-@end
 
 @implementation Tree{
     NSMutableDictionary* _branches;
@@ -230,7 +226,10 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
     __weak Tree* weakSelf = self;
     [[AFHTTPSessionManager currentManager] GET:path
                                     parameters:params
-                                       success:^(NSURLSessionDataTask *task, id result) {
+                                       success:^(NSURLSessionDataTask *task, NSDictionary* result) {
+                                           
+                                           result = [result dictionaryByRemovingNulls];
+                                           
                                            if (result != nil && [result[@"status"] isEqualToString:@"OK"]) {
                                                success(result[@"result"]);
                                            }else{
@@ -248,6 +247,7 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
     [[AFHTTPSessionManager currentManager] PUT:@"/api/v1/branchs"
                                     parameters:@{@"link":branch[@"link"], @"content":branch[@"content"], @"key":branch[@"key"] }
                                        success:^(NSURLSessionDataTask *task, id result) {
+                                           result = [result dictionaryByRemovingNulls];
                                            if (result != nil && [result[@"status"] isEqualToString:@"OK"]) {
                                                [weakSelf updateBranches:@[result[@"result"]]];
                                            }else{
@@ -267,8 +267,9 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
     __weak Tree* weakSelf = self;
     [[AFHTTPSessionManager currentManager] DELETE:@"/api/v1/branchs"
                                        parameters:@{@"key":branch[@"key"]}
-                                          success:^(NSURLSessionDataTask *task, id responseObject) {
-                                              if ( [responseObject[@"status"] isEqualToString:@"OK"] && _branches[branch[@"key"]] != nil) {
+                                          success:^(NSURLSessionDataTask *task, id result) {
+                                              result = [result dictionaryByRemovingNulls];
+                                              if ( [result[@"status"] isEqualToString:@"OK"] && _branches[branch[@"key"]] != nil) {
                                                   [_branches removeObjectForKey:branch[@"key"]];
                                               }
                                           } failure:^(NSURLSessionDataTask *task, NSError *error) {
@@ -279,13 +280,14 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
 -(void)addBranch:(NSDictionary*)branch{
     
     __weak Tree* weakSelf = self;
-    [[AFHTTPSessionManager currentManager] POST:@"/api/v1/branchs" parameters:branch success:^(NSURLSessionDataTask *task, id responseObject) {
-        if (responseObject != nil && [responseObject[@"status"] isEqualToString:@"OK"]) {
-            id result = responseObject[@"result"];
-            [weakSelf postNotificationName:TreeDidAddBranchesNotification branches:@[result]];
+    [[AFHTTPSessionManager currentManager] POST:@"/api/v1/branchs" parameters:branch success:^(NSURLSessionDataTask *task, id result) {
+        result = [result dictionaryByRemovingNulls];
+        if (result != nil && [result[@"status"] isEqualToString:@"OK"]) {
+            id branch = result[@"result"];
+            [weakSelf postNotificationName:TreeDidAddBranchesNotification branches:@[branch]];
             [weakSelf updateBranches:@[result]];
         }else{
-            [weakSelf showErrors:responseObject[@"result"]];
+            [weakSelf showErrors:result[@"result"]];
         }
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         [weakSelf addUnsavedBranch:branch forQuery:@{@"parentBranchKey":branch[@"parent_branch_key"]}];
@@ -327,6 +329,9 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
     [[[UIAlertView alloc] initWithTitle:nil message:@"There was a problem saving the branch to the server. It has been saved if you would like to try editing the branch again later." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles: nil] show];
 }
 
+-(NSDictionary*)branchesForKeys:(NSArray*)keys{
+    return [[self.branches dictionaryWithValuesForKeys:keys] dictionaryByRemovingNulls];
+}
 
 @end
 
@@ -399,20 +404,6 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
         result = [NSString stringWithFormat:@"branch-key-%@",query[@"parentBranchKey"]];
     }
     return result;
-}
-
-@end
-
-@implementation NSDictionary(Merge)
-
--(NSDictionary*)dictionaryByMergingValues:(NSDictionary*)values{
-    NSMutableDictionary* result = [self mutableCopy];
-    for (id key in values) {
-        if (values[key] != nil && ![values[key] isEqual:[NSNull null]]) {
-            result[key] = values[key];
-        }
-    }
-    return [result copy];
 }
 
 @end
