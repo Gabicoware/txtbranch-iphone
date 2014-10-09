@@ -18,6 +18,7 @@
     if((self = [super init])){
         self.URLToNotifications = [NSMutableDictionary dictionary];
         _formatter = [[NSDateFormatter alloc] init];
+        [_formatter setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
         [_formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss.SSS"];
     }
     return self;

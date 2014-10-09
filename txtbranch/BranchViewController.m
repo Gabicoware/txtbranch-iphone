@@ -256,7 +256,7 @@ NS_ENUM(NSInteger, BranchTableSection){
                 [deleteIndexPaths addObject:indexPath];
             }
             
-            [reloadIndexPaths addObject:[NSIndexPath indexPathForRow:self.branchViewModel.branchKeys.count*2 inSection:BranchTableSectionBranches]];
+            [reloadIndexPaths addObject:[NSIndexPath indexPathForRow:existing.branchKeys.count*2 inSection:BranchTableSectionBranches]];
         }
     }
 
@@ -597,7 +597,7 @@ NS_ENUM(NSInteger, BranchTableSection){
                     if (buttonIndex == 1) {
                         NSDictionary * branch = self.tree.branches[self.branchViewModel.currentBranchKey];
                         
-                        BranchViewModel* model = self.branchViewModel;
+                        BranchViewModel* model = [self.branchViewModel copy];
                         model.branchKeys = [model.branchKeys arrayByPop];
                         [self updateBranchViewModel:model];
                         

@@ -285,7 +285,7 @@ NSString* const TreeNotificationBranchesUserInfoKey = @"TreeNotificationBranches
         if (result != nil && [result[@"status"] isEqualToString:@"OK"]) {
             id branch = result[@"result"];
             [weakSelf postNotificationName:TreeDidAddBranchesNotification branches:@[branch]];
-            [weakSelf updateBranches:@[result]];
+            [weakSelf updateBranches:@[branch]];
         }else{
             [weakSelf showErrors:result[@"result"]];
         }
