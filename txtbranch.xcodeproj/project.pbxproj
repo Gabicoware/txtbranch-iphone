@@ -531,6 +531,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 777AD12518C13EFE00DC5E9F /* Build configuration list for PBXNativeTarget "txtbranch" */;
 			buildPhases = (
+				7724C7F519EA1FF100654F45 /* ShellScript */,
 				777AD0EF18C13EFE00DC5E9F /* Sources */,
 				777AD0F018C13EFE00DC5E9F /* Frameworks */,
 				777AD0F118C13EFE00DC5E9F /* Resources */,
@@ -629,6 +630,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		7724C7F519EA1FF100654F45 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/bash\n\n#The store build should always be made from master, therefore, this should always be valid\nif [ \"$CONFIGURATION\" == \"Release\" ]\nthen\nbuildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"$INFOPLIST_FILE\")\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"$INFOPLIST_FILE\"\nfi";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		777AD0EF18C13EFE00DC5E9F /* Sources */ = {
